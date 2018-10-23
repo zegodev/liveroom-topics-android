@@ -1,0 +1,39 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 26
+
+
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+}
+
+dependencies {
+    compileOnly fileTree(dir: '../main/libs', include: ['*.jar'])
+    compileOnly project(path: ':common')
+
+    compileOnly 'com.android.support:recyclerview-v7:26.1.0'
+    compileOnly 'com.android.support:appcompat-v7:26.1.0'
+    compileOnly 'com.android.support.constraint:constraint-layout:1.1.3'
+}

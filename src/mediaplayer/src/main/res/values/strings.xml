@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">MediaPlayer</string>
+
+    <string-array name="audio_stream">
+
+        　　　　　　
+        <item>音轨1</item>
+
+        　　　　　　
+        <item>音轨2</item>
+
+        　　　　　　
+        <item>音轨3</item>
+
+        　　　　
+    </string-array>
+</resources>
