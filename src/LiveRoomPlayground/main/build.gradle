@@ -1,0 +1,64 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "liveroomplayground.zego.com.liveroomplayground"
+        minSdkVersion 14
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+
+        ndk {
+            //设置支持的SO库架构
+            abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86'
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("../../config/your_app_key.jks")
+            storePassword "your_keystore_password"
+            keyAlias "your_key_alias"
+            keyPassword "your_key_password"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+
+    dataBinding {
+        enabled = true
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation files('libs/zegoliveroom.jar')
+    implementation project(path: ':common')
+    implementation project(path: ':mediaplayer')
+    implementation project(path: ':mediasideinfo')
+    implementation project(path: ':layeredcoding')
+    implementation project(path: ':mediarecorder')
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
+
+    implementation 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
+    implementation 'com.google.code.gson:gson:2.7'
+}

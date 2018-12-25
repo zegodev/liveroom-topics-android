@@ -1,0 +1,48 @@
+{
+    "logs": [
+        {
+            "outputFile": "/Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/build/intermediates/res/merged/release/values/values.xml",
+            "map": [
+                {
+                    "source": "/Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/res/values/strings.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "4",
+                        "startOffsets": "16",
+                        "endColumns": "51",
+                        "endOffsets": "63"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "51",
+                        "endOffsets": "102"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "/Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/build/intermediates/incremental/mergeReleaseResources/merged.dir/values/values.xml",
+            "map": [
+                {
+                    "source": "/Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/res/values/strings.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "4",
+                        "startOffsets": "16",
+                        "endColumns": "51",
+                        "endOffsets": "63"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "51",
+                        "endOffsets": "102"
+                    }
+                }
+            ]
+        }
+    ]
+}

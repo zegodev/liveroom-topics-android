@@ -1,0 +1,17 @@
+com.zego.mediasideinfo
+id btn_check
+id btn_publish
+id btn_send
+id content
+id send_data
+id switch_custom
+id switch_onlyAudio
+id txt_bytes
+id txt_checkResult
+id txt_recvContent
+id txt_sendContent
+id txt_status
+id view_playview
+id view_preview
+layout activity_sideinfo
+string app_name

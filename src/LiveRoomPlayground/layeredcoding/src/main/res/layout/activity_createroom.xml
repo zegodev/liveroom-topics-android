@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/net_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="开启网络优化"
+            android:textColor="@color/text_black"
+            android:textSize="15sp"/>
+
+        <ToggleButton
+            android:id="@+id/tb_enable_net"
+            style="@style/ToggleButtonText"
+            android:layout_width="55dp"
+            android:layout_height="40dp"
+            android:checked="true"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/front_camera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="前置摄像头"
+            android:textColor="@color/text_black"
+            android:textSize="15sp"/>
+
+        <ToggleButton
+            android:id="@+id/tb_enable_front_cam"
+            style="@style/ToggleButtonText"
+            android:layout_width="55dp"
+            android:layout_height="40dp"
+            android:checked="true"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/roomName_edit"
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:hint="请输入房间名称" />
+
+        <Button
+            android:id="@+id/join_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="10dp"
+            android:onClick="JoinLiveRoom"
+            android:text="创建" />
+    </LinearLayout>
+
+</LinearLayout>

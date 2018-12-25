@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.zego.playground.demo.ui.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/media_player_state"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Player state" />
+
+            <TextView
+                android:id="@+id/url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="9sp"
+                android:text=""
+                />
+
+            <TextureView
+                android:id="@+id/video_view"
+                android:layout_width="match_parent"
+                android:layout_height="230dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:gravity="left"
+                    android:text="快进"
+                    android:textSize="11sp" />
+
+                <SeekBar
+                    android:id="@+id/video_progress"
+                    android:layout_width="match_parent"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="0.2"
+                    android:max="0"
+                    android:progress="0" />
+
+                <TextView
+                    android:id="@+id/progress_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.6"
+                    android:gravity="right|center_vertical"
+                    android:text="0/0"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:gravity="left"
+                    android:text="音量"
+                    android:textSize="11sp" />
+
+                <SeekBar
+                    android:id="@+id/audio_volume"
+                    android:layout_width="match_parent"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="0.2"
+                    android:max="100"
+                    android:progress="100" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+
+                <CheckBox
+                    android:id="@+id/repeat_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="repeat" />
+
+                <CheckBox
+                    android:id="@+id/mic_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="mic" />
+
+                <CheckBox
+                    android:id="@+id/aux"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="aux" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/audio_stream_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:gravity="center|left"
+                android:visibility="gone"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="音轨" />
+
+                <Spinner
+                    android:id="@+id/audio_stream"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/play_video"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:onClick="playVideo"
+                android:text="播放"
+                tools:ignore="OnClick" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:onClick="stopVideo"
+                android:text="停止"
+                tools:ignore="OnClick" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:onClick="pausePlay"
+                android:text="暂停"
+                tools:ignore="OnClick" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:onClick="resume"
+                android:text="恢复"
+                tools:ignore="OnClick" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

@@ -1,0 +1,43 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml:1:1-9:12
+INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml:1:1-9:12
+INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml:1:1-9:12
+INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml:1:1-9:12
+INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml:1:1-9:12
+INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml:1:1-9:12
+INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml:1:1-9:12
+	package
+		ADDED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml:2:5-37
+		INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml
+		INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml
+		ADDED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml:1:1-9:12
+		INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml
+		ADDED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml:1:1-9:12
+		INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml:1:11-69
+application
+ADDED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml:5:5-7:19
+activity#com.zego.mediasideinfo.ui.MediaSideInfoDemoUI
+ADDED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml:6:9-82
+	android:name
+		ADDED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml:6:19-79
+uses-sdk
+INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml
+INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml
+INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml
+INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml
+		ADDED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml
+		INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml
+		ADDED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml
+		INJECTED from /Users/zego-builder/.jenkins/jobs/liveroom-topics-android/workspace/LiveRoomPlayground/mediasideinfo/src/main/AndroidManifest.xml

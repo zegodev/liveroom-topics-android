@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.zego.mediaplayer">
+
+    <application>
+
+        <activity android:name="com.zego.mediaplayer.ui.MediaPlayerDemoUI" />
+        <activity android:name="com.zego.mediaplayer.ui.MediaPlayerResourcesList" />
+
+    </application>
+</manifest>

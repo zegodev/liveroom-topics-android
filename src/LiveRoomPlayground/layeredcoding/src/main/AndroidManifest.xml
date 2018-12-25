@@ -1,0 +1,12 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.zego.layeredcoding">
+
+    <application>
+        <activity android:name="com.zego.layeredcoding.ui.ZGRoomListUI" />
+        <activity android:name="com.zego.layeredcoding.ui.ZGCreateRoomUI" />
+        <activity android:name="com.zego.layeredcoding.ui.ZGAudienceUI" />
+        <activity android:name="com.zego.layeredcoding.ui.ZGAnchorUI" />
+
+    </application>
+
+</manifest>
