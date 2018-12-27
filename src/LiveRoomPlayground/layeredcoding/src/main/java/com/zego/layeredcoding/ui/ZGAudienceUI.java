@@ -231,7 +231,9 @@ public class ZGAudienceUI extends AppCompatActivity implements IZegoLivePlayerCa
             mRequestBtn.setEnabled(true);
             bePlayingStream = true;
         } else {
-            mErrorTxt.setText("play fail,err: "+stateCode);
+            runOnUiThread(()->{
+                mErrorTxt.setText("play fail,err: "+stateCode);
+            });
         }
     }
 
@@ -257,9 +259,11 @@ public class ZGAudienceUI extends AppCompatActivity implements IZegoLivePlayerCa
         String bitrate = "码率：" + zegoStreamQuality.videoBitrate+"kb/s";
         String fps = "帧率："+zegoStreamQuality.videoFPS;
 
-        mNetQualityTxt.setText(netQuality);
-        mBitrateTxt.setText(bitrate);
-        mFpsTxt.setText(fps);
+        runOnUiThread(()->{
+            mNetQualityTxt.setText(netQuality);
+            mBitrateTxt.setText(bitrate);
+            mFpsTxt.setText(fps);
+        });
     }
 
     @Override
@@ -299,7 +303,9 @@ public class ZGAudienceUI extends AppCompatActivity implements IZegoLivePlayerCa
             mCameraTog.setVisibility(View.INVISIBLE);
             mCameraTxt.setVisibility(View.INVISIBLE);
         } else {
-            mErrorTxt.setText("publish fail,err: " + stateCode);
+            runOnUiThread(()->{
+                mErrorTxt.setText("publish fail,err: " + stateCode);
+            });
         }
 
     }

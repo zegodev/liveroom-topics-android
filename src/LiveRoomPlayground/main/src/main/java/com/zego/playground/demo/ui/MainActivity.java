@@ -1,34 +1,26 @@
 package com.zego.playground.demo.ui;
 
 import android.Manifest;
-import android.app.Application;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 
-import com.zego.common.GetAppIdConfig;
-import com.zego.common.ZGHelper;
 import com.zego.common.ZGManager;
 import com.zego.layeredcoding.ui.ZGRoomListUI;
-import com.zego.mediaplayer.ui.MediaPlayerResourcesList;
+import com.zego.mediaplayer.ui.ZGPlayerTypeUI;
 import com.zego.mediarecorder.ZGMediaRecorderSettingUI;
 import com.zego.playground.demo.R;
-import com.zego.playground.demo.ZegoApplication;
 import com.zego.playground.demo.adapter.MainAdapter;
 import com.zego.playground.demo.databinding.ActivityMainBinding;
 import com.zego.playground.demo.entity.ModuleInfo;
 import com.zego.mediasideinfo.ui.MediaSideInfoDemoUI;
-import com.zego.zegoliveroom.ZegoLiveRoom;
-import com.zego.zegoliveroom.callback.IZegoInitSDKCompletionCallback;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -50,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
             if (orRequestPermission) {
                 switch (moduleInfo.getModule()){
                     case "mediaPlayer":
-                        Intent intent = new Intent(MainActivity.this, MediaPlayerResourcesList.class);
+                        Intent intent = new Intent(MainActivity.this, ZGPlayerTypeUI.class);
                         MainActivity.this.startActivity(intent);
                         break;
                     case "mediaSideInfo":

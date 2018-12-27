@@ -101,31 +101,6 @@
         </RadioGroup>
     </LinearLayout>
 
-    <!--<LinearLayout-->
-        <!--android:id="@+id/publish"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginLeft="15dp"-->
-        <!--android:layout_marginTop="5dp"-->
-        <!--android:orientation="horizontal">-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/publish_txt"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="是否推流:"-->
-            <!--android:textColor="@color/text_black"-->
-            <!--android:textSize="15sp"/>-->
-
-        <!--<ToggleButton-->
-            <!--android:id="@+id/publish_tog"-->
-            <!--style="@style/ToggleButtonText"-->
-            <!--android:layout_width="55dp"-->
-            <!--android:layout_height="40dp"-->
-            <!--android:layout_marginLeft="5dp"-->
-            <!--android:checked="false"/>-->
-    <!--</LinearLayout>-->
-
     <Button
         android:id="@+id/jump_btn"
         android:layout_width="match_parent"

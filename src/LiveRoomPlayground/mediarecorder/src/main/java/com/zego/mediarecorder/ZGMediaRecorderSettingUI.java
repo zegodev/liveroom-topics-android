@@ -5,19 +5,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.RadioGroup;
-import android.widget.ToggleButton;
 
 public class ZGMediaRecorderSettingUI extends AppCompatActivity {
 
     private RadioGroup mRecordModeGroup;
     private RadioGroup mRecordFormatGroup;
-//    private ToggleButton mPublishToggle;
 
     private boolean isUseFlv = true;
-    private boolean isUsePublish = false;
-
     private int recordMode = 2; // both
 
     @Override
@@ -25,8 +20,6 @@ public class ZGMediaRecorderSettingUI extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_avsetting);
-
-//        mPublishToggle = (ToggleButton)findViewById(R.id.publish_tog);
 
         mRecordModeGroup = (RadioGroup)findViewById(R.id.RecordModeGroup);
         final int[] radioModeBtns = {R.id.RadioAudio, R.id.RadioVideo, R.id.RadioBoth};
@@ -58,26 +51,12 @@ public class ZGMediaRecorderSettingUI extends AppCompatActivity {
                 }
             }
         });
-
-//        mPublishToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-//                if (isChecked) {
-//                    mPublishToggle.setChecked(true);
-//                    isUsePublish = true;
-//                } else {
-//                    mPublishToggle.setChecked(false);
-//                    isUsePublish = false;
-//                }
-//            }
-//        });
     }
 
     public void JumpRecording(View view) {
         Intent intent = new Intent(ZGMediaRecorderSettingUI.this, ZGMediaRecorderDemoUI.class);
         intent.putExtra("RecordMode",recordMode);
         intent.putExtra("RecordFormat", isUseFlv);
-//        intent.putExtra("UsePublish", isUsePublish);
 
         ZGMediaRecorderSettingUI.this.startActivity(intent);
     }

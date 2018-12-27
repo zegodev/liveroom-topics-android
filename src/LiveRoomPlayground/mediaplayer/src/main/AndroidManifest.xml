@@ -5,6 +5,8 @@
 
         <activity android:name="com.zego.mediaplayer.ui.MediaPlayerDemoUI" />
         <activity android:name="com.zego.mediaplayer.ui.MediaPlayerResourcesList" />
+        <activity android:name=".ui.ZGPlayerTypeUI"/>
+        <activity android:name=".ui.ZGMultiPlayerDemoUI"/>
 
     </application>
 </manifest>

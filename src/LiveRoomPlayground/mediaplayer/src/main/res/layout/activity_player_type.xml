@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/single_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="SinglePlayer"
+        android:textAllCaps="false"
+        android:onClick="jumSinglePlayer"/>
+
+    <Button
+        android:id="@+id/multiy_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="MultiPlayers"
+        android:textAllCaps="false"
+        android:onClick="jumMultiPlayer"/>
+
+</LinearLayout>

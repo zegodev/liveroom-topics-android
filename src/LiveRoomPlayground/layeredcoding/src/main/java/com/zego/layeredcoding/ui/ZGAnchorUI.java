@@ -3,7 +3,6 @@ package com.zego.layeredcoding.ui;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.zego.common.ZGManager;
 import com.zego.layeredcoding.R;
@@ -33,8 +31,6 @@ import java.util.List;
 
 
 public class ZGAnchorUI extends AppCompatActivity implements IZegoLivePublisherCallback, IZegoLivePlayerCallback, IZegoRoomCallback {
-
-    private ToggleButton mCameraTog;
     private Button mExitBtn;
 
     private TextureView mPreview;
@@ -68,7 +64,6 @@ public class ZGAnchorUI extends AppCompatActivity implements IZegoLivePublisherC
         setTitle("");
         setContentView(R.layout.activity_anchor);
 
-        mCameraTog = (ToggleButton)findViewById(R.id.tb_enable_front_cam);
         mExitBtn = (Button)findViewById(R.id.quit_btn);
         mExitBtn.setEnabled(false);
         mPreview = (TextureView)findViewById(R.id.preview_view);
@@ -201,7 +196,9 @@ public class ZGAnchorUI extends AppCompatActivity implements IZegoLivePublisherC
     public void onPublishStateUpdate(int stateCode, String streamID, HashMap<String, Object> hashMap) {
 
         if (0 !=  stateCode) {
-            mErrorTxt.setText("pulish fail, err: " + stateCode);
+            runOnUiThread(()->{
+                mErrorTxt.setText("pulish fail, err: " + stateCode);
+            });
         }
     }
 
@@ -241,9 +238,11 @@ public class ZGAnchorUI extends AppCompatActivity implements IZegoLivePublisherC
         String bitrate = "码率：" + zegoStreamQuality.videoBitrate+"kb/s";
         String fps = "帧率："+zegoStreamQuality.videoFPS;
 
-        mNetQualityTxt.setText(netQuality);
-        mBitrateTxt.setText(bitrate);
-        mFpsTxt.setText(fps);
+        runOnUiThread(()->{
+            mNetQualityTxt.setText(netQuality);
+            mBitrateTxt.setText(bitrate);
+            mFpsTxt.setText(fps);
+        });
     }
 
     @Override
@@ -268,7 +267,9 @@ public class ZGAnchorUI extends AppCompatActivity implements IZegoLivePublisherC
 
     @Override
     public void onDisconnect(int errorCode, String roomID) {
-        mErrorTxt.setText("disconnect zego server, err:"+errorCode);
+        runOnUiThread(()->{
+            mErrorTxt.setText("disconnect zego server, err:"+errorCode);
+        });
     }
 
     @Override
@@ -337,8 +338,9 @@ public class ZGAnchorUI extends AppCompatActivity implements IZegoLivePublisherC
         if (0 == stateCode) {
             bePlayingStream = true;
         } else {
-            String errorStr = "play fail, err: "+stateCode;
-            mErrorTxt.setText(errorStr);
+            runOnUiThread(()->{
+                mErrorTxt.setText("play fail, err: "+stateCode);
+            });
         }
     }
 

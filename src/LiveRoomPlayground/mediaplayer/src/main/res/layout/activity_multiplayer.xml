@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+    <FrameLayout
+        android:id="@+id/main_content"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000">
+
+        <TextureView
+            android:id="@+id/pre_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/lc_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#60ffffff">
+
+                <LinearLayout
+                    android:id="@+id/aux_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/aux_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="10dp"
+                        android:text="开启混音:"
+                        android:textSize="15sp" />
+
+                    <CheckBox
+                        android:id="@+id/CheckboxPlayer1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="player1"
+                        android:layout_margin="3dp" />
+
+                    <CheckBox
+                        android:id="@+id/CheckboxPlayer2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="player2"
+                        android:layout_margin="3dp" />
+
+                    <CheckBox
+                        android:id="@+id/CheckboxPlayer3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="player3"
+                        android:layout_margin="3dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/control_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal"
+                    android:layout_below="@id/aux_header">
+
+                    <Button
+                        android:id="@+id/player1_btn"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="StartPlay1"
+                        android:textAllCaps="false"
+                        android:onClick="DealPlay1"/>
+
+                    <Button
+                        android:id="@+id/player2_btn"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:text="StartPlay2"
+                        android:textAllCaps="false"
+                        android:onClick="DealPlay2"/>
+
+                    <Button
+                        android:id="@+id/player3_btn"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:text="StartPlay3"
+                        android:textAllCaps="false"
+                        android:onClick="DealPlay3"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/publish_linear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_below="@+id/control_btn"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/publish_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="StartPublish"
+                        android:textAllCaps="false"
+                        android:onClick="DealPublish"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/error_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text=""
+                android:textColor="#FF0000"/>
+
+        </RelativeLayout>
+    </FrameLayout>
+</ScrollView>

@@ -1,9 +1,7 @@
 package com.zego.mediarecorder;
 
 import android.graphics.Bitmap;
-import android.os.Handler;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -51,15 +49,12 @@ public class ZGMediaRecorderDemoUI extends AppCompatActivity implements IZegoMed
 
     private int recordMode;
     private boolean useFlvFormat; // true - flv， false - mp4
-    private boolean usePublish;
     private String mRecordingPath = "";
     private String mSavePath = "";
-    private boolean isPlaying = false;
 
     private ZegoMediaRecorder zegoMediaRecorder;
     /* 媒体播放器 */
     private ZegoMediaPlayer zegoMediaPlayer;
-    private Handler handler = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,17 +75,13 @@ public class ZGMediaRecorderDemoUI extends AppCompatActivity implements IZegoMed
         mRoomID = ZGHelper.generateDeviceId(this);
 
         recordMode = getIntent().getIntExtra("RecordMode", 2);
-
         useFlvFormat = getIntent().getBooleanExtra("RecordFormat", true);
-//        usePublish = getIntent().getBooleanExtra("UsePublish", false);
 
         String deviceID = ZGHelper.generateDeviceId(this);
         ZGManager.setLoginUser(deviceID, deviceID);
-        String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String dirPath = this.getExternalCacheDir().getPath();
         mRecordingPath = dirPath + "/" + generateAVFileName();
 
-        //创建属于主线程的handler
-        handler = new Handler();
         zegoMediaRecorder = new ZegoMediaRecorder();
 
         // 创建播放器对象
@@ -128,6 +119,7 @@ public class ZGMediaRecorderDemoUI extends AppCompatActivity implements IZegoMed
         });
 
 
+        // 摄像头方向开关
         if (0 == recordMode) { // record audio
             mFrontCameraTxt.setVisibility(View.GONE);
             mCameraToggle.setVisibility(View.GONE);
@@ -158,6 +150,7 @@ public class ZGMediaRecorderDemoUI extends AppCompatActivity implements IZegoMed
     public void recording() {
         if (isLoginRoomSuccess) {
 
+            // 启动麦克风、摄像头
             ZGManager.sharedInstance().api().setPreviewView(mPreView);
             ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleToFill);
             ZGManager.sharedInstance().api().enableCamera(true);
@@ -165,7 +158,7 @@ public class ZGMediaRecorderDemoUI extends AppCompatActivity implements IZegoMed
 
             boolean ret = false;
 
-            // 录制模式：0 - audio，1 - video，2 - audio and video
+            // 开始录制，录制模式：0 - audio，1 - video，2 - audio and video
             switch (recordMode) {
                 case 0:
                     if (useFlvFormat) {
@@ -207,9 +200,11 @@ public class ZGMediaRecorderDemoUI extends AppCompatActivity implements IZegoMed
 
         if (mReordBtn.getText().toString().equals("StartRecord")) {
 
+            // 开始录制
             recording();
         } else {
 
+            // 停止录制
             ZGManager.sharedInstance().api().stopPreview();
             ZGManager.sharedInstance().api().setPreviewView(null);
 
@@ -236,13 +231,20 @@ public class ZGMediaRecorderDemoUI extends AppCompatActivity implements IZegoMed
                 // 推流
                 boolean ret = ZGManager.sharedInstance().api().startPublishing(mRoomID, "ZegoAVRecording", ZegoConstants.PublishFlag.JoinPublish);
 
+                if (!ret) {
+                    mErrorTxt.setText("publish fail sync");
+                }
+
             } else {
 
                 ZGManager.sharedInstance().api().stopPreview();
                 ZGManager.sharedInstance().api().setPreviewView(null);
-                boolean ret_pub = ZGManager.sharedInstance().api().stopPublishing();
-
-                mPublishBtn.setText("StartPublish");
+                boolean ret_stop = ZGManager.sharedInstance().api().stopPublishing();
+                if (ret_stop) {
+                    mPublishBtn.setText("StartPublish");
+                } else {
+                    mErrorTxt.setText("stop publish fail sync");
+                }
             }
         }
     }
@@ -270,21 +272,23 @@ public class ZGMediaRecorderDemoUI extends AppCompatActivity implements IZegoMed
         super.onDestroy();
 
         ZGManager.sharedInstance().api().logoutRoom();
-        //播放状态停止播放
         zegoMediaRecorder = null;
         zegoMediaPlayer.uninit();
         zegoMediaPlayer = null;
         ZGManager.sharedInstance().unInitSDK();
     }
 
+    // 推流回调
     @Override
     public void onPublishStateUpdate(int stateCode, String streamID, HashMap<String, Object> hashMap) {
         if (stateCode == 0) {
-            new Thread() {
-                public void run() {
-                    handler.post(runnableModifyPublisBtnText);
-                }
-            }.start();
+            runOnUiThread(() -> {
+                mPublishBtn.setText("StopPublish");
+            });
+        } else {
+            runOnUiThread(() -> {
+                mErrorTxt.setText("publish fail, err: " + stateCode);
+            });
         }
     }
 
@@ -326,19 +330,21 @@ public class ZGMediaRecorderDemoUI extends AppCompatActivity implements IZegoMed
         return fileName;
     }
 
-
+    // 本地录制回调
     @Override
     public void onMediaRecord(int errCode, ZegoMediaRecordChannelIndex zegoMediaRecordChannelIndex, String storagePath) {
 
-        if (errCode != 0) {
-            mErrorTxt.setText("onMediaRecord err:" + errCode);
-        } else {
+        if (errCode == 0) {
             mSavePath = storagePath;
-            new Thread() {
-                public void run() {
-                    handler.post(runnableModifyRecordBtnText);
-                }
-            }.start();
+            runOnUiThread(() -> {
+                //更新界面
+                mReordBtn.setText("StopRecord");
+            });
+
+        } else {
+            runOnUiThread(() -> {
+                mErrorTxt.setText("onMediaRecord err:" + errCode);
+            });
         }
     }
 
@@ -347,68 +353,42 @@ public class ZGMediaRecorderDemoUI extends AppCompatActivity implements IZegoMed
 
     }
 
-    // 构建Runnable对象，在runnable中更新界面
-    Runnable runnableModifyRecordBtnText = new Runnable() {
-        @Override
-        public void run() {
-            //更新界面
-            mReordBtn.setText("StopRecord");
-        }
-
-    };
-
-    Runnable runnableModifyPublisBtnText = new Runnable() {
-        @Override
-        public void run() {
-            //更新界面
-            mPublishBtn.setText("StopPublish");
-        }
-
-    };
-
-    Runnable runnableModifyPlayBtnText = new Runnable() {
-        @Override
-        public void run() {
-            if (isPlaying) {
-                //更新界面
-                mPlayBtn.setText("StopPlay");
-            } else {
-                //更新界面
-                mPlayBtn.setText("StartPlay");
-            }
-        }
-    };
-
+    // 媒体播放器回调
     @Override
     public void onPlayStart() {
-        isPlaying = true;
-        new Thread() {
-            public void run() {
-                handler.post(runnableModifyPlayBtnText);
-            }
-        }.start();
 
+        runOnUiThread(() -> {
+            //更新界面
+            mPlayBtn.setText("StopPlay");
+        });
     }
 
     @Override
     public void onPlayStop() {
-        isPlaying = false;
-        new Thread() {
-            public void run() {
-                handler.post(runnableModifyPlayBtnText);
-            }
-        }.start();
+
+        zegoMediaPlayer.setView(null);
+        runOnUiThread(() -> {
+            //更新界面
+            mPlayBtn.setText("StartPlay");
+        });
     }
 
     @Override
     public void onPlayEnd() {
-        isPlaying = false;
+
         zegoMediaPlayer.setView(null);
-        new Thread() {
-            public void run() {
-                handler.post(runnableModifyPlayBtnText);
-            }
-        }.start();
+        runOnUiThread(() -> {
+            //更新界面
+            mPlayBtn.setText("StartPlay");
+        });
+    }
+
+    @Override
+    public void onPlayError(int errorcode) {
+        runOnUiThread(() -> {
+            //更新界面
+            mErrorTxt.setText("play err: "+errorcode);
+        });
     }
 
     @Override
@@ -418,11 +398,6 @@ public class ZGMediaRecorderDemoUI extends AppCompatActivity implements IZegoMed
 
     @Override
     public void onPlayResume() {
-
-    }
-
-    @Override
-    public void onPlayError(int i) {
 
     }
 
