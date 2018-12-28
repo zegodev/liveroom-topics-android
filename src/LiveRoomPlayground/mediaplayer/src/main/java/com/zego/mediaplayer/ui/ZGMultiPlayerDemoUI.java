@@ -2,10 +2,12 @@ package com.zego.mediaplayer.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.zego.common.ZGHelper;
@@ -105,17 +107,47 @@ public class ZGMultiPlayerDemoUI extends AppCompatActivity implements ZGMultiPla
         mp3FilePath = ZGMediaPlayerDemoHelper.sharedInstance().getPath(this, "first.mp3");
         m4aFilePath = ZGMediaPlayerDemoHelper.sharedInstance().getPath(this, "second.m4a");
         aacFilePath = ZGMediaPlayerDemoHelper.sharedInstance().getPath(this, "third.aac");
+
+        // 控制是否使用混音
+        mPlayer1CheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                // 设置是否混音，在需要混音的任一时间设置
+                if (checked) {
+                    mMediaPlayer1.setPlayerType(ZegoMediaPlayer.PlayerTypeAux);
+                } else {
+                    mMediaPlayer1.setPlayerType(ZegoMediaPlayer.PlayerTypePlayer);
+                }
+            }
+        });
+
+        mPlayer2CheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                // 设置是否混音
+                if (checked) {
+                    mMediaPlayer2.setPlayerType(ZegoMediaPlayer.PlayerTypeAux);
+                } else {
+                    mMediaPlayer2.setPlayerType(ZegoMediaPlayer.PlayerTypePlayer);
+                }
+            }
+        });
+
+        mPlayer3CheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                // 设置是否混音
+                if (checked) {
+                    mMediaPlayer3.setPlayerType(ZegoMediaPlayer.PlayerTypeAux);
+                } else {
+                    mMediaPlayer3.setPlayerType(ZegoMediaPlayer.PlayerTypePlayer);
+                }
+            }
+        });
     }
 
     public void DealPlay1(View view) {
         if (mPlayer1Btn.getText().toString().equals("StartPlay1")) {
-
-            // 设置是否混音
-            if (mPlayer1CheckBox.isChecked()) {
-                mMediaPlayer1.setPlayerType(ZegoMediaPlayer.PlayerTypeAux);
-            } else {
-                mMediaPlayer1.setPlayerType(ZegoMediaPlayer.PlayerTypePlayer);
-            }
 
             // 开始播放
             if (mMediaPlayer1 != null && !mp3FilePath.equals("")) {
@@ -132,13 +164,6 @@ public class ZGMultiPlayerDemoUI extends AppCompatActivity implements ZGMultiPla
     public void DealPlay2(View view) {
         if (mPlayer2Btn.getText().toString().equals("StartPlay2")) {
 
-            // 设置是否混音
-            if (mPlayer2CheckBox.isChecked()) {
-                mMediaPlayer2.setPlayerType(ZegoMediaPlayer.PlayerTypeAux);
-            } else {
-                mMediaPlayer2.setPlayerType(ZegoMediaPlayer.PlayerTypePlayer);
-            }
-
             // 开始播放
             if (mMediaPlayer2 != null && !m4aFilePath.equals("")) {
                 mMediaPlayer2.start(m4aFilePath, false);
@@ -154,12 +179,6 @@ public class ZGMultiPlayerDemoUI extends AppCompatActivity implements ZGMultiPla
     public void DealPlay3(View view) {
         if (mPlayer3Btn.getText().toString().equals("StartPlay3")) {
 
-            // 设置是否混音
-            if (mPlayer3CheckBox.isChecked()) {
-                mMediaPlayer3.setPlayerType(ZegoMediaPlayer.PlayerTypeAux);
-            } else {
-                mMediaPlayer3.setPlayerType(ZegoMediaPlayer.PlayerTypePlayer);
-            }
             // 开始播放
             if (mMediaPlayer3 != null && !aacFilePath.equals("")) {
                 mMediaPlayer3.start(aacFilePath, false);
