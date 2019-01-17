@@ -56,9 +56,10 @@ public class ZGMediaPlayerPublishingHelper implements IZegoLivePublisherCallback
         String state;
 
         if (stateCode == 0) {
-            String[] hlsList = null;
-            String[] rtmpList = null;
-            String[] flvList = null;
+            String[] hlsList = new String[1];
+            String[] rtmpList = new String[1];
+            String[] flvList = new String[1];
+            String streamID = "";
             if (hashMap.containsKey("flvList")) {
                 flvList = (String[]) hashMap.get("flvList");
             }
@@ -68,16 +69,18 @@ public class ZGMediaPlayerPublishingHelper implements IZegoLivePublisherCallback
             if (hashMap.containsKey("rtmpList")) {
                 rtmpList = (String[]) hashMap.get("rtmpList");
             }
+            if (hashMap.containsKey("streamID")) {
+                streamID = (String) hashMap.get("streamID");
+            }
 
-            state = String.format("PUBLISH STARTED:%s \n%s\n%s\n%s", hashMap.get("streamID"),
-                    hlsList != null ? hlsList[0] : ""
-                    , rtmpList != null ? rtmpList[0] : "", flvList != null ? flvList[0] : "");
+            state = String.format("PUBLISH STARTED:%s \n%s\n%s\n%s", streamID,
+                    hlsList.length >=1 ? hlsList[0] : ""
+                    , rtmpList.length >=1 ? rtmpList[0] : "", flvList.length >=1 ? flvList[0] : "");
 
         } else {
             state = String.format("PUBLISH STOP: %d",
                     stateCode);
         }
-
         zgMediaPlayerPublishingState.onPublishingState(state);
     }
 
