@@ -10,8 +10,9 @@ import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
 import com.zego.zegoliveroom.callback.IZegoRoomCallback;
 import com.zego.zegoliveroom.constants.ZegoConstants;
 import com.zego.zegoliveroom.entity.AuxData;
+import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
-import com.zego.zegoliveroom.entity.ZegoStreamQuality;
+//import com.zego.zegoliveroom.entity.ZegoStreamQuality;
 
 import java.util.HashMap;
 
@@ -90,9 +91,14 @@ public class ZGMediaPlayerPublishingHelper implements IZegoLivePublisherCallback
     }
 
     @Override
-    public void onPublishQualityUpdate(String s, ZegoStreamQuality zegoStreamQuality) {
+    public void onPublishQualityUpdate(String s, ZegoPublishStreamQuality zegoPublishStreamQuality) {
 
     }
+
+//    @Override
+//    public void onPublishQualityUpdate(String s, ZegoStreamQuality zegoStreamQuality) {
+//
+//    }
 
     @Override
     public AuxData onAuxCallback(int i) {

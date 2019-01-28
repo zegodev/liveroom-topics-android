@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 26
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+}
+
+dependencies {
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    compileOnly fileTree(include: ['*.jar'], dir: '../main/libs')
+
+    compileOnly 'com.android.support:appcompat-v7:26.1.0'
+    compileOnly project(path: ':common')
+    compileOnly 'com.android.support:appcompat-v7:26.1.0'
+    compileOnly 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
+    compileOnly 'com.google.code.gson:gson:2.7'
+}

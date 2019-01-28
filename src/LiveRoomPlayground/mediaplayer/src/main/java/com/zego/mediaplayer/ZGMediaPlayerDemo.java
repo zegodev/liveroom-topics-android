@@ -392,6 +392,11 @@ public class ZGMediaPlayerDemo implements IZegoMediaPlayerVideoPlayCallback {
         public void onSnapshot(Bitmap bitmap) {
             
         }
+
+        @Override
+        public void onLoadComplete() {
+
+        }
     };
 
 

@@ -172,4 +172,9 @@ public class ZGMultiPlayerDemo implements IZegoMediaPlayerWithIndexCallback {
     public void onSnapshot(Bitmap bitmap, int i) {
 
     }
+
+    @Override
+    public void onLoadComplete(int i) {
+
+    }
 }

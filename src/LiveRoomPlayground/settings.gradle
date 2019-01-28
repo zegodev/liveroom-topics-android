@@ -1,1 +1,1 @@
-include ':main', ':mediaplayer', ':common', ':mediasideinfo', ':layeredcoding', ':mediarecorder'
+include ':main', ':mediaplayer', ':common', ':mediasideinfo', ':layeredcoding', ':mediarecorder', ':mixstream', ':mixing'

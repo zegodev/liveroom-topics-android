@@ -10,8 +10,10 @@ import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
 import com.zego.zegoliveroom.callback.IZegoLoginCompletionCallback;
 import com.zego.zegoliveroom.callback.IZegoRoomCallback;
 import com.zego.zegoliveroom.entity.AuxData;
+import com.zego.zegoliveroom.entity.ZegoPlayStreamQuality;
+import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
-import com.zego.zegoliveroom.entity.ZegoStreamQuality;
+//import com.zego.zegoliveroom.entity.ZegoStreamQuality;
 
 import java.util.HashMap;
 
@@ -190,9 +192,14 @@ public class ZGMediaSideInfoDemoHelper implements IZegoLivePublisherCallback, IZ
     }
 
     @Override
-    public void onPlayQualityUpdate(String s, ZegoStreamQuality zegoStreamQuality) {
+    public void onPlayQualityUpdate(String s, ZegoPlayStreamQuality zegoPlayStreamQuality) {
 
     }
+
+//    @Override
+//    public void onPlayQualityUpdate(String s, ZegoStreamQuality zegoStreamQuality) {
+//
+//    }
 
     @Override
     public void onInviteJoinLiveRequest(int i, String s, String s1, String s2) {
@@ -234,9 +241,14 @@ public class ZGMediaSideInfoDemoHelper implements IZegoLivePublisherCallback, IZ
     }
 
     @Override
-    public void onPublishQualityUpdate(String s, ZegoStreamQuality zegoStreamQuality) {
+    public void onPublishQualityUpdate(String s, ZegoPublishStreamQuality zegoPublishStreamQuality) {
 
     }
+
+//    @Override
+//    public void onPublishQualityUpdate(String s, ZegoStreamQuality zegoStreamQuality) {
+//
+//    }
 
     @Override
     public AuxData onAuxCallback(int i) {

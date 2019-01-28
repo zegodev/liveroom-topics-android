@@ -22,8 +22,10 @@ import com.zego.zegoliveroom.callback.IZegoRoomCallback;
 import com.zego.zegoliveroom.constants.ZegoConstants;
 import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
 import com.zego.zegoliveroom.entity.AuxData;
+import com.zego.zegoliveroom.entity.ZegoPlayStreamQuality;
+import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
-import com.zego.zegoliveroom.entity.ZegoStreamQuality;
+//import com.zego.zegoliveroom.entity.ZegoStreamQuality;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -217,9 +219,10 @@ public class ZGAnchorUI extends AppCompatActivity implements IZegoLivePublisherC
     }
 
     @Override
-    public void onPublishQualityUpdate(String streamID, ZegoStreamQuality zegoStreamQuality) {
+    //    public void onPublishQualityUpdate(String streamID, ZegoStreamQuality zegoStreamQuality) {
+    public void onPublishQualityUpdate(String s, ZegoPublishStreamQuality zegoPublishStreamQuality) {
         String qualityStr = "";
-        switch (zegoStreamQuality.quality) {
+        switch (zegoPublishStreamQuality.quality) {
             case 0:
                 qualityStr = "优";
                 break;
@@ -235,8 +238,11 @@ public class ZGAnchorUI extends AppCompatActivity implements IZegoLivePublisherC
                 break;
         }
         String netQuality = "(pulish)当前网络质量："+qualityStr;
-        String bitrate = "码率：" + zegoStreamQuality.videoBitrate+"kb/s";
-        String fps = "帧率："+zegoStreamQuality.videoFPS;
+        String bitrate = "码率：" + zegoPublishStreamQuality.vkbps+"kb/s";
+        String fps = "帧率："+zegoPublishStreamQuality.vcapFps;
+
+//        String bitrate = "码率：" + zegoStreamQuality.videoBitrate+"kb/s";
+//        String fps = "帧率："+zegoStreamQuality.videoFPS;
 
         runOnUiThread(()->{
             mNetQualityTxt.setText(netQuality);
@@ -345,9 +351,14 @@ public class ZGAnchorUI extends AppCompatActivity implements IZegoLivePublisherC
     }
 
     @Override
-    public void onPlayQualityUpdate(String s, ZegoStreamQuality zegoStreamQuality) {
+    public void onPlayQualityUpdate(String s, ZegoPlayStreamQuality zegoPlayStreamQuality) {
 
     }
+
+//    @Override
+//    public void onPlayQualityUpdate(String s, ZegoStreamQuality zegoStreamQuality) {
+//
+//    }
 
     @Override
     public void onInviteJoinLiveRequest(int i, String s, String s1, String s2) {

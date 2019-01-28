@@ -26,8 +26,9 @@ import com.zego.zegoliveroom.callback.IZegoLoginCompletionCallback;
 import com.zego.zegoliveroom.constants.ZegoConstants;
 import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
 import com.zego.zegoliveroom.entity.AuxData;
+import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
-import com.zego.zegoliveroom.entity.ZegoStreamQuality;
+//import com.zego.zegoliveroom.entity.ZegoStreamQuality;
 
 import java.util.HashMap;
 
@@ -298,9 +299,14 @@ public class ZGMediaRecorderDemoUI extends AppCompatActivity implements IZegoMed
     }
 
     @Override
-    public void onPublishQualityUpdate(String s, ZegoStreamQuality zegoStreamQuality) {
-        Log.e("Zego", "onPublishQualityUpdate ,streamID: " + s + ",fps: " + zegoStreamQuality.videoFPS);
+    public void onPublishQualityUpdate(String s, ZegoPublishStreamQuality zegoPublishStreamQuality) {
+        Log.i("Zego", "onPublishQualityUpdate ,streamID: " + s + ",fps: " + zegoPublishStreamQuality.vcapFps);
     }
+
+//    @Override
+//    public void onPublishQualityUpdate(String s, ZegoStreamQuality zegoStreamQuality) {
+//        Log.e("Zego", "onPublishQualityUpdate ,streamID: " + s + ",fps: " + zegoStreamQuality.videoFPS);
+//    }
 
     @Override
     public AuxData onAuxCallback(int i) {
@@ -428,6 +434,11 @@ public class ZGMediaRecorderDemoUI extends AppCompatActivity implements IZegoMed
 
     @Override
     public void onSnapshot(Bitmap bitmap) {
+
+    }
+
+    @Override
+    public void onLoadComplete() {
 
     }
 }

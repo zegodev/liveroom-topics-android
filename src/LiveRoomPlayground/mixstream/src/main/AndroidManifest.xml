@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.zego.mixstream">
+
+    <application>
+        <activity android:name=".ui.ZGMixStreamRoomListUI" />
+        <activity android:name=".ui.ZGMixAudienceUI" />
+        <activity android:name=".ui.ZGMixAnchorUI" />
+    </application>
+
+</manifest>

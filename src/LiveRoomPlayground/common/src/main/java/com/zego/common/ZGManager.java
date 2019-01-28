@@ -20,6 +20,8 @@ public class ZGManager {
     private static String mUserID;
     private static String mUserName;
 
+    private boolean isTestEnv = false;
+
     public ZegoLiveRoom api() {
         if (zegoliveRoom == null) {
             /**  请开发者联系 ZEGO support 获取各自业务的 AppID 与 signKey
@@ -33,7 +35,7 @@ public class ZGManager {
             long appId = GetAppIdConfig.appId;
 
             zegoliveRoom = new ZegoLiveRoom();
-            zegoliveRoom.setTestEnv(true);
+            zegoliveRoom.setTestEnv(isTestEnv);
             zegoliveRoom.setUser(mUserID,mUserName);
 //            ZegoLiveRoom.setVerbose(true);
             zegoliveRoom.initSDK(appId, signKey, new IZegoInitSDKCompletionCallback() {
@@ -74,6 +76,10 @@ public class ZGManager {
         mZegoAvConfig.setVideoCaptureResolution(width, height);
         mZegoAvConfig.setVideoFPS(25);
         api().setAVConfig(mZegoAvConfig);
+    }
+
+    public boolean isTestEnv() {
+        return isTestEnv;
     }
 
     public void unInitSDK() {

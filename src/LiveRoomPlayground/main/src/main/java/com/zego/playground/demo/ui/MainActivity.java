@@ -16,6 +16,8 @@ import com.zego.common.ZGManager;
 import com.zego.layeredcoding.ui.ZGRoomListUI;
 import com.zego.mediaplayer.ui.ZGPlayerTypeUI;
 import com.zego.mediarecorder.ZGMediaRecorderSettingUI;
+import com.zego.mixing.ui.ZGMixingDemoUI;
+import com.zego.mixstream.ui.ZGMixStreamRoomListUI;
 import com.zego.playground.demo.R;
 import com.zego.playground.demo.adapter.MainAdapter;
 import com.zego.playground.demo.databinding.ActivityMainBinding;
@@ -57,6 +59,14 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent_avrecording = new Intent(MainActivity.this, ZGMediaRecorderSettingUI.class);
                         MainActivity.this.startActivity(intent_avrecording);
                         break;
+                    case "mixing":
+                        Intent intent_mixing = new Intent(MainActivity.this, ZGMixingDemoUI.class);
+                        MainActivity.this.startActivity(intent_mixing);
+                        break;
+                    case "mixstream":
+                        Intent intent_mixStream = new Intent(MainActivity.this, ZGMixStreamRoomListUI.class);
+                        MainActivity.this.startActivity(intent_mixStream);
+                        break;
                 }
             }
         });
@@ -72,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
         mainAdapter.addModuleInfo(new ModuleInfo().moduleName("mediaSideInfo"));
         mainAdapter.addModuleInfo(new ModuleInfo().moduleName("layeredCoding"));
         mainAdapter.addModuleInfo(new ModuleInfo().moduleName("mediaRecorder"));
+        mainAdapter.addModuleInfo(new ModuleInfo().moduleName("mixing"));
+        mainAdapter.addModuleInfo(new ModuleInfo().moduleName("mixstream"));
     }
 
     private static String[] PERMISSIONS_STORAGE = {

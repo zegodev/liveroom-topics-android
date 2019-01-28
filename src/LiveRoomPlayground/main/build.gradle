@@ -57,6 +57,8 @@ dependencies {
     implementation project(path: ':mediasideinfo')
     implementation project(path: ':layeredcoding')
     implementation project(path: ':mediarecorder')
+    implementation project(path: ':mixing')
+    implementation project(path: ':mixstream')
     implementation 'com.android.support:recyclerview-v7:26.1.0'
 
     implementation 'eu.the4thfloor.volley:com.android.volley:2015.05.28'

@@ -22,8 +22,9 @@ import com.zego.zegoliveroom.constants.ZegoAvConfig;
 import com.zego.zegoliveroom.constants.ZegoConstants;
 import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
 import com.zego.zegoliveroom.entity.AuxData;
+import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
-import com.zego.zegoliveroom.entity.ZegoStreamQuality;
+//import com.zego.zegoliveroom.entity.ZegoStreamQuality;
 import java.util.HashMap;
 
 
@@ -327,9 +328,14 @@ public class ZGMultiPlayerDemoUI extends AppCompatActivity implements ZGMultiPla
     }
 
     @Override
-    public void onPublishQualityUpdate(String s, ZegoStreamQuality zegoStreamQuality) {
+    public void onPublishQualityUpdate(String s, ZegoPublishStreamQuality zegoPublishStreamQuality) {
 
     }
+
+//    @Override
+//    public void onPublishQualityUpdate(String s, ZegoStreamQuality zegoStreamQuality) {
+//
+//    }
 
     @Override
     public AuxData onAuxCallback(int i) {
