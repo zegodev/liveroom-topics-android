@@ -162,7 +162,7 @@ public class ZGMixAnchorUI extends AppCompatActivity implements ZGMixStreamPubli
         } else {
             ZegoMixStreamInfo mixStreamInfo = new ZegoMixStreamInfo();
             mixStreamInfo.streamID = mRoomID;
-            mixStreamInfo.contentControl = 0; //默认值 音视频都要
+//            mixStreamInfo.contentControl = 0; //默认值 音视频都要
             mixStreamInfo.soundLevelID = ZGMixStreamDemo.anchorSoundLevelID; //音量ID
             mixStreamInfo.left = 0;
             mixStreamInfo.top = 0;
@@ -229,7 +229,7 @@ public class ZGMixAnchorUI extends AppCompatActivity implements ZGMixStreamPubli
                         // 输入流布局,此布局在屏幕的左下方
                         ZegoMixStreamInfo mixStreamInfo = new ZegoMixStreamInfo();
                         mixStreamInfo.streamID = audienceStreamID;
-                        mixStreamInfo.contentControl = 2; //音视频都要
+//                        mixStreamInfo.contentControl = 0; //音视频都要
                         mixStreamInfo.soundLevelID = ZGMixStreamDemo.audienceSoundLevelID; //音量ID
                         mixStreamInfo.left = 0;
                         mixStreamInfo.right = 270;

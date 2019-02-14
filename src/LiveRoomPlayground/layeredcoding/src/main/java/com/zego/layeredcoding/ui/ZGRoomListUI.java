@@ -71,7 +71,7 @@ public class ZGRoomListUI extends AppCompatActivity implements ZGLayeredCodingDe
     }
 
     public void QueryRoomList(View view) {
-
+        mQueryStatusTxt.setText("");
         ZGLayeredCodingDemoHelper.sharedInstance().requestRoomList(this);
         runOnUiThread(new Runnable() {
             @Override
@@ -110,7 +110,7 @@ public class ZGRoomListUI extends AppCompatActivity implements ZGLayeredCodingDe
     @Override
     public void onUpdateRoomListCallback(List<RoomInfo> roomInfos) {
         roomInfoList = roomInfos;
-
+        mQueryStatusTxt.setText("");
         if (roomInfoList.size() == 0) {
             mQueryStatusTxt.setText("room list is empty.");
         }

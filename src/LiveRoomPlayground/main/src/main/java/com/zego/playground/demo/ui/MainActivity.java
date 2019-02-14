@@ -23,6 +23,9 @@ import com.zego.playground.demo.adapter.MainAdapter;
 import com.zego.playground.demo.databinding.ActivityMainBinding;
 import com.zego.playground.demo.entity.ModuleInfo;
 import com.zego.mediasideinfo.ui.MediaSideInfoDemoUI;
+import com.zego.videocapture.ui.ZGVideoCaptureDemoUI;
+import com.zego.videocapture.ui.ZGVideoCaptureOriginUI;
+import com.zego.videoexternalrender.ui.ZGVideoRenderTypeUI;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -67,6 +70,14 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent_mixStream = new Intent(MainActivity.this, ZGMixStreamRoomListUI.class);
                         MainActivity.this.startActivity(intent_mixStream);
                         break;
+                    case "videoRender":
+                        Intent intent_videoRender = new Intent(MainActivity.this, ZGVideoRenderTypeUI.class);
+                        MainActivity.this.startActivity(intent_videoRender);
+                        break;
+                    case "videoCapture":
+                        Intent intent_videoCapture = new Intent(MainActivity.this, ZGVideoCaptureOriginUI.class);
+                        MainActivity.this.startActivity(intent_videoCapture);
+                        break;
                 }
             }
         });
@@ -84,6 +95,8 @@ public class MainActivity extends AppCompatActivity {
         mainAdapter.addModuleInfo(new ModuleInfo().moduleName("mediaRecorder"));
         mainAdapter.addModuleInfo(new ModuleInfo().moduleName("mixing"));
         mainAdapter.addModuleInfo(new ModuleInfo().moduleName("mixstream"));
+        mainAdapter.addModuleInfo(new ModuleInfo().moduleName("videoRender"));
+        mainAdapter.addModuleInfo(new ModuleInfo().moduleName("videoCapture"));
     }
 
     private static String[] PERMISSIONS_STORAGE = {

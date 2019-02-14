@@ -72,6 +72,7 @@ public class ZGMixStreamDemo implements IZegoMixStreamExCallback, IZegoSoundLeve
         mixStreamConfig.channels = 1; // 默认值
         mixStreamConfig.outputBitrate = 800000;
         mixStreamConfig.outputFps = 15;
+
         mixStreamConfig.outputAudioBitrate = 48000;
 
         // 混流画面分辨率
@@ -89,7 +90,7 @@ public class ZGMixStreamDemo implements IZegoMixStreamExCallback, IZegoSoundLeve
 
         ZegoMixStreamOutput mixStreamOutput1 = new ZegoMixStreamOutput();
         mixStreamOutput1.isUrl = false;
-        mixStreamOutput1.target = mixStreamID;//"rtmp://wsdemo.zego.im/livestream/"+mixStreamID; //mixStreamID;
+        mixStreamOutput1.target = mixStreamID;//"rtmp://wsdemo.zego.im/livestream/"+mixStreamID;
         ZegoMixStreamOutput[] mixStreamOutputs = {mixStreamOutput1};
         // 输出流
         mixStreamConfig.outputList = mixStreamOutputs;
@@ -217,7 +218,6 @@ public class ZGMixStreamDemo implements IZegoMixStreamExCallback, IZegoSoundLeve
             for (ZegoMixStreamOutputResult outputResult: streamInfo.outputList) {
 
                 if (!outputResult.streamID.equals("")){
-
                     Map<String, String> mapUrls = new HashMap<>();
                     mapUrls.put(ZGMixStreamDemoHelper.Constants.FIRST_ANCHOR, String.valueOf(true));
                     mapUrls.put(ZGMixStreamDemoHelper.Constants.KEY_MIX_STREAM_ID, mixStreamID);

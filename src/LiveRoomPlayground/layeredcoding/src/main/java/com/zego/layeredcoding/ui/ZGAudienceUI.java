@@ -125,7 +125,7 @@ public class ZGAudienceUI extends AppCompatActivity implements IZegoLivePlayerCa
                     if (zegoStreamInfos.length > 0) {
                         for (int i = 0; i < zegoStreamInfos.length;i++){
                             if (zegoStreamInfos[i].userID.equals(anchorID)) {
-                                playStreamID = zegoStreamInfos[0].streamID;
+                                playStreamID = zegoStreamInfos[i].streamID;
                                 break;
                             }
                         }
@@ -239,8 +239,9 @@ public class ZGAudienceUI extends AppCompatActivity implements IZegoLivePlayerCa
         }
     }
 
+
     @Override
-    //    public void onPlayQualityUpdate(String streamID, ZegoStreamQuality zegoStreamQuality) {
+//    public void onPlayQualityUpdate(String streamID, ZegoStreamQuality zegoStreamQuality) {
     public void onPlayQualityUpdate(String s, ZegoPlayStreamQuality zegoPlayStreamQuality) {
         String qualityStr = "";
         switch (zegoPlayStreamQuality.quality) {

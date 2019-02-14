@@ -12,6 +12,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.zego.common.GetAppIdConfig;
 import com.zego.common.ZGHelper;
+import com.zego.common.ZGManager;
 import com.zego.layeredcoding.entity.RoomInfo;
 import com.zego.layeredcoding.entity.RoomInfoEx;
 import com.zego.zegoliveroom.constants.ZegoConstants;
@@ -60,9 +61,16 @@ public class ZGLayeredCodingDemoHelper {
 
     public void requestRoomList(Context context) {
 
-        //测试环境请求地址
-        String url = "https://test2-liveroom-api.zego.im/demo/roomlist?appid=" + String.valueOf(GetAppIdConfig.appId);
+        boolean isTestEnv = ZGManager.sharedInstance().isTestEnv();
+        String url = "";
+        if (isTestEnv) {
+            //测试环境请求地址
+            url = "https://test2-liveroom-api.zego.im/demo/roomlist?appid=" + String.valueOf(GetAppIdConfig.appId);
 
+        } else {
+            //正式环境请求地址
+            url = String.format("https://liveroom%d-api.zego.im/demo/roomlist?appid=%s", GetAppIdConfig.appId, GetAppIdConfig.appId);
+        }
         RequestQueue requestQueue = Volley.newRequestQueue(context);
 
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {

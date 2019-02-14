@@ -300,7 +300,7 @@ public class ZGMediaRecorderDemoUI extends AppCompatActivity implements IZegoMed
 
     @Override
     public void onPublishQualityUpdate(String s, ZegoPublishStreamQuality zegoPublishStreamQuality) {
-        Log.i("Zego", "onPublishQualityUpdate ,streamID: " + s + ",fps: " + zegoPublishStreamQuality.vcapFps);
+        Log.e("Zego", "onPublishQualityUpdate ,streamID: " + s + ",fps: " + zegoPublishStreamQuality.vcapFps);
     }
 
 //    @Override
@@ -439,7 +439,6 @@ public class ZGMediaRecorderDemoUI extends AppCompatActivity implements IZegoMed
 
     @Override
     public void onLoadComplete() {
-
     }
 }
 

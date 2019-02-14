@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.zego.videoexternalrender">
+
+    <application>
+        <activity android:name=".ui.ZGVideoRenderTypeUI" />
+        <activity android:name=".ui.ZGVideoRenderUI"></activity>
+    </application>
+
+</manifest>

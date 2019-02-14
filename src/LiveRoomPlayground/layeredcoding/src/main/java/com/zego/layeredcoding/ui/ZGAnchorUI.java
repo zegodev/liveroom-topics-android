@@ -219,7 +219,7 @@ public class ZGAnchorUI extends AppCompatActivity implements IZegoLivePublisherC
     }
 
     @Override
-    //    public void onPublishQualityUpdate(String streamID, ZegoStreamQuality zegoStreamQuality) {
+//    public void onPublishQualityUpdate(String streamID, ZegoStreamQuality zegoStreamQuality) {
     public void onPublishQualityUpdate(String s, ZegoPublishStreamQuality zegoPublishStreamQuality) {
         String qualityStr = "";
         switch (zegoPublishStreamQuality.quality) {

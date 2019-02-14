@@ -123,6 +123,7 @@ public class ZGMixingDemoUI extends AppCompatActivity implements IZegoLivePublis
 
         if (isLoginRoomSuccess) {
             ZGManager.sharedInstance().api().logoutRoom();
+            ZGManager.sharedInstance().api().setZegoLivePublisherCallback(null);
         }
 
         ZGManager.sharedInstance().unInitSDK();

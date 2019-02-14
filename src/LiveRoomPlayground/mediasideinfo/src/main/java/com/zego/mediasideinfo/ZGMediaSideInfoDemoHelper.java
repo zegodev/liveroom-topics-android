@@ -112,8 +112,8 @@ public class ZGMediaSideInfoDemoHelper implements IZegoLivePublisherCallback, IZ
         if (ZGMediaSideTopicStatus.ZGMediaSideTopicStatus_None == mTopicStatus){
             // 登出房间之前 停止拉流，推流和预览
             ZGManager.sharedInstance().api().stopPlayingStream(mDeviceID);
-            ZGManager.sharedInstance().api().setPreviewView(null);
             ZGManager.sharedInstance().api().stopPreview();
+            ZGManager.sharedInstance().api().setPreviewView(null);
             ZGManager.sharedInstance().api().stopPublishing();
             // 登出房间
             ZGManager.sharedInstance().api().logoutRoom();

@@ -152,13 +152,14 @@
 
             <TextureView
                 android:id="@+id/preview_view"
-
-                android:layout_width="100dp"
-                android:layout_height="140dp"
+                android:layout_width="140dp"
+                android:layout_height="200dp"
                 android:layout_below="@id/lc_header"
-                android:layout_marginLeft="280dp"
-                android:layout_marginTop="250dp"
-                android:layout_marginRight="10dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@id/error_txt"
+                android:layout_marginTop="70dp"
+                android:layout_marginRight="5dp"
                 android:layout_marginBottom="5dp" />
         </RelativeLayout>
     </FrameLayout>

@@ -65,6 +65,7 @@ public class ZGMultiPlayerDemoUI extends AppCompatActivity implements ZGMultiPla
 
         String deviceID = ZGHelper.generateDeviceId(this);
         ZGManager.setLoginUser(deviceID, deviceID);
+        mChannelID += "_" + deviceID;
 
         mPlayer1Btn = (Button) findViewById(R.id.player1_btn);
         mPlayer2Btn = (Button) findViewById(R.id.player2_btn);
@@ -196,6 +197,8 @@ public class ZGMultiPlayerDemoUI extends AppCompatActivity implements ZGMultiPla
         if (isLoginRoomSuccess) {
             if (mPublishBtn.getText().toString().equals("StartPublish")) {
                 // 推流
+                ZGManager.sharedInstance().api().setPreviewView(mPreview);
+                ZGManager.sharedInstance().api().startPreview();
                 boolean ret = ZGManager.sharedInstance().api().startPublishing(mChannelID, "ZegoMultiPlayer", ZegoConstants.PublishFlag.JoinPublish);
 
                 if (!ret) {
@@ -218,6 +221,7 @@ public class ZGMultiPlayerDemoUI extends AppCompatActivity implements ZGMultiPla
         super.onDestroy();
         ZGManager.sharedInstance().api().logoutRoom();
 
+        ZGManager.sharedInstance().api().setZegoLivePublisherCallback(null);
         ZGMultiPlayerDemo.sharedInstance().unSetZGMultiPlayerDemoCallback();
         ZGMultiPlayerDemo.sharedInstance().unInit();
         ZGManager.sharedInstance().unInitSDK();
@@ -351,6 +355,4 @@ public class ZGMultiPlayerDemoUI extends AppCompatActivity implements ZGMultiPla
     public void onMixStreamConfigUpdate(int i, String s, HashMap<String, Object> hashMap) {
 
     }
-
-
 }
