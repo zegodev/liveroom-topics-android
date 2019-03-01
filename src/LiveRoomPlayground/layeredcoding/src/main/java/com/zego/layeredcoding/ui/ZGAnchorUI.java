@@ -143,7 +143,7 @@ public class ZGAnchorUI extends AppCompatActivity implements IZegoLivePublisherC
                 // 设置视频分层
                 int videoLayer = ZGLayeredCodingDemoHelper.sharedInstance().getVideoLayer(layerChoice);
                 if (bePlayingStream) {
-                    ZGManager.sharedInstance().api().activateVedioPlayStream(audienceStreamID, true, videoLayer);
+                    ZGManager.sharedInstance().api().activateVideoPlayStream(audienceStreamID, true, videoLayer);
                 }
             }
 
@@ -263,6 +263,11 @@ public class ZGAnchorUI extends AppCompatActivity implements IZegoLivePublisherC
 
     @Override
     public void onMixStreamConfigUpdate(int i, String s, HashMap<String, Object> hashMap) {
+
+    }
+
+    @Override
+    public void onCaptureVideoFirstFrame() {
 
     }
 

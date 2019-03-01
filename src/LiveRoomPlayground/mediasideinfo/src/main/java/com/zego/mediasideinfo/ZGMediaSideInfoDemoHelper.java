@@ -103,6 +103,7 @@ public class ZGMediaSideInfoDemoHelper implements IZegoLivePublisherCallback, IZ
         }
     }
 
+    // 修改登录状态、推拉流状态或者媒体次要信息发送状态
     public void setTopicStatus(ZGMediaSideTopicStatus status){
         mTopicStatus = status;
 
@@ -176,6 +177,7 @@ public class ZGMediaSideInfoDemoHelper implements IZegoLivePublisherCallback, IZ
         mStatusChangedNotifier = null;
     }
 
+    // 拉流回调
     @Override
     public void onPlayStateUpdate(int stateCode, String streamID) {
 
@@ -196,11 +198,6 @@ public class ZGMediaSideInfoDemoHelper implements IZegoLivePublisherCallback, IZ
 
     }
 
-//    @Override
-//    public void onPlayQualityUpdate(String s, ZegoStreamQuality zegoStreamQuality) {
-//
-//    }
-
     @Override
     public void onInviteJoinLiveRequest(int i, String s, String s1, String s2) {
 
@@ -216,6 +213,7 @@ public class ZGMediaSideInfoDemoHelper implements IZegoLivePublisherCallback, IZ
 
     }
 
+    //推流回调
     @Override
     public void onPublishStateUpdate(int stateCode, String streamID, HashMap<String, Object> streamInfo) {
         if (0 == stateCode) {
@@ -245,11 +243,6 @@ public class ZGMediaSideInfoDemoHelper implements IZegoLivePublisherCallback, IZ
 
     }
 
-//    @Override
-//    public void onPublishQualityUpdate(String s, ZegoStreamQuality zegoStreamQuality) {
-//
-//    }
-
     @Override
     public AuxData onAuxCallback(int i) {
         return null;
@@ -265,6 +258,12 @@ public class ZGMediaSideInfoDemoHelper implements IZegoLivePublisherCallback, IZ
 
     }
 
+    @Override
+    public void onCaptureVideoFirstFrame() {
+
+    }
+
+    //房间回调
     @Override
     public void onKickOut(int i, String s) {
 

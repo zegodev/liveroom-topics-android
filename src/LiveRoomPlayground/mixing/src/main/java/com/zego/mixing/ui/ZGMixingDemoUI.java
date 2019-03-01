@@ -202,4 +202,9 @@ public class ZGMixingDemoUI extends AppCompatActivity implements IZegoLivePublis
     public void onMixStreamConfigUpdate(int i, String s, HashMap<String, Object> hashMap) {
 
     }
+
+    @Override
+    public void onCaptureVideoFirstFrame() {
+
+    }
 }

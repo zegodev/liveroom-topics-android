@@ -103,7 +103,12 @@ public class GlShader {
             throw new RuntimeException("The program has been released");
         }
         GLES20.glUseProgram(program);
-        GlUtil.checkNoGLES2Error("glUseProgram");
+        try {
+            GlUtil.checkNoGLES2Error("glUseProgram");
+        } catch (RuntimeException e){
+            Log.d("Zego","GLShader runtimeException:"+e.getMessage());
+        }
+
     }
 
     public void release() {

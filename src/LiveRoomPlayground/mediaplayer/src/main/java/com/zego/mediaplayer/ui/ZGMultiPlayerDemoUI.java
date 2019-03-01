@@ -355,4 +355,9 @@ public class ZGMultiPlayerDemoUI extends AppCompatActivity implements ZGMultiPla
     public void onMixStreamConfigUpdate(int i, String s, HashMap<String, Object> hashMap) {
 
     }
+
+    @Override
+    public void onCaptureVideoFirstFrame() {
+
+    }
 }

@@ -14,22 +14,17 @@ public class VideoCaptureFactoryDemo extends ZegoVideoCaptureFactory {
     private ZegoVideoCaptureDevice mDevice = null;
     private Context mContext = null;
 
-    private Boolean isCapture = false;
-
     public enum CaptureOrigin{
         CaptureOrigin_Image,
         CaptureOrigin_ImageV2,
         CaptureOrigin_Screen,
         CaptureOrigin_Camera,
-        CaptureOrigin_CameraV2
+        CaptureOrigin_CameraV2,
+        CaptureOrigin_CameraV3
     }
 
     public VideoCaptureFactoryDemo(CaptureOrigin origin){
         this.origin = origin;
-    }
-
-    public void setIsCapture(Boolean isCapture){
-        this.isCapture = isCapture;
     }
 
     public ZegoVideoCaptureDevice create(String device_id) {
@@ -41,6 +36,8 @@ public class VideoCaptureFactoryDemo extends ZegoVideoCaptureFactory {
             mDevice = new VideoCaptureFromImage2(mContext);
         } else if (origin == CaptureOrigin.CaptureOrigin_CameraV2) {
             mDevice = new VideoCaptureFromCamera2();
+        } else if (origin == CaptureOrigin.CaptureOrigin_CameraV3) {
+            mDevice = new VideoCaptureFromCamera3();
         }
 
         return mDevice;

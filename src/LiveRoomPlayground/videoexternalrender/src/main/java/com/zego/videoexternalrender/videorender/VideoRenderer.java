@@ -1,6 +1,7 @@
 package com.zego.videoexternalrender.videorender;
 
 import android.annotation.TargetApi;
+import android.graphics.SurfaceTexture;
 import android.opengl.EGL14;
 import android.opengl.EGLConfig;
 import android.opengl.EGLContext;
@@ -8,8 +9,10 @@ import android.opengl.EGLDisplay;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.Choreographer;
+import android.view.Surface;
 import android.view.TextureView;
 
 import com.zego.zegoavkit2.entities.VideoFrame;
@@ -17,11 +20,14 @@ import com.zego.zegoavkit2.enums.VideoPixelFormat;
 import com.zego.zegoavkit2.videorender.IZegoExternalRenderCallback2;
 
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -48,6 +54,11 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
     private EGLDisplay eglDisplay;
     private boolean mIsRunning = false;
     private int bufferQueueSizeMax = 4;
+
+    private AVCDecoder mAVCDecoder = null;
+
+    private int mViewWidth = 540;
+    private int mViewHeight = 960;
 
     private HandlerThread mThread = null;
     private Handler mHandler = null;
@@ -95,7 +106,21 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
         rendererMap = new ConcurrentHashMap<>();
         mProduceQueue = new ArrayList<>();
         mMapConsumeQueue = new ConcurrentHashMap<>();
+
         return 0;
+    }
+
+    // 解码 AVCANNEXB 格式视频帧的渲染视图
+    public void addDecodView(final TextureView textureView){
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mAVCDecoder == null){
+                    mAVCDecoder = new AVCDecoder(new Surface(textureView.getSurfaceTexture()), mViewWidth, mViewHeight);
+                    mAVCDecoder.startDecoder();
+                }
+            }
+        });
     }
 
     // 添加需要渲染视图
@@ -216,6 +241,13 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
 
         mProduceQueue.clear();
 
+        // 释放MediaCodec
+        if (mAVCDecoder != null) {
+            mAVCDecoder.stopAndReleaseDecoder();
+            mAVCDecoder = null;
+        }
+
+        printCount = 0;
         return 0;
     }
 
@@ -306,7 +338,6 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
                 returnProducerPixelBuffer(pixelBuffer);
             }
         }
-
     }
 
     private void createPixelBufferPool(int[] size, int count) {
@@ -333,18 +364,29 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
     // 外部渲染回调
     @Override
     public int dequeueInputBuffer(int width, int height, int[] strides, int[] byteBufferLens) {
+        if (strides[0] != 0) {
+            // isChange为false时是rgb格式视频帧，为true时是yuv I420格式视频帧
+            // rgb格式 strides[0] > 0,其余值 = 0；yuv格式 strides[0]~strides[2] > 0, 其余值 = 0
+            boolean isChange = false;
+            for (int i = 0; i < strides.length; i++){
+                if (strides[i] * height > mMaxBufferSize[i]) {
+                    mMaxBufferSize[i] = strides[i] *height;
+                    isChange = true;
+                }
+            }
+            if (isChange) {
+                if (mMaxBufferSize[0]>0){
+                    mProduceQueue.clear();
+                }
+                createPixelBufferPool(mMaxBufferSize, 1);
+            }
+            // AVCANNEXB 格式视频帧
+        } else if ((strides[0] == 0) && (byteBufferLens[0] > 0)) {
+            mViewHeight = height;
+            mViewWidth = width;
 
-        boolean isChange = false;
-        for (int i = 0; i < strides.length; i++){
-            if (strides[i] * height > mMaxBufferSize[i]) {
-                mMaxBufferSize[i] = strides[i] *height;
-                isChange = true;
-            }
-        }
-        if (isChange) {
-            if (mMaxBufferSize[0]>0){
-                mProduceQueue.clear();
-            }
+            mMaxBufferSize[0] = byteBufferLens[0];
+            mProduceQueue.clear();
             createPixelBufferPool(mMaxBufferSize, 1);
         }
 
@@ -387,16 +429,39 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
         return videoFrame;
     }
 
+    private int printCount = 0;
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.ms");
     @Override
     public void queueInputBuffer(int bufferIndex, String streamID, VideoPixelFormat videoPixelFormat) {
         if (bufferIndex == -1) {
             return;
+        }
+        if (printCount == 0) {
+            Date date = new Date(System.currentTimeMillis());
+            Log.d("Zego","encode data transfer time: "+simpleDateFormat.format(date));
+            printCount++;
         }
         if (mProduceQueue.size() > bufferIndex) {
             VideoRenderer.PixelBuffer pixelBuffer = mProduceQueue.get(bufferIndex);
             pixelBuffer.width = this.width;
             pixelBuffer.height = this.height;
             pixelBuffer.strides = this.strides;
+
+            // AVCANNEXB 格式视频帧数据
+            if ((pixelBuffer.strides[0] == 0) && (pixelBuffer.buffer[0].capacity() > 0)) {
+                byte[] tmpData = new byte[pixelBuffer.buffer[0].capacity()];
+                pixelBuffer.buffer[0].get(tmpData);
+
+                long now = 0;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    now = SystemClock.elapsedRealtimeNanos();
+                } else {
+                    now = TimeUnit.MILLISECONDS.toNanos(SystemClock.elapsedRealtime());
+                }
+                if (mAVCDecoder != null) {
+                    mAVCDecoder.inputFrameToDecoder(tmpData, now);
+                }
+            }
 
             ConcurrentLinkedQueue<PixelBuffer> concurrentLinkedQueue = mMapConsumeQueue.get(streamID);
             if (concurrentLinkedQueue == null) {

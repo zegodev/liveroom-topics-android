@@ -116,6 +116,11 @@ public class ZGMediaPlayerPublishingHelper implements IZegoLivePublisherCallback
     }
 
     @Override
+    public void onCaptureVideoFirstFrame() {
+
+    }
+
+    @Override
     public void onKickOut(int i, String s) {
 
     }

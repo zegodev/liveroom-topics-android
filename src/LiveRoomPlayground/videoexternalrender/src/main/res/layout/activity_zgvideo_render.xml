@@ -68,7 +68,7 @@
                         android:layout_marginRight="5dp"
                         android:text="StartPlay"
                         android:textAllCaps="false"
-                        android:onClick="DealPlay"/>
+                        android:onClick="dealPlay"/>
                 </LinearLayout>
 
             </RelativeLayout>

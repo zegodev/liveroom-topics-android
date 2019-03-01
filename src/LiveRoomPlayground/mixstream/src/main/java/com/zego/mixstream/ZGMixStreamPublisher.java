@@ -222,6 +222,11 @@ public class ZGMixStreamPublisher implements IZegoLivePublisherCallback, IZegoLi
 
     }
 
+    @Override
+    public void onCaptureVideoFirstFrame() {
+
+    }
+
     // 房间回调
     @Override
     public void onKickOut(int i, String s) {

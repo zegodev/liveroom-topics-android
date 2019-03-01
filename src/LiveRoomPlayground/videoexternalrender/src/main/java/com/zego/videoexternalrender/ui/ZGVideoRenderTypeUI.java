@@ -10,6 +10,7 @@ import com.zego.videoexternalrender.R;
 import com.zego.zegoavkit2.enums.VideoExternalRenderType;
 import com.zego.zegoavkit2.videorender.ZegoExternalVideoRender;
 
+
 public class ZGVideoRenderTypeUI extends AppCompatActivity {
 
     private RadioGroup mRenderTypeGroup;
@@ -50,6 +51,7 @@ public class ZGVideoRenderTypeUI extends AppCompatActivity {
 
     public void JumpPublish(View view){
         Intent intent = new Intent(ZGVideoRenderTypeUI.this, ZGVideoRenderUI.class);
+        intent.putExtra("RenderType",renderType.value());
         ZGVideoRenderTypeUI.this.startActivity(intent);
     }
 }

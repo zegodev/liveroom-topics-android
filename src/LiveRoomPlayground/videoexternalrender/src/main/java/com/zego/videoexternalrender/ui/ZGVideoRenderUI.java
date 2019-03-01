@@ -12,6 +12,7 @@ import com.zego.common.ZGHelper;
 import com.zego.common.ZGManager;
 import com.zego.videoexternalrender.R;
 import com.zego.videoexternalrender.videorender.VideoRenderer;
+import com.zego.zegoavkit2.enums.VideoExternalRenderType;
 import com.zego.zegoavkit2.videorender.ZegoExternalVideoRender;
 import com.zego.zegoliveroom.callback.IZegoLivePlayerCallback;
 import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
@@ -40,6 +41,7 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
     private ZegoExternalVideoRender zegoExternalVideoRender = null;
 
     private VideoRenderer videoRenderer;
+    private int chooseRenderType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,8 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
         mErrorTxt = (TextView)findViewById(R.id.error_txt);
         mDealBtn = (Button)findViewById(R.id.publish_btn);
         mDealPlayBtn = (Button)findViewById(R.id.play_btn);
+
+        chooseRenderType = getIntent().getIntExtra("RenderType", 0);
 
         String deviceID = ZGHelper.generateDeviceId(this);
         mRoomID += deviceID;
@@ -125,11 +129,16 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
         }
     }
 
-    public void DealPlay(View view){
+    public void dealPlay(View view){
 
         if (mDealPlayBtn.getText().toString().equals("StartPlay") && !mPlayStreamID.equals("")){
             // 拉流视图
-            videoRenderer.addView (mPlayStreamID, mPlayView);
+            if (chooseRenderType == VideoExternalRenderType.NOT_DECODE.value()) {
+                videoRenderer.addDecodView(mPlayView);
+            } else {
+                videoRenderer.addView (mPlayStreamID, mPlayView);
+            }
+
             // 开始拉流
             boolean ret = ZGManager.sharedInstance().api().startPlayingStream(mPlayStreamID, null);
 
@@ -187,6 +196,11 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
 
     @Override
     public void onMixStreamConfigUpdate(int i, String s, HashMap<String, Object> hashMap) {
+
+    }
+
+    @Override
+    public void onCaptureVideoFirstFrame() {
 
     }
 

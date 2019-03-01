@@ -157,7 +157,7 @@ public class ZGAudienceUI extends AppCompatActivity implements IZegoLivePlayerCa
                 // 设置视频分层
                 int videoLayer = ZGLayeredCodingDemoHelper.sharedInstance().getVideoLayer(layerChoice);
                 if (bePlayingStream) {
-                    ZGManager.sharedInstance().api().activateVedioPlayStream(playStreamID, true, videoLayer);
+                    ZGManager.sharedInstance().api().activateVideoPlayStream(playStreamID, true, videoLayer);
                 }
             }
 
@@ -344,6 +344,11 @@ public class ZGAudienceUI extends AppCompatActivity implements IZegoLivePlayerCa
 
     @Override
     public void onMixStreamConfigUpdate(int i, String s, HashMap<String, Object> hashMap) {
+
+    }
+
+    @Override
+    public void onCaptureVideoFirstFrame() {
 
     }
 

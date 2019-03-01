@@ -198,6 +198,11 @@ public class ZGVideoCaptureDemoUI extends AppCompatActivity implements IZegoLive
 
     }
 
+    @Override
+    public void onCaptureVideoFirstFrame() {
+
+    }
+
     // 拉流回调
     @Override
     public void onPlayStateUpdate(int stateCode, String streamID) {

@@ -38,7 +38,7 @@ public class ZGVideoCaptureOriginUI extends AppCompatActivity {
         setContentView(R.layout.activity_zgvideo_capture_type);
 
         mCaptureTypeGroup = (RadioGroup)findViewById(R.id.CaptureTypeGroup);
-        final int[] radioCaptureTypeBtns = {R.id.RadioImage, R.id.RadioScreen, R.id.RadioCamera};
+        final int[] radioCaptureTypeBtns = {R.id.RadioImage, R.id.RadioScreen, R.id.RadioCamera, R.id.RadioCameraYUV, R.id.RadioCameraBitStream};
 
         videoCapture = new ZegoExternalVideoCapture();
 
@@ -61,10 +61,14 @@ public class ZGVideoCaptureOriginUI extends AppCompatActivity {
                         startActivityForResult(mMediaProjectionManager.createScreenCaptureIntent(), REQUEST_CODE);
                     }
 
+                } else if (radioCaptureTypeBtns[2] == radioGroup.getCheckedRadioButtonId()){
+                    captureOrigin = VideoCaptureFactoryDemo.CaptureOrigin.CaptureOrigin_CameraV2; //摄像头
+                } else if (radioCaptureTypeBtns[3] == radioGroup.getCheckedRadioButtonId()){
+                    captureOrigin = VideoCaptureFactoryDemo.CaptureOrigin.CaptureOrigin_Camera; //摄像头 yuv数据
                 } else {
-                    captureOrigin = VideoCaptureFactoryDemo.CaptureOrigin.CaptureOrigin_Camera; //摄像头
+                    captureOrigin = VideoCaptureFactoryDemo.CaptureOrigin.CaptureOrigin_CameraV3; //摄像头 码流数据
                 }
-                
+
                 if (captureOrigin != VideoCaptureFactoryDemo.CaptureOrigin.CaptureOrigin_Screen){
                     // 创建工厂
                     factory = new VideoCaptureFactoryDemo(captureOrigin);

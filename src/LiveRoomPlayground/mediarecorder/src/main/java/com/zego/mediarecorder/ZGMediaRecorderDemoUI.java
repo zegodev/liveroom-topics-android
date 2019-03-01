@@ -323,6 +323,11 @@ public class ZGMediaRecorderDemoUI extends AppCompatActivity implements IZegoMed
 
     }
 
+    @Override
+    public void onCaptureVideoFirstFrame() {
+
+    }
+
 
     public String generateAVFileName() {
         String fileName;

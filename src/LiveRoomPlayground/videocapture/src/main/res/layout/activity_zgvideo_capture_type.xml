@@ -13,40 +13,63 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="10dp"
             android:textStyle="bold"
             android:text="采集来源: " />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:orientation="horizontal">
 
         <RadioGroup
             android:id="@+id/CaptureTypeGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical">
 
             <RadioButton
                 android:id="@+id/RadioImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
-                android:text="image"/>
+                android:text="image" />
 
             <RadioButton
                 android:id="@+id/RadioScreen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
+                android:layout_marginLeft="100dp"
+                android:layout_marginTop="-32dp"
                 android:text="screen" />
 
             <RadioButton
                 android:id="@+id/RadioCamera"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="200dp"
+                android:layout_marginTop="-32dp"
+                android:text="camera" />
+
+            <RadioButton
+                android:id="@+id/RadioCameraYUV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
-                android:text="camera"/>
+                android:text="camera(yuv)" />
+
+            <RadioButton
+                android:id="@+id/RadioCameraBitStream"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="120dp"
+                android:layout_marginTop="-32dp"
+                android:text="camera(BitStream)" />
 
         </RadioGroup>
     </LinearLayout>
