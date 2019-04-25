@@ -7,7 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.RadioGroup;
 
-public class ZGMediaRecorderSettingUI extends AppCompatActivity {
+import com.zego.common.ui.BaseActivity;
+
+public class ZGMediaRecorderSettingUI extends BaseActivity {
 
     private RadioGroup mRecordModeGroup;
     private RadioGroup mRecordFormatGroup;

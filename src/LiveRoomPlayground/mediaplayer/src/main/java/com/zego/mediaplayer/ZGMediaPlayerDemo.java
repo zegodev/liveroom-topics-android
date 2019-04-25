@@ -10,15 +10,67 @@ import com.zego.common.timer.ZGTimer;
 import com.zego.zegoavkit2.IZegoMediaPlayerCallback;
 import com.zego.zegoavkit2.IZegoMediaPlayerVideoPlayCallback;
 import com.zego.zegoavkit2.ZegoMediaPlayer;
+import com.zego.zegoavkit2.ZegoVideoCaptureFactory;
 import com.zego.zegoavkit2.ZegoVideoDataFormat;
+import com.zego.zegoliveroom.ZegoLiveRoom;
 
 import java.util.Locale;
 
-
 /**
- * Created by zego on 2018/10/16.
+ *
+ * ZGMediaPlayerDemo
+ *
+ * 你可以通过 {@link #startPlay} 来进行播放音视频资源。
+ * 支持播放格式  MP3、MP4。
+ * 并且可以把播放的内容通过zegoSDK外部采集的方式进行推流。
+ *
+ *
+ * 一般是k歌房场景需要使用到该功能。把MV视频作为推流数据推给观众。
+ * k歌房还能通过 {@link #setPlayerType} 来指定类型，
+ * 传入 {@link ZegoMediaPlayer#PlayerTypeAux} 类型让播放器的声音
+ * 也一起混音到推流中。
+ *
+ * 基于zegoSDK {@link ZegoMediaPlayer} 播放器 与 zegoSDK {@link ZegoVideoCaptureFactory} 外部采集
+ * 工厂实现。
+ * <a href="https://doc.zego.im/CN/271.html"> zego外部采集 </a>
+ * <a href="https://doc.zego.im/CN/283.html"> zego媒体播放器 </a>
+ *   实现步骤如下
+ *
+ *                 1.开启zegoSDK外部采集功能
+ *                 2.设置外部采集工厂 !!!注意，设置工厂需要在
+ *                   { @link ZegoLiveRoom#initSDK(long, byte[]) }
+ *                   之前。否则设置的工厂不生效
+ *
+ *                 3.创建初始化ZegoMediaPlayer播放器
+ *                 4.设置ZegoMediaPlayer播放器回调
+ *                 5.把ZegoMediaPlayer播放器回调的视频帧塞给外部采集工厂
+ *
+ *
+ *     具体使用方法可以参考以下示例代码
+ *     public class MainActivity extends Activity {
+ *
+ *          @Override
+ *          protected void onCreate(@Nullable Bundle savedInstanceState) {
+ *
+ *               // 视图设置 view
+ *               ZGMediaPlayerDemo.sharedInstance(this).setView(videoView);
+ *
+ *               // 音量设置 1-100
+ *               ZGMediaPlayerDemo.sharedInstance(this).setVolume(100);
+ *
+ *               // 是开启aux混音
+ *               ZGMediaPlayerDemo.sharedInstance(MediaPlayerDemoUI.this).setPlayerType(ZegoMediaPlayer.PlayerTypeAux);
+ *
+ *               // 播放视频资源
+ *               ZGMediaPlayerDemo.sharedInstance(this).startPlay(path, repeat);
+ *
+ *          }
+ *     }
+ *
+ *     <strong>警告:</strong> 如果不用播放器，
+ *     请使用 {@link ZGMediaPlayerDemo#unInit()} 释放掉播放器，避免浪费内存
+ *
  */
-
 public class ZGMediaPlayerDemo implements IZegoMediaPlayerVideoPlayCallback {
 
     static private ZGMediaPlayerDemo zgMediaPlayerDemo;
@@ -33,20 +85,35 @@ public class ZGMediaPlayerDemo implements IZegoMediaPlayerVideoPlayCallback {
     }
 
     public enum ZGPlayerState {
+        // 播放停止中
         ZGPlayerState_Stopped,
+
+        // 播放停止
         ZGPlayerState_Stopping,
+
+        // 播放状态
         ZGPlayerState_Playing
     }
 
     public enum ZGPlayingSubState {
+        // 请求播放
         ZGPlayingSubState_Requesting,
+
+        // 开始播放
         ZGPlayingSubState_PlayBegin,
+
+        // 暂停了
         ZGPlayingSubState_Paused,
+
+        // 缓冲中
         ZGPlayingSubState_Buffering
     }
 
+    // 播放视频外部采集类，用于实现Zego SDK外部采集
     private ZGVideoCaptureForMediaPlayer.ZGMediaPlayerVideoCapture zgMediaPlayerVideoCapture = null;
+
     private ZGVideoCaptureForMediaPlayer zgVideoCaptureForMediaPlayer;
+
     private ZGMediaPlayerPublishingHelper zgMediaPlayerPublishingHelper;
     private ZGMediaPlayerDemoDelegate zgMediaPlayerDemoDelegate;
     private ZGPlayerState zgPlayerState = ZGPlayerState.ZGPlayerState_Stopped;
@@ -98,7 +165,7 @@ public class ZGMediaPlayerDemo implements IZegoMediaPlayerVideoPlayCallback {
         Log.v(TAG, String.format("setPlayerState zgPlayerState: %s", zgPlayerState.name()));
         this.zgPlayerState = zgPlayerState;
         updateCurrentState();
-
+        //
         if (zgPlayerState == ZGPlayerState.ZGPlayerState_Playing) {
             // 定时器存在则销毁定时器
             if (zgTimer != null) {

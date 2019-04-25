@@ -3,8 +3,8 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "liveroomplayground.zego.com.liveroomplayground"
-        minSdkVersion 14
+        applicationId "com.zego.liveroomplayground"
+        minSdkVersion 15
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -45,6 +45,12 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
+
+    repositories {
+        flatDir {
+            dirs '../common/libs'   // aar目录
+        }
+    }
 }
 
 dependencies {
@@ -53,6 +59,8 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation files('libs/zegoliveroom.jar')
     implementation project(path: ':common')
+    implementation project(path: ':play')
+    implementation project(path: ':publish')
     implementation project(path: ':mediaplayer')
     implementation project(path: ':mediasideinfo')
     implementation project(path: ':layeredcoding')
@@ -62,7 +70,6 @@ dependencies {
     implementation project(path: ':videoexternalrender')
     implementation project(path: ':videocapture')
     implementation 'com.android.support:recyclerview-v7:26.1.0'
-
     implementation 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
-    implementation 'com.google.code.gson:gson:2.7'
+    implementation 'com.google.code.gson:gson:2.8.0'
 }

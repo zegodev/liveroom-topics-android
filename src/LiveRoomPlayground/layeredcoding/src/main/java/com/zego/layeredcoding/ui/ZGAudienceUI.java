@@ -3,7 +3,6 @@ package com.zego.layeredcoding.ui;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,7 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.zego.common.ZGHelper;
+import com.zego.common.util.DeviceInfoManager;
 import com.zego.common.ZGManager;
 import com.zego.layeredcoding.R;
 import com.zego.layeredcoding.ZGLayeredCodingDemoHelper;
@@ -106,7 +105,7 @@ public class ZGAudienceUI extends AppCompatActivity implements IZegoLivePlayerCa
             }
         });
 
-        mRoomID = ZGHelper.generateDeviceId(this);
+        mRoomID = DeviceInfoManager.generateDeviceId(this);
         mRoomName = "zglc_layercoding";
         anchorRoomID = getIntent().getStringExtra("AnchorRoomID");
         anchorRoomName = getIntent().getStringExtra("AnchorRoomName");

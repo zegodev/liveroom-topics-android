@@ -1,6 +1,5 @@
 package com.zego.mixing.ui;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.TextureView;
 import android.view.View;
@@ -9,8 +8,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.zego.common.ZGHelper;
 import com.zego.common.ZGManager;
+import com.zego.common.ui.BaseActivity;
 import com.zego.mediaplayer.ZGMediaPlayerDemoHelper;
 import com.zego.mixing.R;
 import com.zego.mixing.ZGMixingDemo;
@@ -22,12 +21,11 @@ import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
 import com.zego.zegoliveroom.entity.AuxData;
 import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
-//import com.zego.zegoliveroom.entity.ZegoStreamQuality;
 
 import java.io.File;
 import java.util.HashMap;
 
-public class ZGMixingDemoUI extends AppCompatActivity implements IZegoLivePublisherCallback {
+public class ZGMixingDemoUI extends BaseActivity implements IZegoLivePublisherCallback {
 
     private CheckBox mAuxCheckBox;
     private TextView mErrorTxt;
@@ -85,9 +83,6 @@ public class ZGMixingDemoUI extends AppCompatActivity implements IZegoLivePublis
                 }
             }
         });
-
-        String deviceID = ZGHelper.generateDeviceId(this);
-        ZGManager.setLoginUser(deviceID, deviceID);
 
         // join room
         boolean ret = ZGManager.sharedInstance().api().loginRoom(mChannelID, "ZegoMixing", ZegoConstants.RoomRole.Anchor, new IZegoLoginCompletionCallback() {

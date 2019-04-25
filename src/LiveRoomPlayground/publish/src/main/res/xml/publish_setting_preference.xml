@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="画质设置">
+
+        <ListPreference
+            android:defaultValue="540x960"
+            android:entries="@array/resolution_setting_describe"
+            android:entryValues="@array/resolution_setting_value"
+            android:key="publish_resolution"
+            android:summary="540x960"
+            android:title="分辨率" />
+
+        <ListPreference
+            android:defaultValue="1200000"
+            android:entries="@array/bitrate_setting_describe"
+            android:entryValues="@array/bitrate_setting_value"
+            android:key="publish_bitrate"
+            android:summary="1200000"
+            android:title="码率" />
+
+        <ListPreference
+            android:defaultValue="15"
+            android:entries="@array/fps_setting_describe"
+            android:entryValues="@array/fps_setting_value"
+            android:key="publish_fps"
+            android:summary="15"
+            android:title="帧率(推流前设置生效)" />
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="视图设置">
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/view_setting_describe"
+            android:entryValues="@array/view_setting_values"
+            android:key="publish_view_mode"
+            android:summary="等比缩放, 可能有黑边"
+            android:title="选择拉流View视图模式" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="其他设置">
+        <SwitchPreference
+            android:key="publish_hardware_encode"
+            android:summary="@string/tx_hardware_encode_describe"
+            android:title="@string/hardware_encode" />
+
+
+        <SwitchPreference
+            android:key="publish_preview_mirror"
+            android:summary="@string/tx_capture_mirror"
+            android:defaultValue="true"
+            android:title="@string/tx_mirror" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="publish_front_facing_camera"
+            android:summary="@string/tx_capture_device"
+            android:title="@string/front_facing_camera" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

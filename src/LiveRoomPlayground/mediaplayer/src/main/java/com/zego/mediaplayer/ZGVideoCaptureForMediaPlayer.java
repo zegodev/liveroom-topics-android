@@ -1,5 +1,6 @@
 package com.zego.mediaplayer;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.SystemClock;
 import android.util.Log;
@@ -9,6 +10,7 @@ import com.zego.common.ZGManager;
 import com.zego.zegoavkit2.ZegoVideoCaptureDevice;
 import com.zego.zegoavkit2.ZegoVideoCaptureFactory;
 import com.zego.zegoavkit2.ZegoVideoDataFormat;
+import com.zego.zegoliveroom.ZegoLiveRoom;
 import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
 
 import java.nio.ByteBuffer;
@@ -16,9 +18,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by zego on 2018/10/16.
+ * 外部采集工厂, 需要通过 {@link ZegoLiveRoom#setVideoCaptureFactory(Object)}设置到sdk
+ * ZGVideoCaptureForMediaPlayer外部采集的入口，定义了创建、销毁 ZegoVideoCaptureDevice 的接口，
+ * 向 SDK 提供管理 ZegoVideoCaptureDevice 生命周期的能力。需要调用
+ * <strong>
+ * 外部采集工厂设置到Zego SDK的时机必须是在 {@link ZegoLiveRoom#initSDK(long, byte[], Context)} 之前。
+ * 否则外部采集功能将不生效
+ * <p>
+ * </strong>
  */
-
 public class ZGVideoCaptureForMediaPlayer extends ZegoVideoCaptureFactory {
 
     private ZGMediaPlayerVideoCapture mDevice;
@@ -42,6 +50,10 @@ public class ZGVideoCaptureForMediaPlayer extends ZegoVideoCaptureFactory {
         mDevice = null;
     }
 
+    /**
+     * ZGMediaPlayerVideoCapture 定义了基本的组件能力
+     * 方便管理资源的生命周期
+     */
     static class ZGMediaPlayerVideoCapture extends ZegoVideoCaptureDevice implements ZGMediaPlayerDemo.MediaPlayerVideoDataCallback {
         private static final String TAG = "VideoRendererCapture";
 
@@ -51,7 +63,11 @@ public class ZGVideoCaptureForMediaPlayer extends ZegoVideoCaptureFactory {
 
         private Client mClient = null;
 
-
+        /**
+         * 开发者在 allocateAndStart 中获取到 client
+         *
+         * @param client 用于通知 SDK 采集结果, 包括设置采集的view模式
+         */
         @Override
         protected void allocateAndStart(Client client) {
             Log.e("videoCaptureFrom", "allocateAndStart");
@@ -60,6 +76,9 @@ public class ZGVideoCaptureForMediaPlayer extends ZegoVideoCaptureFactory {
 
         }
 
+        /**
+         * 用于释放销毁一些资源
+         */
         @Override
         protected void stopAndDeAllocate() {
             Log.e("video", "stopAndDeAllocate");
@@ -67,6 +86,12 @@ public class ZGVideoCaptureForMediaPlayer extends ZegoVideoCaptureFactory {
             mClient = null;
         }
 
+        /**
+         * 启用采集，sdk开始推流或开始预览的时候会调用该
+         * 方法通知到开发者
+         *
+         * @return
+         */
         @Override
         protected int startCapture() {
             Log.e("video", "startCapture");
@@ -76,6 +101,12 @@ public class ZGVideoCaptureForMediaPlayer extends ZegoVideoCaptureFactory {
         }
 
 
+        /**
+         * 停止采集，sdk停止推流或停止预览时会调用该方法
+         * 通知到开发者
+         *
+         * @return
+         */
         @Override
         protected int stopCapture() {
             Log.e("video", "stopCapture");
@@ -124,7 +155,6 @@ public class ZGVideoCaptureForMediaPlayer extends ZegoVideoCaptureFactory {
             }
 
         }
-
 
         private synchronized PixelBuffer getPixelBuffer(int size, int width, int height) {
             // buff大小变化才进行创建

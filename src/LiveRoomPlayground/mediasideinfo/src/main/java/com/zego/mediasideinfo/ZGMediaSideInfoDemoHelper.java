@@ -3,7 +3,7 @@ package com.zego.mediasideinfo;
 import android.content.Context;
 import android.view.TextureView;
 
-import com.zego.common.ZGHelper;
+import com.zego.common.util.DeviceInfoManager;
 import com.zego.common.ZGManager;
 import com.zego.zegoliveroom.callback.IZegoLivePlayerCallback;
 import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
@@ -84,7 +84,7 @@ public class ZGMediaSideInfoDemoHelper implements IZegoLivePublisherCallback, IZ
         // 设置编解码分辨率
         ZGManager.sharedInstance().setZegoAvConfig(540, 960);
 
-        mDeviceID = ZGHelper.generateDeviceId(context);
+        mDeviceID = DeviceInfoManager.generateDeviceId(context);
 
         if (onlyAudioPublish){
             ZGManager.sharedInstance().api().enableCamera(false);

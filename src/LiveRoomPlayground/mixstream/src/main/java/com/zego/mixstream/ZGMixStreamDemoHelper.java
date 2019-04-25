@@ -1,7 +1,6 @@
 package com.zego.mixstream;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
@@ -11,7 +10,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.zego.common.GetAppIdConfig;
-import com.zego.common.ZGHelper;
+import com.zego.common.util.DeviceInfoManager;
 import com.zego.common.ZGManager;
 import com.zego.mixstream.entity.RoomInfo;
 import com.zego.mixstream.entity.RoomInfoEx;
@@ -35,8 +34,8 @@ public class ZGMixStreamDemoHelper {
     }
 
     public String generateRoomID(Context context) {
-//        String roomID = "zgms-"+System.currentTimeMillis()+"-"+ZGHelper.generateDeviceId(context);
-        String roomID = "zgms_"+ZGHelper.generateDeviceId(context);
+//        String roomID = "zgms-"+System.currentTimeMillis()+"-"+SystemUtil.generateDeviceId(context);
+        String roomID = "zgms_"+ DeviceInfoManager.generateDeviceId(context);
 
         return roomID;
     }

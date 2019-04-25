@@ -1,8 +1,6 @@
 package com.zego.mediaplayer.ui;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
@@ -10,8 +8,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.zego.common.ZGHelper;
+import com.zego.common.util.DeviceInfoManager;
 import com.zego.common.ZGManager;
+import com.zego.common.ui.BaseActivity;
 import com.zego.mediaplayer.R;
 import com.zego.mediaplayer.ZGMediaPlayerDemoHelper;
 import com.zego.mediaplayer.ZGMultiPlayerDemo;
@@ -28,7 +27,7 @@ import com.zego.zegoliveroom.entity.ZegoStreamInfo;
 import java.util.HashMap;
 
 
-public class ZGMultiPlayerDemoUI extends AppCompatActivity implements ZGMultiPlayerDemo.ZGMultiPlayerDemoCallback, IZegoLivePublisherCallback {
+public class ZGMultiPlayerDemoUI extends BaseActivity implements ZGMultiPlayerDemo.ZGMultiPlayerDemoCallback, IZegoLivePublisherCallback {
 
     private Button mPlayer1Btn;
     private Button mPlayer2Btn;
@@ -63,8 +62,8 @@ public class ZGMultiPlayerDemoUI extends AppCompatActivity implements ZGMultiPla
         mPreview = (TextureView) findViewById(R.id.pre_view);
         mErrorTxt = (TextView) findViewById(R.id.error_txt);
 
-        String deviceID = ZGHelper.generateDeviceId(this);
-        ZGManager.setLoginUser(deviceID, deviceID);
+        String deviceID = DeviceInfoManager.generateDeviceId(this);
+
         mChannelID += "_" + deviceID;
 
         mPlayer1Btn = (Button) findViewById(R.id.player1_btn);

@@ -6,7 +6,7 @@ android {
 
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -19,8 +19,16 @@ android {
         }
     }
 
+
+
+    dataBinding {
+        enabled = true
+    }
+
 }
 
 dependencies {
-    compileOnly fileTree(dir: '../main/libs', include: ['*.jar'])
+    implementation fileTree(dir: '../main/libs', include: ['*.jar'])
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
 }

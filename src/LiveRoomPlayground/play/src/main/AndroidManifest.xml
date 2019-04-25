@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.zego.play">
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true">
+
+        <activity
+            android:name="com.zego.play.ui.InitSDKPlayActivityUI"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.zego.play.ui.PlayActivityUI"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.zego.play.ui.LoginRoomPlayActivityUI"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.PlaySettingActivityUI"
+            android:screenOrientation="portrait" />
+
+    </application>
+
+</manifest>

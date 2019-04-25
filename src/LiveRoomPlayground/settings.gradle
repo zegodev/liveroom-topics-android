@@ -1,1 +1,12 @@
-include ':main', ':mediaplayer', ':common', ':mediasideinfo', ':layeredcoding', ':mediarecorder', ':mixing', ':mixstream', ':videoexternalrender', ':videocapture'
+include ':main',
+        ':mediaplayer',
+        ':common',
+        ':mediasideinfo',
+        ':layeredcoding',
+        ':mediarecorder',
+        ':mixing',
+        ':mixstream',
+        ':videoexternalrender',
+        ':videocapture',
+        ':play',
+        ':publish'

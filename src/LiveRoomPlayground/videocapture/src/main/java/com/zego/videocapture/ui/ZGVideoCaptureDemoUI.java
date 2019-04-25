@@ -2,15 +2,15 @@ package com.zego.videocapture.ui;
 
 
 import android.annotation.TargetApi;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.zego.common.ZGHelper;
+import com.zego.common.util.DeviceInfoManager;
 import com.zego.common.ZGManager;
+import com.zego.common.ui.BaseActivity;
 import com.zego.videocapture.R;
 import com.zego.zegoliveroom.callback.IZegoLivePlayerCallback;
 import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
@@ -26,7 +26,7 @@ import com.zego.zegoliveroom.entity.ZegoStreamInfo;
 import java.util.HashMap;
 
 @TargetApi(21)
-public class ZGVideoCaptureDemoUI extends AppCompatActivity implements IZegoLivePublisherCallback, IZegoLivePlayerCallback {
+public class ZGVideoCaptureDemoUI extends BaseActivity implements IZegoLivePublisherCallback, IZegoLivePlayerCallback {
 
     private TextureView mPreView;
     private TextureView mPlayView;
@@ -56,12 +56,10 @@ public class ZGVideoCaptureDemoUI extends AppCompatActivity implements IZegoLive
         mDealBtn = (Button)findViewById(R.id.publish_btn);
         mDealPlayBtn = (Button)findViewById(R.id.play_btn);
 
-        String deviceID = ZGHelper.generateDeviceId(this);
+        String deviceID = DeviceInfoManager.generateDeviceId(this);
         mRoomID += deviceID;
-        ZGManager.setLoginUser(deviceID, deviceID);
 
         isScreen = getIntent().getBooleanExtra("IsScreenCapture", false);
-
 
         if (isScreen) {
             new Thread(new ThreadShow()).start();

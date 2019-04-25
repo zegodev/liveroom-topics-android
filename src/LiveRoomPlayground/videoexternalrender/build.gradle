@@ -4,9 +4,9 @@ android {
     compileSdkVersion 26
     
     defaultConfig {
-        minSdkVersion 14
         targetSdkVersion 26
         versionCode 1
+        minSdkVersion 15
         versionName "1.0"
         externalNativeBuild {
             cmake {
@@ -37,7 +37,7 @@ android {
 }
 
 dependencies {
-    compileOnly fileTree(include: ['*.jar'], dir: '../main/libs')
-    compileOnly project(path: ':common')
-    compileOnly 'com.android.support:appcompat-v7:26.1.0'
+    implementation fileTree(include: ['*.jar'], dir: '../main/libs')
+    implementation project(path: ':common')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
 }

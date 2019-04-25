@@ -3,15 +3,13 @@ package com.zego.mixstream.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import com.zego.common.ZGHelper;
-import com.zego.common.ZGManager;
+import com.zego.common.ui.BaseActivity;
 import com.zego.mixstream.R;
 import com.zego.mixstream.ZGMixStreamDemoHelper;
 import com.zego.mixstream.entity.RoomInfo;
@@ -20,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ZGMixStreamRoomListUI extends AppCompatActivity implements ZGMixStreamDemoHelper.UpdateRoomListCallback{
+public class ZGMixStreamRoomListUI extends BaseActivity implements ZGMixStreamDemoHelper.UpdateRoomListCallback{
 
     private ListView mRoomListView;
     private TextView mQueryStatusTxt;
@@ -37,10 +35,6 @@ public class ZGMixStreamRoomListUI extends AppCompatActivity implements ZGMixStr
 
         mRoomListView = (ListView)findViewById(R.id.roomlist);
         mQueryStatusTxt = (TextView)findViewById(R.id.querystatus_txt);
-
-        String deviceID = ZGHelper.generateDeviceId(this);
-
-        ZGManager.setLoginUser(deviceID, deviceID);
 
         ZGMixStreamDemoHelper.sharedInstance().setUpdateRoomListCallback(this);
         ZGMixStreamDemoHelper.sharedInstance().requestRoomList(this);

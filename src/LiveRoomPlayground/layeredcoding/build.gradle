@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -24,10 +24,10 @@ android {
 }
 
 dependencies {
-    compileOnly fileTree(include: ['*.jar'], dir: '../main/libs')
-    compileOnly project(path: ':common')
-    compileOnly 'com.android.support:appcompat-v7:26.1.0'
-    compileOnly 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
-    compileOnly 'com.google.code.gson:gson:2.7'
+    implementation fileTree(include: ['*.jar'], dir: '../main/libs')
+    implementation project(path: ':common')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
+    implementation 'com.google.code.gson:gson:2.7'
 
 }

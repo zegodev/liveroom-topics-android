@@ -3,7 +3,6 @@ package com.zego.mediarecorder;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
@@ -12,8 +11,9 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.zego.common.ZGHelper;
+import com.zego.common.util.DeviceInfoManager;
 import com.zego.common.ZGManager;
+import com.zego.common.ui.BaseActivity;
 import com.zego.zegoavkit2.IZegoMediaPlayerCallback;
 import com.zego.zegoavkit2.mediarecorder.IZegoMediaRecordCallback;
 import com.zego.zegoavkit2.mediarecorder.ZegoMediaRecordChannelIndex;
@@ -28,12 +28,11 @@ import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
 import com.zego.zegoliveroom.entity.AuxData;
 import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
-//import com.zego.zegoliveroom.entity.ZegoStreamQuality;
 
 import java.util.HashMap;
 
 
-public class ZGMediaRecorderDemoUI extends AppCompatActivity implements IZegoMediaRecordCallback, IZegoLivePublisherCallback, IZegoMediaPlayerCallback {
+public class ZGMediaRecorderDemoUI extends BaseActivity implements IZegoMediaRecordCallback, IZegoLivePublisherCallback, IZegoMediaPlayerCallback {
 
     private TextureView mPreView;
     private Button mReordBtn;
@@ -73,13 +72,11 @@ public class ZGMediaRecorderDemoUI extends AppCompatActivity implements IZegoMed
         mErrorTxt = (TextView) findViewById(R.id.error_txt);
         mSavePathTxt = (TextView) findViewById(R.id.savePath_txt);
 
-        mRoomID = ZGHelper.generateDeviceId(this);
+        mRoomID = DeviceInfoManager.generateDeviceId(this);
 
         recordMode = getIntent().getIntExtra("RecordMode", 2);
         useFlvFormat = getIntent().getBooleanExtra("RecordFormat", true);
 
-        String deviceID = ZGHelper.generateDeviceId(this);
-        ZGManager.setLoginUser(deviceID, deviceID);
         String dirPath = this.getExternalCacheDir().getPath();
         mRecordingPath = dirPath + "/" + generateAVFileName();
 
@@ -91,7 +88,7 @@ public class ZGMediaRecorderDemoUI extends AppCompatActivity implements IZegoMed
         zegoMediaPlayer.init(ZegoMediaPlayer.PlayerTypePlayer);
 
         // join room
-        ZGManager.sharedInstance().api().loginRoom(ZGHelper.generateDeviceId(this), ZegoConstants.RoomRole.Anchor, new IZegoLoginCompletionCallback() {
+        ZGManager.sharedInstance().api().loginRoom(DeviceInfoManager.generateDeviceId(this), ZegoConstants.RoomRole.Anchor, new IZegoLoginCompletionCallback() {
             @Override
             public void onLoginCompletion(int errorcode, ZegoStreamInfo[] zegoStreamInfos) {
 

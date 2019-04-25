@@ -12,6 +12,7 @@ import android.widget.CompoundButton;
 import android.widget.SeekBar;
 
 import com.zego.common.ZGManager;
+import com.zego.common.ui.BaseActivity;
 import com.zego.mediaplayer.ZGMediaPlayerDemo;
 import com.zego.mediaplayer.ZGMediaPlayerDemoHelper;
 import com.zego.mediaplayer.entity.ZGResourcesInfo;
@@ -29,7 +30,7 @@ import static com.zego.zegoavkit2.ZegoMediaPlayer.PlayerTypePlayer;
  * Created by zego on 2018/10/16.
  */
 
-public class MediaPlayerDemoUI extends AppCompatActivity implements ZGMediaPlayerDemo.ZGMediaPlayerDemoDelegate {
+public class MediaPlayerDemoUI extends BaseActivity implements ZGMediaPlayerDemo.ZGMediaPlayerDemoDelegate {
 
 
     private ActivityMediaPlayerBinding binding;
@@ -112,7 +113,7 @@ public class MediaPlayerDemoUI extends AppCompatActivity implements ZGMediaPlaye
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ZGMediaPlayerDemo.sharedInstance(this).setView(null);
+        ZGMediaPlayerDemo .sharedInstance(this).setView(null);
         ZGMediaPlayerDemo.sharedInstance(this).setZGMediaPLayerDelegate(null);
         ZGMediaPlayerDemo.sharedInstance(this).setZgMediaPlayerDemoHelper(null);
         ZGMediaPlayerDemo.sharedInstance(this).unInit();

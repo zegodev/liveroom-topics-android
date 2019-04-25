@@ -1,0 +1,21 @@
+<resources>
+
+
+
+
+    <declare-styleable name="title">
+        <attr name="name" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="customWidgets">
+        <attr name="key" format="string"/>
+        <attr name="line" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="customSeekBar">
+        <attr name="max" format="integer"/>
+        <attr name="min" format="integer"/>
+        <attr name="current" format="integer"> </attr>
+    </declare-styleable>
+
+</resources>

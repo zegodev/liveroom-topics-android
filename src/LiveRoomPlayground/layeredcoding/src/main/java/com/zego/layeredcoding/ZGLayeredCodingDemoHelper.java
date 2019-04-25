@@ -1,7 +1,6 @@
 package com.zego.layeredcoding;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
@@ -11,8 +10,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.zego.common.GetAppIdConfig;
-import com.zego.common.ZGHelper;
 import com.zego.common.ZGManager;
+import com.zego.common.util.DeviceInfoManager;
 import com.zego.layeredcoding.entity.RoomInfo;
 import com.zego.layeredcoding.entity.RoomInfoEx;
 import com.zego.zegoliveroom.constants.ZegoConstants;
@@ -39,7 +38,7 @@ public class ZGLayeredCodingDemoHelper {
     }
 
     public String generateRoomID(Context context) {
-        String roomID = "zglc-"+System.currentTimeMillis()+"-"+ZGHelper.generateDeviceId(context);
+        String roomID = "zglc-"+System.currentTimeMillis()+"-"+ DeviceInfoManager.generateDeviceId(context);
 
         return roomID;
     }

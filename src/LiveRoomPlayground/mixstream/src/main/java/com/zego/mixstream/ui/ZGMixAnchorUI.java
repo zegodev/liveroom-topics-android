@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.zego.common.ZGManager;
+import com.zego.common.ui.BaseActivity;
 import com.zego.mixstream.R;
 import com.zego.mixstream.ZGMixStreamDemo;
 import com.zego.mixstream.ZGMixStreamDemoHelper;
@@ -23,7 +24,7 @@ import com.zego.zegoliveroom.constants.ZegoConstants;
 import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
 
-public class ZGMixAnchorUI extends AppCompatActivity implements ZGMixStreamPublisher.MixStreamPublisherCallback, ZGMixStreamDemo.MixStreamCallback/*, IZegoMixStreamExCallback*/ {
+public class ZGMixAnchorUI extends BaseActivity implements ZGMixStreamPublisher.MixStreamPublisherCallback, ZGMixStreamDemo.MixStreamCallback/*, IZegoMixStreamExCallback*/ {
     private Button mExitBtn;
     private Button mMixBtn;
     private ToggleButton mCameraToggle;

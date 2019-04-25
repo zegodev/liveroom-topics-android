@@ -3,7 +3,7 @@ package com.zego.mediaplayer;
 import android.annotation.SuppressLint;
 import android.content.Context;
 
-import com.zego.common.ZGHelper;
+import com.zego.common.util.DeviceInfoManager;
 import com.zego.common.ZGManager;
 import com.zego.zegoliveroom.ZegoLiveRoom;
 import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
@@ -23,13 +23,15 @@ import java.util.HashMap;
 public class ZGMediaPlayerPublishingHelper implements IZegoLivePublisherCallback, IZegoRoomCallback {
 
     private ZGMediaPlayerPublishingState zgMediaPlayerPublishingState = null;
+    // zego推流时需要用到的流ID，推流时唯一ID
+    private String mPublishStreamID = null;
 
     /**
      * 开始推流
      */
     public void startPublishing(Context context, final ZGMediaPlayerPublishingState zgMediaPlayerPublishingState) {
         String mUserName = android.os.Build.MODEL.replaceAll(" ", "");
-        String deviceId = ZGHelper.generateDeviceId(context);
+        String deviceId = DeviceInfoManager.generateDeviceId(context);
         ZegoLiveRoom.setUser(deviceId, mUserName);
         this.zgMediaPlayerPublishingState = zgMediaPlayerPublishingState;
         ZGManager.sharedInstance().api().setZegoLivePublisherCallback(this);

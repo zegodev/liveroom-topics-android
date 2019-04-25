@@ -360,11 +360,6 @@ public class ZGAnchorUI extends AppCompatActivity implements IZegoLivePublisherC
 
     }
 
-//    @Override
-//    public void onPlayQualityUpdate(String s, ZegoStreamQuality zegoStreamQuality) {
-//
-//    }
-
     @Override
     public void onInviteJoinLiveRequest(int i, String s, String s1, String s2) {
 

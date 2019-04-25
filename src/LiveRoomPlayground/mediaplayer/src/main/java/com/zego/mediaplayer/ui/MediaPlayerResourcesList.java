@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
 
+import com.zego.common.ui.BaseActivity;
 import com.zego.mediaplayer.R;
 import com.zego.mediaplayer.ZGMediaPlayerDemoHelper;
 import com.zego.mediaplayer.databinding.ActivityMediaResourcesListBinding;
@@ -18,7 +19,7 @@ import com.zego.mediaplayer.entity.ZGResourcesInfo;
  * Created by zego on 2018/10/18.
  */
 
-public class MediaPlayerResourcesList extends AppCompatActivity {
+public class MediaPlayerResourcesList extends BaseActivity {
 
 
     private ActivityMediaResourcesListBinding binding;

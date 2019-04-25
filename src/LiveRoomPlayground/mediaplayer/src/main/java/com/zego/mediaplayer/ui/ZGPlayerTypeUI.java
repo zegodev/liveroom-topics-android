@@ -5,9 +5,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.zego.common.ui.BaseActivity;
 import com.zego.mediaplayer.R;
 
-public class ZGPlayerTypeUI extends AppCompatActivity {
+public class ZGPlayerTypeUI extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

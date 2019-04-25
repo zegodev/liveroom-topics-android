@@ -1,7 +1,6 @@
 package com.zego.common;
 
-import android.util.Log;
-
+import com.zego.common.util.AppLogger;
 import com.zego.zegoavkit2.ZegoExternalVideoCapture;
 import com.zego.zegoavkit2.ZegoVideoCaptureFactory;
 import com.zego.zegoliveroom.ZegoLiveRoom;
@@ -9,60 +8,60 @@ import com.zego.zegoliveroom.callback.IZegoInitSDKCompletionCallback;
 import com.zego.zegoliveroom.constants.ZegoAvConfig;
 import com.zego.zegoliveroom.constants.ZegoConstants;
 
+
 /**
- * Created by zego on 2018/10/15.
+ * ZegoApi管理类，主要用于进阶模块初始化 sdk 的一些功能封装
  */
-
 public class ZGManager {
-
-    private ZegoLiveRoom zegoliveRoom;
-
-    private static String mUserID;
-    private static String mUserName;
 
     private boolean isTestEnv = false;
 
-    public ZegoLiveRoom api() {
-        if (zegoliveRoom == null) {
-            /**  请开发者联系 ZEGO support 获取各自业务的 AppID 与 signKey
-             Demo 默认使用 UDP 模式，请填充该模式下的 AppID 与 signKey,其他模式不需要可不用填
-             AppID 填写样式示例：1234567890
-             signKey 填写样式示例：{0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,
-             0x08,0x09,0x00,0x01,0x02,0x03,0x04,0x05,
-             0x06,0x07,0x08,0x09,0x00,0x01,0x02,0x03,
-             0x04,0x05,0x06,0x07,0x08,0x09,0x00,0x01} **/
-            byte[] signKey = GetAppIdConfig.Key;
-            long appId = GetAppIdConfig.appId;
+    /**
+     * 请提前在即构管理控制台获取 appID 与 appSign
+     * AppID 填写样式示例：1234567890
+     * appSign 填写样式示例：{0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,
+     * 0x08,0x09,0x00,0x01,0x02,0x03,0x04,0x05,
+     * 0x06,0x07,0x08,0x09,0x00,0x01,0x02,0x03,
+     * 0x04,0x05,0x06,0x07,0x08,0x09,0x00,0x01}
+     **/
+    public static byte[] appSign = GetAppIdConfig.appSign;
+    public static long appId = GetAppIdConfig.appId;
 
-            zegoliveRoom = new ZegoLiveRoom();
-            zegoliveRoom.setTestEnv(isTestEnv);
-            zegoliveRoom.setUser(mUserID,mUserName);
-//            ZegoLiveRoom.setVerbose(true);
-            zegoliveRoom.initSDK(appId, signKey, new IZegoInitSDKCompletionCallback() {
+    public ZegoLiveRoom api() {
+        // 判断是否创建了ZegoLiveRoom实例 避免重复初始化sdk
+        if (ZGBaseHelper.sharedInstance().getZegoLiveRoom() == null) {
+            // 初始化zegoSDK
+            ZGBaseHelper.sharedInstance().initZegoSDK(appId, appSign, isTestEnv, new IZegoInitSDKCompletionCallback() {
                 @Override
-                public void onInitSDK(int errorcode) {
-                    Log.e("Zego","zego init err: "+errorcode);
+                public void onInitSDK(int errorCode) {
+                    if (errorCode == 0) {
+                        AppLogger.getInstance().i(ZGBaseHelper.class, "初始化zegoSDK成功!");
+                    } else {
+                        // 如果第一次初始化sdk，并且设备没有联网，会初始化失败。需要重新初始化sdk
+                        AppLogger.getInstance().w(ZGBaseHelper.class, "初始化zegoSDK失败!!! 错误码 errorCode : %d", errorCode);
+                    }
                 }
             });
+
         }
-        return zegoliveRoom;
+
+        return ZGBaseHelper.sharedInstance().getZegoLiveRoom();
     }
+
 
     public static ZGManager zgManager;
 
     public static ZGManager sharedInstance() {
-        synchronized (ZGManager.class) {
-            if (zgManager == null) {
-                zgManager = new ZGManager();
+        if (zgManager == null) {
+            synchronized (ZGManager.class) {
+                if (zgManager == null) {
+                    zgManager = new ZGManager();
+                }
             }
         }
         return zgManager;
     }
 
-    public static void setLoginUser(String userID, String userName) {
-        mUserID = userID;
-        mUserName = userName;
-    }
 
     public void enableExternalVideoCapture(ZegoVideoCaptureFactory zegoVideoCaptureFactory) {
         /* 释放ZegoSDK */
@@ -70,7 +69,7 @@ public class ZGManager {
         ZegoExternalVideoCapture.setVideoCaptureFactory(zegoVideoCaptureFactory, ZegoConstants.PublishChannelIndex.MAIN);
     }
 
-    public void setZegoAvConfig(int width, int height){
+    public void setZegoAvConfig(int width, int height) {
         ZegoAvConfig mZegoAvConfig = new ZegoAvConfig(ZegoAvConfig.Level.High);
         mZegoAvConfig.setVideoEncodeResolution(width, height);
         mZegoAvConfig.setVideoCaptureResolution(width, height);
@@ -83,9 +82,6 @@ public class ZGManager {
     }
 
     public void unInitSDK() {
-        if (zegoliveRoom != null) {
-            zegoliveRoom.unInitSDK();
-            zegoliveRoom = null;
-        }
+        ZGBaseHelper.sharedInstance().unInitZegoSDK();
     }
 }

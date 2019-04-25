@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/LiveRoomPlayground.iml" filepath="$PROJECT_DIR$/LiveRoomPlayground.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/layeredcoding/layeredcoding.iml" filepath="$PROJECT_DIR$/layeredcoding/layeredcoding.iml" />
+      <module fileurl="file://$PROJECT_DIR$/main/main.iml" filepath="$PROJECT_DIR$/main/main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mediaplayer/mediaplayer.iml" filepath="$PROJECT_DIR$/mediaplayer/mediaplayer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mediarecorder/mediarecorder.iml" filepath="$PROJECT_DIR$/mediarecorder/mediarecorder.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mediasideinfo/mediasideinfo.iml" filepath="$PROJECT_DIR$/mediasideinfo/mediasideinfo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mixing/mixing.iml" filepath="$PROJECT_DIR$/mixing/mixing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mixstream/mixstream.iml" filepath="$PROJECT_DIR$/mixstream/mixstream.iml" />
+      <module fileurl="file://$PROJECT_DIR$/play/play.iml" filepath="$PROJECT_DIR$/play/play.iml" />
+      <module fileurl="file://$PROJECT_DIR$/publish/publish.iml" filepath="$PROJECT_DIR$/publish/publish.iml" />
+      <module fileurl="file://$PROJECT_DIR$/videocapture/videocapture.iml" filepath="$PROJECT_DIR$/videocapture/videocapture.iml" />
+      <module fileurl="file://$PROJECT_DIR$/videoexternalrender/videoexternalrender.iml" filepath="$PROJECT_DIR$/videoexternalrender/videoexternalrender.iml" />
+    </modules>
+  </component>
+</project>

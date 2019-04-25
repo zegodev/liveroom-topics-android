@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ebeef5"
+        android:orientation="vertical">
+
+        <com.zego.common.widgets.TitleLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            app:name="@string/tx_login_room_title" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="RoomID:"
+                android:textSize="14sp" />
+
+
+        </LinearLayout>
+
+        <com.zego.common.widgets.CustomEditText
+            android:id="@+id/ed_room_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/white_color"
+            android:hint="请输入RoomID"
+            app:key="room_id"
+            android:padding="8dp"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/login_room"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="10dp"
+            android:autoLink="all"
+            android:gravity="center_vertical"
+            android:text="@string/room_id_describe" />
+
+
+        <Button
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:onClick="onLoginRoom"
+            android:text="@string/tx_login_room" />
+
+
+        <TextView
+            android:id="@+id/link_code_demo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:onClick="goCodeDemo"
+            android:text="@string/tx_code_demo"
+            android:textColor="@color/blue" />
+
+    </LinearLayout>
+
+</layout>

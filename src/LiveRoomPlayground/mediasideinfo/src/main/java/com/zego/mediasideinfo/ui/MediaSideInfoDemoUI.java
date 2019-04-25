@@ -3,7 +3,6 @@ package com.zego.mediasideinfo.ui;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.view.TextureView;
 import android.view.View;
@@ -13,8 +12,9 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.zego.common.ZGHelper;
+import com.zego.common.util.DeviceInfoManager;
 import com.zego.common.ZGManager;
+import com.zego.common.ui.BaseActivity;
 import com.zego.mediasideinfo.ZGMediaSideInfoDemo;
 import com.zego.mediasideinfo.ZGMediaSideInfoDemoHelper;
 import com.zego.mediasideinfo.R;
@@ -24,7 +24,7 @@ import com.zego.mediasideinfo.R;
  * Created by winnie on 2018/12/04.
  */
 
-public class MediaSideInfoDemoUI extends AppCompatActivity implements ZGMediaSideInfoDemo.RecvMediaSideInfoCallback, ZGMediaSideInfoDemoHelper.StatusChangedNotify {
+public class MediaSideInfoDemoUI extends BaseActivity implements ZGMediaSideInfoDemo.RecvMediaSideInfoCallback, ZGMediaSideInfoDemoHelper.StatusChangedNotify {
 
     private TextView mStatusText;
     private TextView mCheckResultText;
@@ -77,10 +77,6 @@ public class MediaSideInfoDemoUI extends AppCompatActivity implements ZGMediaSid
         mRecvContent = (TextView)findViewById(R.id.txt_recvContent);
 
         mSendStr = (EditText)findViewById(R.id.send_data);
-
-        String deviceID = ZGHelper.generateDeviceId(this);
-
-        ZGManager.setLoginUser(deviceID, deviceID);
 
         ZGMediaSideInfoDemo.sharedInstance().setMediaSideInfoCallback(this);
         ZGMediaSideInfoDemoHelper.sharedInstance().setRecvStatusChangedNotify(this);

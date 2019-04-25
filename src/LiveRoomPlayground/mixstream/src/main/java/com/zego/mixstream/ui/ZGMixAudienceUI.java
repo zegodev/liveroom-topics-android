@@ -2,8 +2,6 @@ package com.zego.mixstream.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
@@ -11,9 +9,9 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.zego.common.GetAppIdConfig;
-import com.zego.common.ZGHelper;
 import com.zego.common.ZGManager;
+import com.zego.common.ui.BaseActivity;
+import com.zego.common.util.DeviceInfoManager;
 import com.zego.mixstream.R;
 import com.zego.mixstream.ZGMixStreamDemo;
 import com.zego.mixstream.ZGMixStreamPublisher;
@@ -24,7 +22,7 @@ import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
 
 
-public class ZGMixAudienceUI extends AppCompatActivity implements ZGMixStreamPublisher.MixStreamPublisherCallback,ZGMixStreamDemo.MixStreamCallback {
+public class ZGMixAudienceUI extends BaseActivity implements ZGMixStreamPublisher.MixStreamPublisherCallback,ZGMixStreamDemo.MixStreamCallback {
 
     private ToggleButton mCameraTog;
     private Button mRequestBtn;
@@ -83,7 +81,7 @@ public class ZGMixAudienceUI extends AppCompatActivity implements ZGMixStreamPub
             }
         });
 
-        mRoomID = ZGHelper.generateDeviceId(this);
+        mRoomID = DeviceInfoManager.generateDeviceId(this);
         anchorRoomID = getIntent().getStringExtra("AnchorRoomID");
         anchorRoomName = getIntent().getStringExtra("AnchorRoomName");
         anchorID = getIntent().getStringExtra("AnchorID");

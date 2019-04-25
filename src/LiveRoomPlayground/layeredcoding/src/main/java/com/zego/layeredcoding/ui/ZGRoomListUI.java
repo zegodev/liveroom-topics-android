@@ -4,17 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import com.zego.common.ZGHelper;
-import com.zego.common.ZGManager;
 import com.zego.layeredcoding.R;
 import com.zego.layeredcoding.ZGLayeredCodingDemoHelper;
 import com.zego.layeredcoding.entity.RoomInfo;
@@ -40,10 +35,6 @@ public class ZGRoomListUI extends AppCompatActivity implements ZGLayeredCodingDe
 
         mRoomListView = (ListView)findViewById(R.id.roomlist);
         mQueryStatusTxt = (TextView)findViewById(R.id.querystatus_txt);
-
-        String deviceID = ZGHelper.generateDeviceId(this);
-
-        ZGManager.setLoginUser(deviceID, deviceID);
 
         ZGLayeredCodingDemoHelper.sharedInstance().setUpdateRoomListCallback(this);
         ZGLayeredCodingDemoHelper.sharedInstance().requestRoomList(this);

@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.zego.common.ui.BaseActivity;
 import com.zego.videocapture.R;
 import com.zego.videocapture.videocapture.VideoCaptureFactoryDemo;
 import com.zego.zegoavkit2.ZegoExternalVideoCapture;
@@ -19,7 +20,7 @@ import com.zego.zegoavkit2.screencapture.ZegoScreenCaptureFactory;
 import com.zego.zegoliveroom.constants.ZegoConstants;
 
 @TargetApi(21)
-public class ZGVideoCaptureOriginUI extends AppCompatActivity {
+public class ZGVideoCaptureOriginUI extends BaseActivity {
 
     private RadioGroup mCaptureTypeGroup;
     private VideoCaptureFactoryDemo.CaptureOrigin captureOrigin;
@@ -52,7 +53,7 @@ public class ZGVideoCaptureOriginUI extends AppCompatActivity {
                     captureOrigin = VideoCaptureFactoryDemo.CaptureOrigin.CaptureOrigin_Screen; //录屏
                     // 检测系统版本
                     if(Build.VERSION.SDK_INT < 21){
-                        Toast.makeText(ZGVideoCaptureOriginUI.this, "录屏功能只能在Android5.0及以上版本的系统中运行", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ZGVideoCaptureOriginUI.this, "录屏功能只能在Android5.0及以上版本的系统中运行", Toast.LENGTH_SHORT).show();
                         finish();
                     }else {
 

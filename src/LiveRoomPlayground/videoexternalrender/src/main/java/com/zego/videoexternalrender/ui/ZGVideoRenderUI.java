@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.zego.common.ZGHelper;
+import com.zego.common.util.DeviceInfoManager;
 import com.zego.common.ZGManager;
 import com.zego.videoexternalrender.R;
 import com.zego.videoexternalrender.videorender.VideoRenderer;
@@ -56,10 +56,8 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
 
         chooseRenderType = getIntent().getIntExtra("RenderType", 0);
 
-        String deviceID = ZGHelper.generateDeviceId(this);
+        String deviceID = DeviceInfoManager.generateDeviceId(this);
         mRoomID += deviceID;
-        ZGManager.setLoginUser(deviceID, deviceID);
-
 
         videoRenderer = new VideoRenderer();
         videoRenderer.init();
