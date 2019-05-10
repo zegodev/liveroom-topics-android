@@ -44,24 +44,6 @@ public class GlRectDrawer {
                     + "    interp_tc = (texMatrix * in_tc).xy;\n"
                     + "}\n";
 
-//    private static final String YUV_FRAGMENT_SHADER_STRING =
-//            "precision mediump float;\n"
-//                    + "varying vec2 interp_tc;\n"
-//                    + "\n"
-//                    + "uniform sampler2D y_tex;\n"
-//                    + "uniform sampler2D u_tex;\n"
-//                    + "uniform sampler2D v_tex;\n"
-//                    + "\n"
-//                    + "void main() {\n"
-//                    // CSC according to http://www.fourcc.org/fccyvrgb.php
-//                    + "  float y = texture2D(y_tex, interp_tc).r * 1.16438;\n"
-//                    + "  float u = texture2D(u_tex, interp_tc).r;\n"
-//                    + "  float v = texture2D(v_tex, interp_tc).r;\n"
-//                    + "  gl_FragColor = vec4(y + 1.59603 * v - 0.874202,\n"
-//                    + "                      y - 0.391762 * u - 0.812968 * v + 0.531668,\n"
-//                    + "                      y + 2.01723 * u - 1.08563, 1);\n"
-//                    + "}\n";
-
     private static final String YUV_FRAGMENT_SHADER_STRING =
             "precision mediump float;\n"
                     + "varying vec2 interp_tc;\n"
@@ -137,7 +119,7 @@ public class GlRectDrawer {
             GLES20.glEnableVertexAttribArray(this.posLocation);
             GLES20.glEnableVertexAttribArray(this.tcLocation);
 
-            tex0Location = tex1Location = tex2Location = 0;
+            tex0Location = tex1Location = tex2Location = -1;
         }
     }
 
@@ -227,15 +209,15 @@ public class GlRectDrawer {
         shader.glShader.useProgram();
         // Copy the texture transformation matrix over.
 
-        if (shader.tex0Location != 0) {
+        if (shader.tex0Location != -1) {
             GLES20.glUniform1i(shader.tex0Location, 0);
         }
 
-        if (shader.tex1Location != 0) {
+        if (shader.tex1Location != -1) {
             GLES20.glUniform1i(shader.tex1Location, 1);
         }
 
-        if (shader.tex2Location != 0) {
+        if (shader.tex2Location != -1) {
             GLES20.glUniform1i(shader.tex2Location, 2);
         }
 

@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="tx_sound_process_title">变声/混响/立体声</string>
+    <string name="tx_refresh_hint">下拉完成刷新房间列表</string>
+    <string name="tx_create_live">创建直播</string>
+    <string name="tx_sound_process_setting">音效</string>
+    <string name="voice_changer">变声</string>
+    <string name="stereo">立体声</string>
+    <string name="double_track">双声道</string>
+    <string name="mixed_voice">混响</string>
+    <string name="sound_effect_no_set">无</string>
+    <string name="sound_effect_stereo_left_side">左耳声</string>
+    <string name="sound_effect_stereo_right_side">右耳声</string>
+    <string name="sound_effect_mixed_voice_lobby">大堂场景</string>
+    <string name="sound_effect_mixed_voice_valley">山谷场景</string>
+    <string name="sound_effect_audition">音效试听</string>
+    <string name="sound_effect_audition_ear_phone_tip">请戴上耳机获得更好的体验</string>
+    <string name="loli">萝莉</string>
+    <string name="uncle">大叔</string>
+    <string name="sound_effect_audition_close_tip">已关闭自己的立体音效果试听，对方仍可听到</string>
+    <string name="tx_voice_changer_describe">通过改变用户的音调，使输出的声音在感官上与原始声音不同，实现男声变女声、女声变男声等多种变声效果</string>
+    <string name="tx_custom">自定义:</string>
+    <string name="tx_angle">角度(angle): </string>
+    <string name="tx_double_track_describe">注意!!! 虚拟立体声需要在推流前打开 SDK 双声道才可以使用</string>
+    <string name="tx_stereo_describe">通过深度使用双声道技术，虚拟出发音源的各个位置角度，实现立体声，3D环绕音，听声辩位等效果</string>
+    <string name="tx_reverb_describe">通过声音的特殊处理，制造出场音混响的效果，让声音如同在音乐厅，大教堂等场景中发出一般</string>
+    <string name="tx_reverberance_describe">余响，取值范围[0.0, 0.5]，用于控制混响的拖尾长度</string>
+    <string name="tx_damping_describe">混响阻尼， 取值范围[0.0， 2.0]，控制混响的衰减程度，阻尼越大，衰减越大</string>
+    <string name="tx_dry_wet_ratio_describe">干湿比，取值范围 大于等于 0.0。 控制混响与直达声和早期反射声之间的比例，干(dry)的部分默认定为1，当干湿比设为较小时，湿(wet)的比例较大，此时混响较强</string>
+    <string name="tx_room_size_describe">房间大小，取值范围[0.0, 1.0]，用于控制产生混响\"房间\"的大小，房间越大，混响越强</string>
+    <string name="room_no_publish">该房间没有推流，请刷新房间列表后重试!</string>
+    <string name="tx_room_list_is_empty">暂时无房间列表</string>
+</resources>

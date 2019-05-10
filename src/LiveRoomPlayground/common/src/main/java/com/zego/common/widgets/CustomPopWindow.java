@@ -6,10 +6,12 @@ package com.zego.common.widgets;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -145,6 +147,18 @@ public class CustomPopWindow implements PopupWindow.OnDismissListener {
 
     }
 
+
+    private static Activity scanForActivity(Context cont) {
+        if (cont == null)
+            return null;
+        else if (cont instanceof Activity)
+            return (Activity) cont;
+        else if (cont instanceof ContextWrapper)
+            return scanForActivity(((ContextWrapper) cont).getBaseContext());
+
+        return null;
+    }
+
     private PopupWindow build() {
 
         if (mContentView == null) {
@@ -153,11 +167,13 @@ public class CustomPopWindow implements PopupWindow.OnDismissListener {
         }
 
         // 获取当前Activity的window
-        Activity activity = (Activity) mContentView.getContext();
+        Activity activity = scanForActivity(mContext);
         if (activity != null && mIsBackgroundDark) {
             //如果设置的值在0 - 1的范围内，则用设置的值，否则用默认值
             final float alpha = (mBackgroundDrakValue > 0 && mBackgroundDrakValue < 1) ? mBackgroundDrakValue : DEFAULT_ALPHA;
+
             mWindow = activity.getWindow();
+
             WindowManager.LayoutParams params = mWindow.getAttributes();
             params.alpha = alpha;
             mWindow.setAttributes(params);
@@ -244,6 +260,13 @@ public class CustomPopWindow implements PopupWindow.OnDismissListener {
         return this;
     }
 
+    public CustomPopWindow setMsgColor(String color){
+        if (textView != null) {
+            textView.setTextColor(Color.parseColor(color));
+        }
+        return this;
+    }
+
     @Override
     public void onDismiss() {
         dissmiss();
@@ -272,6 +295,7 @@ public class CustomPopWindow implements PopupWindow.OnDismissListener {
     public PopupWindow getPopupWindow() {
         return mPopupWindow;
     }
+
 
     public static class PopupWindowBuilder {
         private CustomPopWindow mCustomPopWindow;

@@ -2,6 +2,9 @@ package com.zego.common;
 
 
 import com.zego.common.util.AppLogger;
+import com.zego.zegoavkit2.audioprocessing.ZegoAudioProcessing;
+import com.zego.zegoavkit2.audioprocessing.ZegoAudioReverbMode;
+import com.zego.zegoavkit2.audioprocessing.ZegoAudioReverbParam;
 import com.zego.zegoliveroom.ZegoLiveRoom;
 import com.zego.zegoliveroom.constants.ZegoAvConfig;
 
@@ -9,13 +12,17 @@ import com.zego.zegoliveroom.constants.ZegoAvConfig;
  * ZGConfigHelper
  * <p>
  * 此类将SDK 配置参数项 进行封装, 简化接口。
- * 开发者可参考该类的代码, 理解SDK接口
+ * 开发者可参考该类的代码, 理解 SDK 接口
  */
 public class ZGConfigHelper {
 
     public static ZGConfigHelper zgConfigHelper;
-
+    // ZEGO 音视频参数配置
     public ZegoAvConfig zegoAvConfig = new ZegoAvConfig(ZegoAvConfig.Level.High);
+
+    // 音频混响参数配置
+    public ZegoAudioReverbParam zegoAudioReverbParam = new ZegoAudioReverbParam();
+
 
     public static ZGConfigHelper sharedInstance() {
         if (zgConfigHelper == null) {
@@ -93,7 +100,7 @@ public class ZGConfigHelper {
      * 2: 等比缩放，可能有黑边 {@link com.zego.zegoliveroom.constants.ZegoVideoViewMode#ScaleAspectFit}
      * 3: 填充整个View，视频可能会变形。{@link com.zego.zegoliveroom.constants.ZegoVideoViewMode#ScaleToFill}
      * <p>
-     *
+     * <p>
      * 调用时机: 无要求
      *
      * @param viewMode 视图模式 {@link com.zego.zegoliveroom.constants.ZegoVideoViewMode}
@@ -126,7 +133,7 @@ public class ZGConfigHelper {
      * 开启硬编后，sdk会使用GPU去处理视频编码，会大大减少app对CPU的占用率,
      * 达到省电不发热的效果。
      * <p>
-     *
+     * <p>
      * 调用时机: 无要求
      *
      * @param enable true为启用, false为关闭
@@ -140,10 +147,10 @@ public class ZGConfigHelper {
 
     /**
      * 前置摄像头开关
-     *
+     * <p>
      * sdk默认采集设备用的前置摄像头, 如果需要切换成后置摄像头
      * 可以关闭前置摄像头开关。
-     *
+     * <p>
      * 调用时机: 初始化SDK之后
      *
      * @param frontCam false为后置摄像头, true为前置摄像头
@@ -158,16 +165,16 @@ public class ZGConfigHelper {
 
     /**
      * 设置拉流音量
-     *
+     * <p>
      * sdk默认采集设备用的前置摄像头, 如果需要切换成后置摄像头
      * 可以关闭前置摄像头开关。
-     *
+     * <p>
      * 调用时机: 拉流之后
      *
      * @param playVolume 音量大小 0 ~ 100
      */
     public void setPlayVolume(int playVolume) {
-        AppLogger.getInstance().i(ZGConfigHelper.class,"设置拉流音量, volume : %d", playVolume);
+        AppLogger.getInstance().i(ZGConfigHelper.class, "设置拉流音量, volume : %d", playVolume);
         if (isInitSDKSuccess()) {
             ZegoLiveRoom zegoLiveRoom = ZGBaseHelper.sharedInstance().getZegoLiveRoom();
             zegoLiveRoom.setPlayVolume(playVolume);
@@ -183,8 +190,8 @@ public class ZGConfigHelper {
      * <p>
      * 调用时机: 拉流之后
      *
-     * @param viewMode  视图模式 {@link com.zego.zegoliveroom.constants.ZegoVideoViewMode}
-     * @param streamID  开发者需要改变哪条streamID视图就传对应的streamID
+     * @param viewMode 视图模式 {@link com.zego.zegoliveroom.constants.ZegoVideoViewMode}
+     * @param streamID 开发者需要改变哪条streamID视图就传对应的streamID
      */
     public void setPlayViewMode(int viewMode, String streamID) {
         AppLogger.getInstance().i(ZGConfigHelper.class, "设置拉流视图模式 viewMode : %d, streamID : %s", viewMode, streamID);
@@ -196,7 +203,7 @@ public class ZGConfigHelper {
 
     /**
      * 设置推流分辨率
-     *
+     * <p>
      * 调用时机: 初始化SDK之后
      *
      * @param width
@@ -217,7 +224,7 @@ public class ZGConfigHelper {
     /**
      * 设置视频码率
      * 码率越高，每秒传送数据就越多，画质就越清晰. 同时更耗带宽
-     *
+     * <p>
      * 调用时机: 初始化SDK之后
      *
      * @param videoBitrate 码率值
@@ -233,7 +240,7 @@ public class ZGConfigHelper {
 
     /**
      * 设置视频推流帧率
-     *
+     * <p>
      * 调用时机: 初始化SDK之后
      *
      * @param fps 帧率就是在1秒钟时间里传输的图像的数量。帧率越高画面越流畅. 同时更耗带宽

@@ -1,11 +1,11 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -26,8 +26,8 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: '../main/libs')
     implementation project(path: ':common')
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.google.code.gson:gson:2.7'
 
 }

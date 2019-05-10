@@ -4,17 +4,18 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/LiveRoomPlayground.iml" filepath="$PROJECT_DIR$/LiveRoomPlayground.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
-      <module fileurl="file://$PROJECT_DIR$/layeredcoding/layeredcoding.iml" filepath="$PROJECT_DIR$/layeredcoding/layeredcoding.iml" />
+      <module fileurl="file://$PROJECT_DIR$/layeredCoding/layeredCoding.iml" filepath="$PROJECT_DIR$/layeredCoding/layeredCoding.iml" />
       <module fileurl="file://$PROJECT_DIR$/main/main.iml" filepath="$PROJECT_DIR$/main/main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mediaplayer/mediaplayer.iml" filepath="$PROJECT_DIR$/mediaplayer/mediaplayer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mediaPlayer/mediaPlayer.iml" filepath="$PROJECT_DIR$/mediaPlayer/mediaPlayer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mediaSideInfo/mediaSideInfo.iml" filepath="$PROJECT_DIR$/mediaSideInfo/mediaSideInfo.iml" />
       <module fileurl="file://$PROJECT_DIR$/mediarecorder/mediarecorder.iml" filepath="$PROJECT_DIR$/mediarecorder/mediarecorder.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mediasideinfo/mediasideinfo.iml" filepath="$PROJECT_DIR$/mediasideinfo/mediasideinfo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mixStream/mixStream.iml" filepath="$PROJECT_DIR$/mixStream/mixStream.iml" />
       <module fileurl="file://$PROJECT_DIR$/mixing/mixing.iml" filepath="$PROJECT_DIR$/mixing/mixing.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mixstream/mixstream.iml" filepath="$PROJECT_DIR$/mixstream/mixstream.iml" />
       <module fileurl="file://$PROJECT_DIR$/play/play.iml" filepath="$PROJECT_DIR$/play/play.iml" />
       <module fileurl="file://$PROJECT_DIR$/publish/publish.iml" filepath="$PROJECT_DIR$/publish/publish.iml" />
-      <module fileurl="file://$PROJECT_DIR$/videocapture/videocapture.iml" filepath="$PROJECT_DIR$/videocapture/videocapture.iml" />
-      <module fileurl="file://$PROJECT_DIR$/videoexternalrender/videoexternalrender.iml" filepath="$PROJECT_DIR$/videoexternalrender/videoexternalrender.iml" />
+      <module fileurl="file://$PROJECT_DIR$/soundProcessing/soundProcessing.iml" filepath="$PROJECT_DIR$/soundProcessing/soundProcessing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/videoCapture/videoCapture.iml" filepath="$PROJECT_DIR$/videoCapture/videoCapture.iml" />
+      <module fileurl="file://$PROJECT_DIR$/videoExternalRender/videoExternalRender.iml" filepath="$PROJECT_DIR$/videoExternalRender/videoExternalRender.iml" />
     </modules>
   </component>
 </project>

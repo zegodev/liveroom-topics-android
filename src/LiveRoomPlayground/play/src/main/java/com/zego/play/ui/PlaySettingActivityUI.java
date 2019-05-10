@@ -9,6 +9,7 @@ import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.zego.common.ZGConfigHelper;
 import com.zego.common.application.ZegoApplication;
@@ -53,6 +54,7 @@ public class PlaySettingActivityUI extends FragmentActivity {
         private ListPreference viewModeListPreference;
         private String streamID;
         private String[] stringArray;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
 
@@ -90,27 +92,48 @@ public class PlaySettingActivityUI extends FragmentActivity {
             // 方法内需要调用sdk函数来修改sdk配置参数
 
             if ("play_view_mode".equals(key)) {
-
-                String viewModeStr = sharedPreferences.getString(key, "1");
-                int viewMode = Integer.valueOf(viewModeStr);
-                ZGConfigHelper.sharedInstance().setPlayViewMode(viewMode, streamID);
-                // 动态修改当前描述
-                String[] stringArray = getResources().getStringArray(R.array.view_setting_describe);
-                viewModeListPreference.setSummary(stringArray[viewMode]);
-
+                if (streamID != null && !"".equals(streamID)) {
+                    String viewModeStr = sharedPreferences.getString(key, "1");
+                    int viewMode = Integer.valueOf(viewModeStr);
+                    setPlayViewMode(viewMode);
+                    // 动态修改当前描述
+                    String[] stringArray = getResources().getStringArray(R.array.view_setting_describe);
+                    viewModeListPreference.setSummary(stringArray[viewMode]);
+                } else {
+                    Toast.makeText(PrefFragment.this.getActivity(), R.string.tx_set_play_view_mode_failure, Toast.LENGTH_LONG).show();
+                }
             } else if ("play_hardware_decode".equals(key)) {
-
                 boolean enable = sharedPreferences.getBoolean(key, false);
-                ZGConfigHelper.sharedInstance().enableHardwareDecode(enable);
-
+                enableHardwareDecode(enable);
             } else if ("play_volume".equals(key)) {
-
                 int volume = sharedPreferences.getInt(key, 100);
-                ZGConfigHelper.sharedInstance().setPlayVolume(volume);
-
+                setPlayVolume(volume);
             }
 
         }
+
+        /**
+         * 设置SDK拉流视图
+         */
+        private void setPlayViewMode(int viewMode){
+            ZGConfigHelper.sharedInstance().setPlayViewMode(viewMode, streamID);
+        }
+
+        /**
+         * 启用SDK硬编
+         */
+        private void enableHardwareDecode(boolean enable){
+            ZGConfigHelper.sharedInstance().enableHardwareDecode(enable);
+        }
+
+        /**
+         * 设置拉流音量
+         * @param volume
+         */
+        private void setPlayVolume(int volume){
+            ZGConfigHelper.sharedInstance().setPlayVolume(volume);
+        }
+
     }
 
     /**

@@ -1,8 +1,5 @@
 <resources>
 
-
-
-
     <declare-styleable name="title">
         <attr name="name" format="string"/>
     </declare-styleable>
@@ -15,7 +12,35 @@
     <declare-styleable name="customSeekBar">
         <attr name="max" format="integer"/>
         <attr name="min" format="integer"/>
+        <attr name="maxStr" format="string"/>
+        <attr name="minStr" format="string"/>
+        <attr name="currentStr" format="string"/>
         <attr name="current" format="integer"> </attr>
+        <attr name="title" format="string"/>
+        <attr name="describe" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="ArcSeekBar">
+        <attr name="arc_width" format="dimension|reference" />
+        <attr name="arc_open_angle" format="float" />
+        <attr name="arc_rotate_angle" format="float" />
+        <attr name="arc_colors" format="reference" />
+        <attr name="arc_border_width" format="dimension|reference" />
+        <attr name="arc_border_color" format="color|reference" />
+        <attr name="arc_max" format="integer|reference" />
+        <attr name="arc_min" format="integer|reference" />
+        <attr name="arc_progress" format="integer|reference" />
+        <attr name="arc_thumb_width" format="dimension|reference" />
+        <attr name="arc_thumb_color" format="color|reference" />
+        <attr name="arc_thumb_radius" format="dimension|reference" />
+        <attr name="arc_thumb_shadow_radius" format="dimension|reference" />
+        <attr name="arc_thumb_shadow_color" format="color|reference" />
+        <attr name="arc_thumb_mode" format="integer|dimension">
+            <enum name="STROKE" value="0" />
+            <enum name="FILL" value="1" />
+            <enum name="FILL_STROKE" value="2" />
+        </attr>
+        <attr name="arc_shadow_radius" format="dimension|reference" />
     </declare-styleable>
 
 </resources>

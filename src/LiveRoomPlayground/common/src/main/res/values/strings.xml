@@ -36,7 +36,8 @@
     <string name="stream_id_describe">每个用户的流名必须保持唯一，也就是流名必须全局唯一，sdk推拉流都是基于流ID来标识, 只支持长度不超过 256 byte 的数字，下划线，字母</string>
     <string name="tx_publish_guide">推流文档指引</string>
     <string name="tx_play_guide">拉流文档指引</string>
-    <string name="tx_start_publish">开始推流</string>
+    <string name="tx_start_publish">发起推流</string>
+    <string name="tx_confirm_publish">确认推流</string>
     <string name="tx_mic_state">麦克风</string>
     <string name="tx_camera">摄像头</string>
     <string name="tx_publish_success">推流成功</string>
@@ -51,5 +52,7 @@
     <string name="tx_capture_device">修改摄像头采集设备</string>
     <string name="hardware_encode">硬编开关(推流前设置生效)</string>
     <string name="front_facing_camera">前置摄像头</string>
+    <string name="tx_set_play_view_mode_failure">设置失败, 请在拉流之后设置</string>
+    <string name="tx_current_stream_delete">对方已停止推流</string>
 
 </resources>

@@ -26,8 +26,14 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
 
+
     <application android:debuggable="true"
-        tools:ignore="HardcodedDebugMode">
+        android:usesCleartextTraffic="true"
+        tools:ignore="HardcodedDebugMode,UnusedAttribute">
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
 
         <activity
             android:name="com.zego.liveroomplayground.demo.ui.MainActivity"

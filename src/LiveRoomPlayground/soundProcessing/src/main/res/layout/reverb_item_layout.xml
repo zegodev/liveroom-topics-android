@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/audition_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@drawable/blue_checkbox_selector"
+                android:clickable="false" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:layout_marginStart="6dp"
+                android:text="@string/sound_effect_audition"
+                android:textColor="#333333"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:text="@string/sound_effect_audition_ear_phone_tip"
+            android:textColor="#333333"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/tx_reverb_describe"
+        android:textColor="#000000"
+        android:textSize="12sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.zego.common.widgets.CustomMinSeekBar
+                android:id="@+id/room_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:currentStr="0.0"
+                app:maxStr="1.0"
+                app:minStr="0.0"
+                app:describe="@string/tx_room_size_describe"
+                app:title="房间大小(roomSize): " />
+
+            <com.zego.common.widgets.CustomMinSeekBar
+                android:id="@+id/dry_wet_ratio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:currentStr="0.0"
+                app:maxStr="1.0"
+                app:describe="@string/tx_dry_wet_ratio_describe"
+                app:minStr="0.0"
+                app:title="干湿比(dryWetRatio): " />
+
+            <com.zego.common.widgets.CustomMinSeekBar
+                android:id="@+id/damping"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:currentStr="0.0"
+                app:maxStr="1.0"
+                app:minStr="0.0"
+                app:describe="@string/tx_damping_describe"
+                app:title="阻尼(damping): " />
+
+            <com.zego.common.widgets.CustomMinSeekBar
+                android:id="@+id/reverberance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:currentStr="0.0"
+                app:maxStr="1.0"
+                app:describe="@string/tx_reverberance_describe"
+                app:minStr="0.0"
+                app:title="余响(reverberance): " />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="10dp">
+
+        <com.zego.common.widgets.RelativeRadioGroup
+            android:id="@+id/rg_reverb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <RadioButton
+                android:id="@+id/no"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:checked="true"
+                android:text="无"
+                android:textColor="#333333"
+                android:textSize="12sp" />
+
+            <RadioButton
+                android:id="@+id/concert_hall"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:text="音乐厅"
+                android:textColor="#333333"
+                android:textSize="12sp" />
+
+            <RadioButton
+                android:id="@+id/large_auditorium"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/no"
+                android:layout_alignParentTop="true"
+                android:text="大教堂"
+                android:textColor="#333333"
+                android:textSize="12sp" />
+
+
+            <RadioButton
+                android:id="@+id/warm_club"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/no"
+                android:layout_gravity="left|bottom"
+                android:layout_weight="1"
+                android:text="俱乐部"
+                android:textColor="#333333"
+                android:textSize="12sp" />
+
+            <RadioButton
+                android:id="@+id/soft_room"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/no"
+                android:layout_centerHorizontal="true"
+                android:layout_weight="1"
+                android:text="房间"
+                android:textColor="#333333"
+                android:textSize="12sp" />
+
+            <RadioButton
+                android:id="@+id/custom"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/no"
+                android:layout_weight="1"
+                android:text="自定义"
+                android:textColor="#333333"
+                android:textSize="12sp" />
+
+        </com.zego.common.widgets.RelativeRadioGroup>
+
+
+    </LinearLayout>
+
+</LinearLayout>

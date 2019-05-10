@@ -20,7 +20,7 @@ import com.zego.mediaplayer.ui.ZGPlayerTypeUI;
 import com.zego.mediarecorder.ZGMediaRecorderSettingUI;
 import com.zego.mixing.ui.ZGMixingDemoUI;
 import com.zego.mixstream.ui.ZGMixStreamRoomListUI;
-
+import com.zego.sound.processing.ui.SoundProcessMainActivityUI;
 import com.zego.mediasideinfo.ui.MediaSideInfoDemoUI;
 import com.zego.publish.ui.InitSDKPublishActivityUI;
 import com.zego.videocapture.ui.ZGVideoCaptureOriginUI;
@@ -65,6 +65,9 @@ public class MainActivity extends BaseActivity {
                         break;
                     case "拉流":
                         InitSDKPlayActivityUI.actionStart(MainActivity.this);
+                        break;
+                    case "变声/混响/立体声":
+                        SoundProcessMainActivityUI.actionStart(MainActivity.this);
                         break;
                     case "mediaPlayer":
                         intent = new Intent(MainActivity.this, ZGPlayerTypeUI.class);
@@ -114,7 +117,9 @@ public class MainActivity extends BaseActivity {
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("推流"));
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("mediaPlayer").titleName("进阶模块"));
+                .moduleName("变声/混响/立体声").titleName("进阶模块"));
+        mainAdapter.addModuleInfo(new ModuleInfo()
+                .moduleName("mediaPlayer"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("mediaSideInfo"));
         mainAdapter.addModuleInfo(new ModuleInfo()

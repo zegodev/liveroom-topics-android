@@ -36,6 +36,13 @@ public class PublishActivityUI extends BaseActivity {
     private StreamQuality streamQuality = new StreamQuality();
     private SDKConfigInfo sdkConfigInfo = new SDKConfigInfo();
 
+    //  记录当前是否推流，如果有推流的话，在应用退后台时，需要停止推流，界面回到前台继续推流
+    //  原因是在某些华为手机上，应用在后台超过2分钟左右，华为系统会把摄像头资源给释放掉，并且可能会断开你应用的网络连接
+    //  关于后台会断开网络的问题可以通过在设置-应用-权限管理-菜单-特殊访问权限-电池优化，将设置成不允许使用电池优化，才能解决。
+    private boolean isPublishing = false;
+
+    private String streamID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,8 +57,6 @@ public class PublishActivityUI extends BaseActivity {
         layoutBinding.startButton.setText(getString(R.string.tx_start_publish));
 
         streamQuality.setRoomID(String.format("RoomID : %s", getIntent().getStringExtra("roomID")));
-        // 调用sdk 开始预览接口 设置view 启用预览
-        ZGPublishHelper.sharedInstance().startPreview(binding.preview);
 
         // 设置推流回调
         ZGPublishHelper.sharedInstance().setPublisherCallback(new IZegoLivePublisherCallback() {
@@ -60,16 +65,16 @@ public class PublishActivityUI extends BaseActivity {
 
             @Override
             public void onPublishStateUpdate(int errorCode, String streamID, HashMap<String, Object> hashMap) {
-                // 推流状态更新，errorCode 非0 则说明推流成功
-                // 推流常见错误码请看文档: <a>https://doc.zego.im/CN/490.html</a>
+                // 推流状态更新，errorCode 非0 则说明推流失败
+                // 推流常见错误码请看文档: <a>https://doc.zego.im/CN/308.html</a>
 
                 if (errorCode == 0) {
-
+                    isPublishing = true;
                     binding.title.setTitleName(getString(R.string.tx_publish_success));
                     AppLogger.getInstance().i(ZGPublishHelper.class, "推流成功, streamID : %s", streamID);
                     Toast.makeText(PublishActivityUI.this, getString(R.string.tx_publish_success), Toast.LENGTH_SHORT).show();
                 } else {
-
+                    isPublishing = false;
                     binding.title.setTitleName(getString(R.string.tx_publish_fail));
                     AppLogger.getInstance().i(ZGPublishHelper.class, "推流失败, streamID : %s, errorCode : %d", streamID, errorCode);
                     Toast.makeText(PublishActivityUI.this, getString(R.string.tx_publish_fail), Toast.LENGTH_SHORT).show();
@@ -150,6 +155,28 @@ public class PublishActivityUI extends BaseActivity {
 
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // 当用户退后台时先停止预览
+        ZGPublishHelper.sharedInstance().stopPreviewView();
+        if (isPublishing) {
+            ZGPublishHelper.sharedInstance().stopPublishing();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // 调用sdk 开始预览接口 设置view 启用预览
+        ZGPublishHelper.sharedInstance().startPreview(binding.preview);
+        if (isPublishing) {
+            // 开始推流ßß
+            ZGPublishHelper.sharedInstance().startPublishing(streamID, "", ZegoConstants.PublishFlag.JoinPublish);
+        }
+    }
+
     public void goSetting(View view) {
         PublishSettingActivityUI.actionStart(this);
     }
@@ -170,7 +197,7 @@ public class PublishActivityUI extends BaseActivity {
      * 开始推流
      */
     public void onStart(View view) {
-        String streamID = layoutBinding.edStreamId.getText().toString();
+        streamID = layoutBinding.edStreamId.getText().toString();
         if (!"".equals(streamID)) {
             // 隐藏输入StreamID布局
             hideInputStreamIDLayout();

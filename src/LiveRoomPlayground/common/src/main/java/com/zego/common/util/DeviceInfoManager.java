@@ -64,13 +64,6 @@ public class DeviceInfoManager {
             return deviceId;
         }
 
-        try {
-            Class<?> c = Class.forName("android.os.SystemProperties");
-            Method get = c.getMethod("get", String.class, String.class);
-            deviceId = (String) (get.invoke(c, "ro.serialno", Build.UNKNOWN));
-        } catch (Exception e) {
-            deviceId = null;
-        }
 
         if (!TextUtils.isEmpty(deviceId) && !Build.UNKNOWN.equals(deviceId) && !INVALID_SERIAL_NUMBER.equals(deviceId)) {
             return deviceId;
@@ -99,7 +92,11 @@ public class DeviceInfoManager {
      * @return
      */
     static public String getProductName() {
-        return Build.MODEL;
+        String productName = Build.MODEL;
+        if (productName != null) {
+            productName = productName.replace(" ", "");
+        }
+        return productName;
     }
 
     /**

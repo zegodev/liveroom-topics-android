@@ -33,68 +33,6 @@ public class Renderer implements TextureView.SurfaceTextureListener {
 
     public static final Object lock = new Object();
 
-    private static final String YUV_FRAGMENT_SHADER_STRING =
-            "precision mediump float;\n"
-                    + "varying vec2 interp_tc;\n"
-                    + "\n"
-                    + "uniform sampler2D y_tex;\n"
-                    + "uniform sampler2D u_tex;\n"
-                    + "uniform sampler2D v_tex;\n"
-                    + "\n"
-                    + "void main() {\n"
-                    // CSC according to http://www.fourcc.org/fccyvrgb.php
-                    + "  float y = texture2D(y_tex, interp_tc).r;\n"
-                    + "  float u = texture2D(u_tex, interp_tc).r - 0.5;\n"
-                    + "  float v = texture2D(v_tex, interp_tc).r - 0.5;\n"
-                    + "  gl_FragColor = vec4(y + 1.403 * v, "
-                    + "                      y - 0.344 * u - 0.714 * v, "
-                    + "                      y + 1.77 * u, 1);\n"
-                    + "}\n";
-
-    private static final String VERTEX_SHADER =
-            "attribute vec4 position;\n "
-                    + "attribute mediump vec4 texcoord;\n"
-                    + "varying mediump vec2 textureCoordinate;\n"
-                    + "void main() {\n"
-                    + "    gl_Position = position;\n"
-                    + "    textureCoordinate = texcoord.xy;\n"
-                    + "}\n";
-
-    private static final String FRAGMENT_SHADER =
-            "varying highp vec2 textureCoordinate; \n"
-                    + "uniform sampler2D frame; \n"
-                    + "uniform lowp float factor;\n"
-                    + "lowp vec3 whiteFilter;\n"
-                    + "\n"
-                    + "void main() {\n"
-                    + "    whiteFilter = vec3(factor);\n"
-                    + "    gl_FragColor = texture2D(frame, textureCoordinate) * vec4(whiteFilter, 1.0); \n"
-                    + "}\n";
-
-    // Vertex coordinates in Normalized Device Coordinates, i.e.
-    // (-1, -1) is bottom-left and (1, 1) is top-right.
-    private static final FloatBuffer DEVICE_RECTANGLE =
-            GlUtil.createFloatBuffer(new float[]{
-                    -1.0f, -1.0f,  // Bottom left.
-                    1.0f, -1.0f,  // Bottom right.
-                    -1.0f, 1.0f,  // Top left.
-                    1.0f, 1.0f,  // Top right.
-            });
-
-    // Texture coordinates - (0, 0) is bottom-left and (1, 1) is top-right.
-    private static final FloatBuffer TEXTURE_RECTANGLE =
-            GlUtil.createFloatBuffer(new float[]{
-                    0.0f, 1.0f,
-                    1.0f, 1.0f,
-                    0.0f, 0.0f,
-                    1.0f, 0.0f
-            });
-
-    private float[] mIdentityMatrix = new float[]{1.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f};
-
     private EGLContext eglContext;
     private EGLConfig eglConfig;
     private EGLDisplay eglDisplay;
@@ -103,8 +41,6 @@ public class Renderer implements TextureView.SurfaceTextureListener {
     private int viewWidth = 0;
     private int viewHeight = 0;
     private GlShader shader;
-    private int m_nFrameUniform = 0;
-    private int m_nFactorUniform = 0;
     private int mTextureId = 0;
 
     private TextureView mTextureView;
@@ -170,7 +106,6 @@ public class Renderer implements TextureView.SurfaceTextureListener {
             renderMatrix.preTranslate(-0.5f, -0.5f);
 
             makeCurrent();
-//            GLES20.glDisable(GLES20.GL_BLEND); // 加上画面会抖动
 
             // Bind the textures.
             yuvTextures = uploadYuvData(pixelBuffer.width,pixelBuffer.height,pixelBuffer.strides,pixelBuffer.buffer);
@@ -181,63 +116,25 @@ public class Renderer implements TextureView.SurfaceTextureListener {
             swapBuffers();
             detachCurrent();
         } else {
-            // second
-//            if (mTextureId == 0) {
-//                GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
-//                mTextureId = GlUtil.generateTexture(GLES20.GL_TEXTURE_2D);
-//            }
 
-//            if (mRgbDrawer == null) {
-//                mRgbDrawer = new GlRectDrawer();
-//            }
-////            if (mDrawer == null) {
-////                mDrawer = new GlRectDrawer();
-////            }
-//            makeCurrent();
-//
-//            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, pixelBuffer.width, pixelBuffer.height, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, pixelBuffer.buffer[0]);
-////            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-//            int[] value = measure(pixelBuffer.width, pixelBuffer.height, viewWidth, viewHeight);
-//            mDrawer.drawRgb(mTextureId,flipMatrix,pixelBuffer.width,pixelBuffer.height,value[0], value[1], value[2], value[3]);
-//            swapBuffers();
-//            detachCurrent();
-
-            // first
             makeCurrent();
 
-            shader.useProgram();
-            m_nFrameUniform = shader.getUniformLocation("frame");
-            m_nFactorUniform = shader.getUniformLocation("factor");
+            if (mTextureId == 0) {
+                mTextureId = GlUtil.generateTexture(GLES20.GL_TEXTURE_2D);
+            }
 
-            //GlUtil.checkNoGLES2Error("Initialize fragment shader uniform values.");
-            // Initialize vertex shader attributes.
-            shader.setVertexAttribArray("position", 2, DEVICE_RECTANGLE);
-            shader.setVertexAttribArray("texcoord", 2, TEXTURE_RECTANGLE);
-
-            long now = SystemClock.elapsedRealtime();
-            float factor = 1.0f;
-
-            //选择活动纹理单元
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE4);
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureId);
 
+            if (mRgbDrawer == null) {
+                mRgbDrawer = new GlRectDrawer();
+            }
+
             GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, pixelBuffer.width, pixelBuffer.height, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, pixelBuffer.buffer[0]);
-
-            // pixelBuffer.width, pixelBuffer.height 是 x，y值指定了视口的左下角位置
             int[] value = measure(pixelBuffer.width, pixelBuffer.height, viewWidth, viewHeight);
-            GLES20.glViewport(value[0], value[1], value[2], value[3]); //v 3
-            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-            GLES20.glUniform1i(m_nFrameUniform, 1);
-            GLES20.glUniform1f(m_nFactorUniform, factor);
-            //图形绘制
-            GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4); //v 4
-
+            mRgbDrawer.drawRgb(mTextureId,flipMatrix,pixelBuffer.width,pixelBuffer.height,value[0], value[1], value[2], value[3]);
             swapBuffers();
-
-            // if rgb
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0); //v 5
             detachCurrent();
-
         }
     }
 
@@ -313,20 +210,6 @@ public class Renderer implements TextureView.SurfaceTextureListener {
             uninitEGLSurface();
             throw e;
         }
-
-//        // 渲染 rgb 使用
-        shader = new GlShader(VERTEX_SHADER, FRAGMENT_SHADER);
-//        shader.useProgram();
-//        m_nFrameUniform = shader.getUniformLocation("frame");
-//        m_nFactorUniform = shader.getUniformLocation("factor");
-//
-//        //GlUtil.checkNoGLES2Error("Initialize fragment shader uniform values.");
-//        // Initialize vertex shader attributes.
-//        shader.setVertexAttribArray("position", 2, DEVICE_RECTANGLE);
-//        shader.setVertexAttribArray("texcoord", 2, TEXTURE_RECTANGLE);
-//
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        mTextureId = GlUtil.generateTexture(GLES20.GL_TEXTURE_2D);
 
         detachCurrent();
     }
@@ -441,10 +324,21 @@ public class Renderer implements TextureView.SurfaceTextureListener {
 
     private ByteBuffer copyBuffer;
     private int[] yuvTextures;
+    private ByteBuffer[] packedByteBuffer =  new ByteBuffer[3];
 
     public int[] uploadYuvData(int width, int height, int[] strides, ByteBuffer[] planes) {
         final int[] planeWidths = new int[] {width, width / 2, width / 2};
+        // 确保strides裁剪后是4字节对齐
+        final int[] destStrides = new int[3];
+        for (int i = 0; i < planeWidths.length; i++){
+            if (planeWidths[i]%4 == 0){
+                destStrides[i] = planeWidths[i];
+            }else {
+                destStrides[i] = (planeWidths[i]/4+1)*4;
+            }
+        }
         final int[] planeHeights = new int[] {height, height / 2, height / 2};
+
         // Make a first pass to see if we need a temporary copy buffer.
         int copyCapacityNeeded = 0;
         for (int i = 0; i < 3; ++i) {
@@ -464,24 +358,28 @@ public class Renderer implements TextureView.SurfaceTextureListener {
                 yuvTextures[i] = GlUtil.generateTexture(GLES20.GL_TEXTURE_2D);
             }
         }
+
         // Upload each plane.
         for (int i = 0; i < 3; ++i) {
             GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + i);
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, yuvTextures[i]);
+
             // GLES only accepts packed data, i.e. stride == planeWidth.
-            final ByteBuffer packedByteBuffer;
             if (strides[i] == planeWidths[i]) {
                 // Input is packed already.
-                packedByteBuffer = planes[i];
+                packedByteBuffer[i] = planes[i];
 
             } else {
+                copyBuffer.clear();
+                planes[i].position(0);
                 copyPlane(
-                        planes[i], strides[i], copyBuffer, planeWidths[i], planeWidths[i], planeHeights[i]);
-                packedByteBuffer = copyBuffer;
+                        planes[i], strides[i], copyBuffer, destStrides[i], planeWidths[i], planeHeights[i]);
+                packedByteBuffer[i] = copyBuffer;
             }
-            packedByteBuffer.position(0);
+            packedByteBuffer[i].position(0);
+//            GLES20.glPixelStorei(GLES20.GL_UNPACK_ALIGNMENT, 1); // 1像素对齐
             GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, planeWidths[i],
-                    planeHeights[i], 0, GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, packedByteBuffer);
+                    planeHeights[i], 0, GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, packedByteBuffer[i]);
         }
         return yuvTextures;
     }

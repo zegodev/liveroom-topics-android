@@ -9,7 +9,6 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.zego.common.ui.WebActivity;
-import com.zego.common.widgets.TitleLayout;
 import com.zego.play.R;
 import com.zego.play.databinding.PlayInputStreamIdLayoutBinding;
 import com.zego.common.entity.SDKConfigInfo;
@@ -19,11 +18,13 @@ import com.zego.common.ZGBaseHelper;
 import com.zego.common.ZGConfigHelper;
 import com.zego.common.ZGPlayHelper;
 import com.zego.common.ZGPublishHelper;
-import com.zego.common.constants.ZGLiveRoomConstants;
 import com.zego.common.ui.BaseActivity;
 import com.zego.common.util.AppLogger;
 import com.zego.zegoliveroom.callback.IZegoLivePlayerCallback;
+import com.zego.zegoliveroom.callback.IZegoRoomCallback;
+import com.zego.zegoliveroom.constants.ZegoConstants;
 import com.zego.zegoliveroom.entity.ZegoPlayStreamQuality;
+import com.zego.zegoliveroom.entity.ZegoStreamInfo;
 
 public class PlayActivityUI extends BaseActivity {
 
@@ -50,7 +51,7 @@ public class PlayActivityUI extends BaseActivity {
         ZGPlayHelper.sharedInstance().setPlayerCallback(new IZegoLivePlayerCallback() {
             @Override
             public void onPlayStateUpdate(int errorCode, String streamID) {
-                // 拉流状态更新，errorCode 非0 则说明拉流成功
+                // 拉流状态更新，errorCode 非0 则说明拉流失败
                 // 拉流常见错误码请看文档: <a>https://doc.zego.im/CN/491.html</a>
 
                 if (errorCode == 0) {
@@ -61,9 +62,10 @@ public class PlayActivityUI extends BaseActivity {
                     // 修改标题状态拉流成功状态
                     binding.title.setTitleName(getString(com.zego.common.R.string.tx_play_success));
                 } else {
+                    // 当拉流失败 当前 mStreamID 初始化成 null 值
+                    mStreamID = null;
                     // 修改标题状态拉流失败状态
                     binding.title.setTitleName(getString(com.zego.common.R.string.tx_play_fail));
-
                     AppLogger.getInstance().i(ZGPublishHelper.class, "拉流失败, streamID : %s, errorCode : %d", streamID, errorCode);
                     Toast.makeText(PlayActivityUI.this, getString(com.zego.common.R.string.tx_play_fail), Toast.LENGTH_SHORT).show();
                     // 当拉流失败时需要显示布局
@@ -117,6 +119,59 @@ public class PlayActivityUI extends BaseActivity {
             }
         });
 
+        // 设置SDK 房间代理回调。业务侧希望检查当前房间有流更新了，会去自动重新拉流。
+        ZGBaseHelper.sharedInstance().setZegoRoomCallback(new IZegoRoomCallback() {
+            @Override
+            public void onKickOut(int i, String s) {
+
+            }
+
+            @Override
+            public void onDisconnect(int i, String s) {
+
+            }
+
+            @Override
+            public void onReconnect(int i, String s) {
+
+            }
+
+            @Override
+            public void onTempBroken(int i, String s) {
+
+            }
+
+            @Override
+            public void onStreamUpdated(int type, ZegoStreamInfo[] zegoStreamInfos, String s) {
+                // 当登陆房间成功后，如果房间内中途有人推流或停止推流。房间内其他人就能通过该回调收到流更新通知。
+                for (ZegoStreamInfo streamInfo : zegoStreamInfos) {
+                    if (streamInfo.streamID.equals(mStreamID)) {
+                        if (type == ZegoConstants.StreamUpdateType.Added) {
+                            // 当收到房间流新增的时候, 重新拉流
+                            ZGPlayHelper.sharedInstance().startPlaying(mStreamID, binding.playView);
+                        } else if (type == ZegoConstants.StreamUpdateType.Deleted) {
+                            // 当收到房间流删除的时候停止拉流
+                            ZGPlayHelper.sharedInstance().stopPlaying(mStreamID);
+                            Toast.makeText(PlayActivityUI.this, com.zego.common.R.string.tx_current_stream_delete, Toast.LENGTH_LONG).show();
+                            // 修改标题状态拉流成功状态
+                            binding.title.setTitleName(getString(com.zego.common.R.string.tx_current_stream_delete));
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onStreamExtraInfoUpdated(ZegoStreamInfo[] zegoStreamInfos, String s) {
+
+            }
+
+            @Override
+            public void onRecvCustomCommand(String s, String s1, String s2, String s3) {
+
+
+            }
+        });
+
     }
 
     /**
@@ -160,8 +215,8 @@ public class PlayActivityUI extends BaseActivity {
             ZGPlayHelper.sharedInstance().startPlaying(streamID, binding.playView);
 
         } else {
-                AppLogger.getInstance().i(PlayActivityUI.class, getString(com.zego.common.R.string.tx_stream_id_cannot_null));
-                Toast.makeText(this, getString(com.zego.common.R.string.tx_stream_id_cannot_null), Toast.LENGTH_LONG).show();
+            AppLogger.getInstance().i(PlayActivityUI.class, getString(com.zego.common.R.string.tx_stream_id_cannot_null));
+            Toast.makeText(this, getString(com.zego.common.R.string.tx_stream_id_cannot_null), Toast.LENGTH_LONG).show();
 
         }
     }

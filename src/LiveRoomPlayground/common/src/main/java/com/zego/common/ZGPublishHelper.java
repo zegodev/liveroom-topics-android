@@ -59,7 +59,7 @@ public class ZGPublishHelper {
      * @param streamID streamID，不能为空，只支持长度不超过 256 byte 的数字，下划线，字母。
      *                 注意!!! 每个用户的流名必须保持唯一，也就是流名必须appID全局唯一，
      *                 也不能包含特殊字符。
-     * @param title    视频标题，长度不可超过 255 byte
+     * @param title    标题，长度不可超过 255 byte
      * @param flag     推流标记, 详见 {@link com.zego.zegoliveroom.constants.ZegoConstants.PublishFlag}
      */
     public void startPublishing(@NonNull String streamID, @NonNull String title, int flag) {
@@ -95,7 +95,7 @@ public class ZGPublishHelper {
             AppLogger.getInstance().w(ZGPublishHelper.class, "停止预览失败, 请先初始化sdk");
             return;
         }
-
+        AppLogger.getInstance().i(ZGPublishHelper.class, "停止预览");
         ZGBaseHelper.sharedInstance().getZegoLiveRoom().stopPreview();
     }
 

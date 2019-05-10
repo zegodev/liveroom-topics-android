@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#8C000000"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="60dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="roomID:"
+                android:textColor="@color/white_color"
+                android:textSize="14sp" />
+
+
+        </LinearLayout>
+
+        <com.zego.common.widgets.CustomEditText
+            android:id="@+id/ed_room_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/white_color"
+            android:hint="请输入roomID"
+            android:padding="8dp"
+            android:textSize="14sp"
+            app:key="room_id" />
+
+        <TextView
+            android:id="@+id/login_room"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="10dp"
+            android:autoLink="all"
+            android:gravity="center_vertical"
+            android:text="@string/room_id_describe"
+            android:textColor="@color/white_color" />
+
+
+        <Button
+            android:id="@+id/confirm_button"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:text="@string/tx_confirm_publish"
+            android:onClick="onConfirmPublish" />
+
+    </LinearLayout>
+
+</layout>

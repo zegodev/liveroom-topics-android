@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.zego.sound.processing">
+
+    <application>
+        <activity
+            android:name=".ui.SoundProcessMainActivityUI"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.SoundProcessPublishUI"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.SoundProcessPlayUI"
+            android:screenOrientation="portrait" />
+    </application>
+
+</manifest>

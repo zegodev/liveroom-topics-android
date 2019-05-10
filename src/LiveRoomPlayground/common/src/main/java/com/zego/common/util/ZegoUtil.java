@@ -46,4 +46,13 @@ public class ZegoUtil {
         return Long.parseLong(strAppID);
     }
 
+    /**
+     * 获取随机生成StreamID
+     * @return
+     */
+    public static String getPublishStreamID(){
+        return "s" + System.currentTimeMillis();
+    }
+
+
 }

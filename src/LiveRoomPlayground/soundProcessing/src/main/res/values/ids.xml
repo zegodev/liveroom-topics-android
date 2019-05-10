@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="sound_effect_selected_state" type="id" />
+    <item name="sound_effect_type" type="id" />
+    <item name="sound_effect_view_group_type" type="id" />
+</resources>

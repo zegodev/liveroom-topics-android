@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
     defaultConfig {
         applicationId "com.zego.liveroomplayground"
         minSdkVersion 15
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
 
@@ -55,21 +55,22 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation files('libs/zegoliveroom.jar')
     implementation project(path: ':common')
+    implementation project(path: ':soundProcessing')
     implementation project(path: ':play')
     implementation project(path: ':publish')
-    implementation project(path: ':mediaplayer')
-    implementation project(path: ':mediasideinfo')
-    implementation project(path: ':layeredcoding')
+    implementation project(path: ':mediaPlayer')
+    implementation project(path: ':mediaSideInfo')
+    implementation project(path: ':layeredCoding')
     implementation project(path: ':mediarecorder')
     implementation project(path: ':mixing')
-    implementation project(path: ':mixstream')
-    implementation project(path: ':videoexternalrender')
-    implementation project(path: ':videocapture')
-    implementation 'com.android.support:recyclerview-v7:26.1.0'
-    implementation 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
+    implementation project(path: ':mixStream')
+    implementation project(path: ':videoExternalRender')
+    implementation project(path: ':videoCapture')
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.google.code.gson:gson:2.8.0'
 }

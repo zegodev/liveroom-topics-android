@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="quality"
+            type="com.zego.common.entity.StreamQuality" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:keepScreenOn="true"
+        android:background="#ebeef5"
+        android:orientation="vertical">
+
+        <com.zego.common.widgets.TitleLayout
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            app:name="@string/tx_create_live">
+
+        </com.zego.common.widgets.TitleLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#9b9b9b" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextureView
+                android:id="@+id/publish_view"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <include
+                android:id="@+id/layout"
+                layout="@layout/input_room_id_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </include>
+
+
+            <RelativeLayout
+                android:id="@+id/publish_state_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15dp"
+                android:visibility="gone">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:onClick="onSoundProcess"
+                    android:text="@string/tx_sound_process_setting" />
+
+                <TextView
+                    android:id="@+id/tx_room_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:text="@{quality.roomID}"
+                    android:textColor="@color/white_color" />
+
+                <TextView
+                    android:id="@+id/tx_stream_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tx_room_id"
+                    android:text="@{quality.streamID}"
+                    android:textColor="@color/white_color" />
+
+                <TextView
+                    android:id="@+id/tx_resolution"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tx_stream_id"
+                    android:text="@{quality.resolution}"
+                    android:textColor="@color/white_color" />
+
+                <TextView
+                    android:id="@+id/tx_bitrate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tx_resolution"
+                    android:text="@{quality.bitrate}"
+                    android:textColor="@color/white_color" />
+
+                <TextView
+                    android:id="@+id/tx_fps"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tx_bitrate"
+                    android:text="@{quality.fps}"
+                    android:textColor="@color/white_color" />
+
+
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</layout>

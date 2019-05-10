@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.zego.common.util.AppLogger;
 import com.zego.zegoliveroom.ZegoLiveRoom;
 import com.zego.zegoliveroom.callback.IZegoInitSDKCompletionCallback;
+import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
 import com.zego.zegoliveroom.callback.IZegoLoginCompletionCallback;
 import com.zego.zegoliveroom.callback.IZegoRoomCallback;
 import com.zego.zegoliveroom.constants.ZegoConstants;
@@ -26,7 +27,7 @@ public class ZGBaseHelper {
 
     private ZGBaseState zgBaseState = ZGBaseState.WaitInitState;
 
-    enum ZGBaseState {
+    public enum ZGBaseState {
         WaitInitState, // 等待初始化状态
         InitSuccessState, // 初始化完成状态
         InitFailureState
@@ -189,7 +190,7 @@ public class ZGBaseHelper {
      * 登陆zego房间
      * <p>
      * 注意!!! sdk的推拉流以及信令服务等常用功能都需要登录房间后才能使用,
-     * 在退出时候必须要调用{@link #loginOutRoom()}退出房间。
+     * 在退出房间时必须要调用{@link #loginOutRoom()}退出房间。
      *
      * @param roomID 房间号 App 需保证房间 ID 信息的全局唯一，只支持长度不超过 128 byte 的数字，下划线，字母。
      *               每个房间 ID 代表着一个房间。
@@ -205,6 +206,34 @@ public class ZGBaseHelper {
 
         AppLogger.getInstance().i(ZGBaseHelper.class, "开始登陆房间!");
 
+
+        zegoLiveRoom.loginRoom(roomID, role, new IZegoLoginCompletionCallback() {
+            @Override
+            public void onLoginCompletion(int i, ZegoStreamInfo[] zegoStreamInfos) {
+                // zegoStreamInfos，内部封装了 userID、userName、streamID 和 extraInfo。
+                // 登录房间成功后, 开发者可通过 zegoStreamInfos 获取到当前房间推流信息。便于后续的拉流操作
+                // 当 zegoStreamInfos 为 null 时说明当前房间没有人推流
+                callback.onLoginCompletion(i, zegoStreamInfos);
+            }
+        });
+    }
+
+
+    /**
+     * 房间代理很重要, 开发者可以按自己的需求在回调里实现自己的业务
+     * app相关业务。回调介绍请参考文档<a>https://doc.zego.im/CN/625.html</>
+     * <p>
+     * 调用时机：建议在登陆房间之前设置。
+     *
+     * @param roomCallback 房间代理
+     */
+    public void setZegoRoomCallback(final IZegoRoomCallback roomCallback) {
+
+        if (getZGBaseState() != ZGBaseState.InitSuccessState) {
+            AppLogger.getInstance().w(ZGBaseHelper.class, "设置房间代理失败! SDK未初始化, 请先初始化SDK");
+            return;
+        }
+
         /**
          * 通过设置sdk房间代理，可以收到房间内的一些信息回调。
          * 开发者可以按自己的需求在回调里实现自己的业务
@@ -215,22 +244,38 @@ public class ZGBaseHelper {
                 AppLogger.getInstance().i(ZGBaseHelper.class, "您已被踢出房间 reason : %d, roomID : %s", reason, roomID);
                 // 原因，16777219 表示该账户多点登录被踢出，16777220 表示该账户是被手动踢出，16777221 表示房间会话错误被踢出
                 // 注意!!! 业务侧确保分配的userID保持唯一，不然会造成互相抢占。
+
+                if (roomCallback != null) {
+                    roomCallback.onKickOut(reason, roomID);
+                }
             }
 
             @Override
             public void onDisconnect(int errorCode, String roomID) {
                 AppLogger.getInstance().i(ZGBaseHelper.class, "房间与server断开连接 errorCode : %d, roomID : %s", errorCode, roomID);
                 // 原因，16777219 网络断开。 断网90秒仍没有恢复后会回调这个错误，onDisconnect后会停止推流和拉流
+
+                if (roomCallback != null) {
+                    roomCallback.onDisconnect(errorCode, roomID);
+                }
             }
 
             @Override
             public void onReconnect(int errorCode, String roomID) {
                 AppLogger.getInstance().i(ZGBaseHelper.class, "房间与server重新连接. roomID : %s", roomID);
+
+                if (roomCallback != null) {
+                    roomCallback.onReconnect(errorCode, roomID);
+                }
             }
 
             @Override
             public void onTempBroken(int errorCode, String roomID) {
                 AppLogger.getInstance().i(ZGBaseHelper.class, "房间与server中断，SDK会尝试自动重连. roomID : %s", roomID);
+
+                if (roomCallback != null) {
+                    roomCallback.onTempBroken(errorCode, roomID);
+                }
             }
 
             @Override
@@ -248,6 +293,10 @@ public class ZGBaseHelper {
                     }
 
                 }
+
+                if (roomCallback != null) {
+                    roomCallback.onStreamUpdated(type, listStream, roomID);
+                }
             }
 
             @Override
@@ -258,23 +307,22 @@ public class ZGBaseHelper {
                 for (ZegoStreamInfo streamInfo : zegoStreamInfos) {
                     AppLogger.getInstance().i(ZGBaseHelper.class, "房间内收到流额外信息更新. streamID : %s, userName : %s, extraInfo : %s", streamInfo.streamID, streamInfo.userName, streamInfo.extraInfo);
                 }
+
+                if (roomCallback != null) {
+                    roomCallback.onStreamExtraInfoUpdated(zegoStreamInfos, roomID);
+                }
             }
 
             @Override
             public void onRecvCustomCommand(String userID, String userName, String content, String roomID) {
                 AppLogger.getInstance().i(ZGBaseHelper.class, "收到自定义消息. userID : %s, userID : %s, content : %s, roomID : %s", userID, userName, content, roomID);
+
+                if (roomCallback != null) {
+                    roomCallback.onRecvCustomCommand(userID, userName, content, roomID);
+                }
             }
         });
 
-        zegoLiveRoom.loginRoom(roomID, role, new IZegoLoginCompletionCallback() {
-            @Override
-            public void onLoginCompletion(int i, ZegoStreamInfo[] zegoStreamInfos) {
-                // zegoStreamInfos，内部封装了 userID、userName、streamID 和 extraInfo。
-                // 登录房间成功后, 开发者可通过 zegoStreamInfos 获取到当前房间推流信息。便于后续的拉流操作
-                // 当 zegoStreamInfos 为 null 时说明当前房间没有人推流
-                callback.onLoginCompletion(i, zegoStreamInfos);
-            }
-        });
     }
 
     /**

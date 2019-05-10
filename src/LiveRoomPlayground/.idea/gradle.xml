@@ -9,17 +9,18 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/common" />
-            <option value="$PROJECT_DIR$/layeredcoding" />
+            <option value="$PROJECT_DIR$/layeredCoding" />
             <option value="$PROJECT_DIR$/main" />
-            <option value="$PROJECT_DIR$/mediaplayer" />
+            <option value="$PROJECT_DIR$/mediaPlayer" />
+            <option value="$PROJECT_DIR$/mediaSideInfo" />
             <option value="$PROJECT_DIR$/mediarecorder" />
-            <option value="$PROJECT_DIR$/mediasideinfo" />
+            <option value="$PROJECT_DIR$/mixStream" />
             <option value="$PROJECT_DIR$/mixing" />
-            <option value="$PROJECT_DIR$/mixstream" />
             <option value="$PROJECT_DIR$/play" />
             <option value="$PROJECT_DIR$/publish" />
-            <option value="$PROJECT_DIR$/videocapture" />
-            <option value="$PROJECT_DIR$/videoexternalrender" />
+            <option value="$PROJECT_DIR$/soundProcessing" />
+            <option value="$PROJECT_DIR$/videoCapture" />
+            <option value="$PROJECT_DIR$/videoExternalRender" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
