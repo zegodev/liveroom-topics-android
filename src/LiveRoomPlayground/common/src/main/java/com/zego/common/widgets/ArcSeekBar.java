@@ -30,6 +30,7 @@ import static android.view.MotionEvent.ACTION_UP;
 
 /**
  * 作用: 圆弧形 SeekBar
+ * 作者: GcsSloop
  * 摘要: 该 SeekBar 实现的核心原理非常简单,其绘制内容实际上为一个圆弧,只用了一条 Path,
  * 尽管核心原理简单,但仍有以下细节需要进行注意:
  * 1. 画布旋转导致的坐标系问题.

@@ -6,21 +6,21 @@
     <string name="tx_menu_copy_link">复制链接</string>
     <string name="tx_copy_success">已复制到粘贴板</string>
     <string name="tx_initsdk_title">第一步 初始化SDK</string>
-    <string name="tx_get_appid">点击获取AppID和AppSign</string>
-    <string name="tx_get_appid_guide">获取AppID和AppSign</string>
+    <string name="tx_get_appid">点击获取appID和appSign</string>
+    <string name="tx_get_appid_guide">获取appID和appSign</string>
     <string name="tx_initsdk">初始化SDK</string>
     <string name="tx_code_demo">代码演示</string>
     <string name="tx_mirror">镜像</string>
     <string name="tx_login_console">登陆控制台</string>
     <string name="tx_capture_mirror">预览镜像</string>
-    <string name="tx_hardware_decode_describe">开启硬解后，sdk会使用GPU去处理视频解码，会大大减少app对CPU的占用率,
+    <string name="tx_hardware_decode_describe">开启硬解后，SDK会使用GPU去处理视频解码，会大大减少App对CPU的占用率,
 达到省电不发热的效果。</string>
-    <string name="tx_hardware_encode_describe">开启硬编后，sdk会使用GPU去处理视频编码，会大大减少app对CPU的占用率,
+    <string name="tx_hardware_encode_describe">开启硬编后，SDK会使用GPU去处理视频编码，会大大减少App对CPU的占用率,
 达到省电不发热的效果。</string>
-    <string name="userid_describe">!!!必须保证userID的唯一性。可与app业务后台账号进行关联  userID还能便于zego技术支持帮忙查找定位线上问题  建议定义一个有意义的userID</string>
-    <string name="appid_describe">AppID 和 AppSign 由 Zego 分配给各 App。为了安全考虑，建议将 AppSign 存储在 App 的业务后台，使用时从后台获取。</string>
-    <string name="app_sign_describe">AppID 和 AppSign 由 Zego 分配给各 App。为了安全考虑，建议将 AppSign 存储在 App 的业务后台，使用时从后台获取。</string>
-    <string name="room_id_describe">RoomID代表一个房间的标识，需要保证房间ID信息的全局唯一，只支持长度不超过 128 byte 的数字，下划线，字母</string>
+    <string name="userid_describe">!!!必须保证userID的唯一性。可与app业务后台账号进行关联  userID还能便于ZEGO技术支持帮忙查找定位线上问题  建议定义一个有意义的userID</string>
+    <string name="appid_describe">appID 和 appSign 由 ZEGO 分配给各 App。为了安全考虑，建议将 appSign 存储在 App 的业务后台，使用时从后台获取。</string>
+    <string name="app_sign_describe">appID 和 appSign 由 ZEGO 分配给各 App。为了安全考虑，建议将 appSign 存储在 App 的业务后台，使用时从后台获取。</string>
+    <string name="room_id_describe">roomID代表一个房间的标识，需要保证房间ID信息的全局唯一，只支持长度不超过 128 byte 的数字，下划线，字母</string>
 
     <string name="tx_test_env">测试环境</string>
     <string name="tx_init_success">初始化SDK完成</string>
@@ -32,8 +32,8 @@
     <string name="tx_login_room_failure">登陆房间失败</string>
     <string name="tx_stream_id_cannot_null">streamID不能为空</string>
     <string name="tx_start_publish_title">第三步 开始推流</string>
-    <string name="tx_room_id_is_no_null">房间ID不能为空</string>
-    <string name="stream_id_describe">每个用户的流名必须保持唯一，也就是流名必须全局唯一，sdk推拉流都是基于流ID来标识, 只支持长度不超过 256 byte 的数字，下划线，字母</string>
+    <string name="tx_room_id_is_no_null">roomID不能为空</string>
+    <string name="stream_id_describe">每个用户的流名必须保持唯一，也就是流名必须全局唯一，SDK推拉流都是基于流ID来标识, 只支持长度不超过 256 byte 的数字，下划线，字母</string>
     <string name="tx_publish_guide">推流文档指引</string>
     <string name="tx_play_guide">拉流文档指引</string>
     <string name="tx_start_publish">发起推流</string>

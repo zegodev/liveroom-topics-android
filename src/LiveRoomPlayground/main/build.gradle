@@ -65,6 +65,7 @@ dependencies {
     implementation project(path: ':mediaPlayer')
     implementation project(path: ':mediaSideInfo')
     implementation project(path: ':layeredCoding')
+    implementation project(path: ':frequencySpectrum')
     implementation project(path: ':mediarecorder')
     implementation project(path: ':mixing')
     implementation project(path: ':mixStream')

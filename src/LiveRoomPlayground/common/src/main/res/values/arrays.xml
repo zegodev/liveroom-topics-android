@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="view_setting_describe">
-        <item>等比缩放, 可能有黑边, SDK 默认值</item>
-        <item>等比缩放填充整View</item>
+        <item>等比缩放, 可能有黑边</item>
+        <item>等比缩放填充整View SDK 默认值</item>
         <item>填充整个View, 视频可能会变形</item>
     </string-array>
     <string-array name="view_setting_values">

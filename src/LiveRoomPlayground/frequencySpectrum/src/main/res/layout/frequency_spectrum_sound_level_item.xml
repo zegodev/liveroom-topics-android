@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white_color"
+    android:layout_margin="10dp"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="音频频谱:"
+            android:layout_alignParentLeft="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_username"
+            android:text="xxxx"
+            android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray"
+        />
+
+    <com.zego.frequency_spectrum.widget.BeatLoadView
+        android:id="@+id/beat_load_view"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:itemHeight="200dp"
+        android:layout_alignParentBottom="true"
+        app:paintColor="@android:color/holo_orange_light" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="声浪:"/>
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:id="@+id/pb_play_sound_level"
+            android:max="100"/>
+
+    </LinearLayout>
+
+</LinearLayout>

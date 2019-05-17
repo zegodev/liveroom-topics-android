@@ -1,4 +1,5 @@
 include ':main',
+        ':frequencySpectrum',
         ':soundProcessing',
         ':mediaPlayer',
         ':common',

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BeatLoadView">
+        <attr name="paintColor" format="color"/>
+        <attr name="strokeWidth" format="dimension"/>
+        <attr name="itemHeight" format="dimension"/>
+        <attr name="itemsPadding" format="dimension"/>
+    </declare-styleable>
+</resources>

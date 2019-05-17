@@ -8,7 +8,7 @@ import com.zego.zegoliveroom.ZegoLiveRoom;
 import com.zego.zegoliveroom.callback.IZegoLivePlayerCallback;
 
 /**
- * ZGPublishHelper
+ * ZGPlayHelper
  * <p>
  * 拉流帮助类
  * 主要简化SDK推流一系列接口

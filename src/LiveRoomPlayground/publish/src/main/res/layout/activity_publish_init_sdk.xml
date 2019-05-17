@@ -73,7 +73,7 @@
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:background="@color/white_color"
-            android:hint="请输入AppID"
+            android:hint="请输入appID"
             android:padding="8dp"
             android:textSize="14sp"
             app:key="app_id" />
@@ -90,7 +90,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="AppSign:" />
+                android:text="appSign:" />
 
             <ImageView
                 android:id="@+id/app_sign_describe"
@@ -126,7 +126,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="环境 (请选择与AppID对应的环境) :"
+                android:text="环境 (请选择与appID对应的环境) :"
                 android:textSize="14sp" />
 
         </LinearLayout>

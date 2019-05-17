@@ -128,7 +128,7 @@ public class PlayActivityUI extends BaseActivity {
 
             @Override
             public void onDisconnect(int i, String s) {
-
+                binding.title.setTitleName("房间与server断开连接");
             }
 
             @Override

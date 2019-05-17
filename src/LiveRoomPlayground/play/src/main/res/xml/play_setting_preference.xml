@@ -5,11 +5,11 @@
     <PreferenceCategory android:title="视图设置">
 
         <ListPreference
-            android:defaultValue="0"
+            android:defaultValue="1"
             android:entries="@array/view_setting_describe"
             android:entryValues="@array/view_setting_values"
             android:key="play_view_mode"
-            android:summary="等比缩放, 可能有黑边"
+            android:summary="等比缩放填充整个View"
             android:title="选择拉流View视图模式 (拉流后设置生效)" />
     </PreferenceCategory>
 

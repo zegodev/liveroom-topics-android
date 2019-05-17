@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import com.zego.common.ZGPlayHelper;
 import com.zego.common.entity.SDKConfigInfo;
 import com.zego.common.entity.StreamQuality;
 import com.zego.publish.R;
@@ -22,9 +23,11 @@ import com.zego.common.ui.WebActivity;
 import com.zego.common.util.AppLogger;
 import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
 import com.zego.zegoliveroom.callback.IZegoResponseCallback;
+import com.zego.zegoliveroom.callback.IZegoRoomCallback;
 import com.zego.zegoliveroom.constants.ZegoConstants;
 import com.zego.zegoliveroom.entity.AuxData;
 import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
+import com.zego.zegoliveroom.entity.ZegoStreamInfo;
 
 import java.util.HashMap;
 
@@ -149,6 +152,45 @@ public class PublishActivityUI extends BaseActivity {
                     sdkConfigInfo.setEnableMic(isChecked);
                     ZGConfigHelper.sharedInstance().enableMic(isChecked);
                 }
+
+            }
+        });
+
+        // 设置SDK 房间代理回调。业务侧希望检查当前房间有流更新了，会去自动重新拉流。
+        ZGBaseHelper.sharedInstance().setZegoRoomCallback(new IZegoRoomCallback() {
+            @Override
+            public void onKickOut(int i, String s) {
+
+            }
+
+            @Override
+            public void onDisconnect(int i, String s) {
+                binding.title.setTitleName("房间与server断开连接");
+            }
+
+            @Override
+            public void onReconnect(int i, String s) {
+
+            }
+
+            @Override
+            public void onTempBroken(int i, String s) {
+
+            }
+
+            @Override
+            public void onStreamUpdated(int type, ZegoStreamInfo[] zegoStreamInfos, String s) {
+
+            }
+
+            @Override
+            public void onStreamExtraInfoUpdated(ZegoStreamInfo[] zegoStreamInfos, String s) {
+
+            }
+
+            @Override
+            public void onRecvCustomCommand(String s, String s1, String s2, String s3) {
+
 
             }
         });

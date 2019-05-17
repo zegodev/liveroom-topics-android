@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <com.zego.common.widgets.TitleLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        app:name="登录房间">
+
+        <Button
+            android:id="@+id/go_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:onClick="goBack"
+            android:background="@mipmap/ic_round_left" />
+
+
+    </com.zego.common.widgets.TitleLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="roomID:"
+            android:id="@+id/tv_roomid_symbol"
+            android:layout_marginTop="50px"
+            android:layout_marginHorizontal="50px"/>
+
+        <EditText
+            android:id="@+id/ed_room_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_roomid_symbol"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="20px"
+            android:hint="请输入房间号"
+            android:layout_marginHorizontal="50px"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="roomID代表一个房间的标识，需保证房间ID信息的全局唯一，长度不超过255 bytes 的可打印字符串"
+            android:id="@+id/tv_roomid_advice_symbol"
+            android:layout_below="@+id/ed_room_id"
+            android:layout_marginTop="20px"
+            android:layout_marginHorizontal="50px"
+            />
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/tv_roomid_advice_symbol"
+            android:onClick="joinRoom"
+            android:layout_marginTop="50px"
+            android:text="登陆房间" />
+
+    </RelativeLayout>
+    </LinearLayout>
+
+</layout>
