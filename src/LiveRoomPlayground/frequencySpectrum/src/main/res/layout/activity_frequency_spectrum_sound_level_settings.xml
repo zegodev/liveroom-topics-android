@@ -87,7 +87,7 @@
             android:min="10"
             android:id="@+id/sb_frequency_spectrum_monitor_cycle_settings"
             android:progress="500"/>
-
+        
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

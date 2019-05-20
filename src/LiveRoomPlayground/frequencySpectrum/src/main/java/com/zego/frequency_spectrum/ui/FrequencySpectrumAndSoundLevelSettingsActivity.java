@@ -107,20 +107,28 @@ public class FrequencySpectrumAndSoundLevelSettingsActivity extends BaseActivity
         });
 
         sb_sound_level_monitor_cycle_settings.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // 不同手机的SeekBar控件表现不一样，一些手机不能拖到顶部，使用取巧的方式解决
-                if(progress>=2800 && fromUser == true){
+                if(progress == 3000){
+                    tv_sound_level_current_monitor_cycle.setText(progress + "ms");
+                    last_sound_level_monitor_circle = progress;
+                }
+                else if(progress>=2800 && fromUser == true){
+
 
                     tv_sound_level_current_monitor_cycle.setText(2800+2*(progress-2800)+"ms");
                     last_sound_level_monitor_circle = 2800+2*(progress-2800);
                     seekBar.setProgress(2800+2*(progress-2800));
 
-                }else {
+                }
+                else {
                     tv_sound_level_current_monitor_cycle.setText(progress + "ms");
                     last_sound_level_monitor_circle = progress;
 
                 }
+
             }
 
             @Override
