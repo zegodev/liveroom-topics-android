@@ -62,11 +62,22 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/btn_joinRoom"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/tv_roomid_advice_symbol"
             android:onClick="joinRoom"
             android:layout_marginTop="50px"
             android:text="登陆房间" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_joinRoom"
+            android:layout_centerHorizontal="true"
+            android:text="专题文档-声浪/音频频谱"
+            android:background="@android:color/transparent"
+            android:textColor="@color/blue"
+            />
 
     </RelativeLayout>
     </LinearLayout>

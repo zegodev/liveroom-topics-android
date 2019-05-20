@@ -83,7 +83,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:max="3010"
+            android:max="3000"
             android:min="10"
             android:id="@+id/sb_frequency_spectrum_monitor_cycle_settings"
             android:progress="500"/>
@@ -168,7 +168,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:max="3100"
+            android:max="3000"
             android:min="100"
             android:id="@+id/sb_sound_level_monitor_cycle_settings"
             android:progress="200"/>

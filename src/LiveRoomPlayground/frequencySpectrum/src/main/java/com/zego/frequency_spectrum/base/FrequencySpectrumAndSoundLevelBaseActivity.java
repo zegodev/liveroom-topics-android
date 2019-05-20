@@ -99,7 +99,7 @@ public class FrequencySpectrumAndSoundLevelBaseActivity extends BaseActivity {
         last_frequency_spectrum_monitor_state = sp.getBoolean("last_frequency_spectrum_state", true);
         last_sound_level_monitor_state = sp.getBoolean("last_sound_level_monitor_state", true);
         last_frequency_spectrum_monitor_circle = sp.getInt("last_frequency_spectrum_monitor_circle", 500);
-        last_sound_level_monitor_circle = sp.getInt("last_sound_level_monitor_circle", 100);
+        last_sound_level_monitor_circle = sp.getInt("last_sound_level_monitor_circle", 200);
 
         //*******************获取音频频谱和声浪的设置值*******************//
 

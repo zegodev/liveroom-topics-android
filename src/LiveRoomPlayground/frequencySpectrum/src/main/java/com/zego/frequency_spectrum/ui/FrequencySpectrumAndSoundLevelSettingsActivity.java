@@ -62,7 +62,7 @@ public class FrequencySpectrumAndSoundLevelSettingsActivity extends BaseActivity
         last_frequency_spectrum_monitor_state = sp.getBoolean("last_frequency_spectrum_state", true);
         last_sound_level_monitor_state = sp.getBoolean("last_sound_level_monitor_state", true);
         last_frequency_spectrum_monitor_circle = sp.getInt("last_frequency_spectrum_monitor_circle", 500);
-        last_sound_level_monitor_circle = sp.getInt("last_sound_level_monitor_circle", 100);
+        last_sound_level_monitor_circle = sp.getInt("last_sound_level_monitor_circle", 200);
 
         sw_frequency_spectrum.setChecked(last_frequency_spectrum_monitor_state);
         sw_sound_level.setChecked(last_sound_level_monitor_state);
@@ -78,8 +78,18 @@ public class FrequencySpectrumAndSoundLevelSettingsActivity extends BaseActivity
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                tv_frequency_spectrum_current_monitor_cycle.setText(progress+"ms");
-                last_frequency_spectrum_monitor_circle = progress;
+                // 不同手机的SeekBar控件表现不一样，一些手机不能拖到顶部，使用取巧的方式解决
+                if(progress >= 2990){
+                    tv_frequency_spectrum_current_monitor_cycle.setText(3000+"ms");
+                    last_frequency_spectrum_monitor_circle = 3000;
+                    seekBar.setProgress(3000);
+
+
+                }else {
+                    tv_frequency_spectrum_current_monitor_cycle.setText(progress + "ms");
+                    last_frequency_spectrum_monitor_circle = progress;
+
+                }
 
             }
 
@@ -99,8 +109,18 @@ public class FrequencySpectrumAndSoundLevelSettingsActivity extends BaseActivity
         sb_sound_level_monitor_cycle_settings.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                tv_sound_level_current_monitor_cycle.setText(progress+"ms");
-                last_sound_level_monitor_circle = progress;
+                // 不同手机的SeekBar控件表现不一样，一些手机不能拖到顶部，使用取巧的方式解决
+                if(progress>=2800 && fromUser == true){
+
+                    tv_sound_level_current_monitor_cycle.setText(2800+2*(progress-2800)+"ms");
+                    last_sound_level_monitor_circle = 2800+2*(progress-2800);
+                    seekBar.setProgress(2800+2*(progress-2800));
+
+                }else {
+                    tv_sound_level_current_monitor_cycle.setText(progress + "ms");
+                    last_sound_level_monitor_circle = progress;
+
+                }
             }
 
             @Override

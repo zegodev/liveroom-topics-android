@@ -38,6 +38,11 @@ public class FrequencySpectrumAndSoundLevelRoomActivity extends FrequencySpectru
         // 设置频谱相关回调，由于SDK内部会抛出己方推流和拉到的流的音频频谱的数据，所以需要设置相关回调来监听抛出的数据并处理
         ZegoFrequencySpectrumMonitor.getInstance().setCallback(new IZegoFrequencySpectrumCallback() {
 
+            /**
+             * 拉流频率功率谱数据回调，停止拉流之后不会再抛出
+             *
+             * @param zegoFrequencySpectrumInfos
+             */
             @Override
             public void onFrequencySpectrumUpdate(ZegoFrequencySpectrumInfo[] zegoFrequencySpectrumInfos) {
 
