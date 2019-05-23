@@ -50,20 +50,21 @@ public class ZGPlayHelper {
      *
      * @param streamID 同一房间内对应推流端的streamID, sdk基于streamID进行拉流
      * @param playView 用于渲染视频的view, 推荐使用 TextureView, 支持 SurfaceView 或 Surface
+     * @return true 为调用成功, false为调用失败
      */
-    public void startPlaying(@NonNull String streamID, View playView) {
+    public boolean startPlaying(@NonNull String streamID, View playView) {
         if (isInitSDKSuccess()) {
             AppLogger.getInstance().i(ZGPlayHelper.class, "开始拉流, streamID : %s", streamID);
             ZegoLiveRoom zegoLiveRoom = ZGBaseHelper.sharedInstance().getZegoLiveRoom();
-            zegoLiveRoom.startPlayingStream(streamID, playView);
+            return zegoLiveRoom.startPlayingStream(streamID, playView);
         } else {
             AppLogger.getInstance().w(ZGPlayHelper.class, "拉流失败! SDK未初始化, 请先初始化SDK");
         }
+        return false;
     }
 
 
     /**
-     *
      * 拉流代理很重要, 开发者可以按自己的需求在回调里实现自己的业务
      * app相关业务。回调介绍请参考文档<a>https://doc.zego.im/CN/217.html</>
      *
@@ -79,6 +80,7 @@ public class ZGPlayHelper {
 
     /**
      * 停止拉流
+     *
      * @param streamID 不能为null。
      */
     public void stopPlaying(@NonNull String streamID) {

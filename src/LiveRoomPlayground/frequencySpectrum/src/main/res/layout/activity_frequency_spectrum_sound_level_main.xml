@@ -74,6 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/btn_joinRoom"
             android:layout_centerHorizontal="true"
+            android:onClick="goToFrequencySpectrumAndSoundLevelDocs"
             android:text="专题文档-声浪/音频频谱"
             android:background="@android:color/transparent"
             android:textColor="@color/blue"

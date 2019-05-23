@@ -63,44 +63,58 @@ public class LoginRoomPlayActivityUI extends BaseActivity {
      */
     public void onLoginRoom(View view) {
         String roomId = binding.edRoomId.getText().toString();
-        if (!"".equals(roomId)) {
 
-            final String finalRoomId = roomId;
-            // 防止用户点击，弹出加载对话框
-            CustomDialog.createDialog("登陆房间中...", LoginRoomPlayActivityUI.this).show();
+        final String finalRoomId = roomId;
+        // 防止用户点击，弹出加载对话框
+        CustomDialog.createDialog("登陆房间中...", LoginRoomPlayActivityUI.this).show();
 
-            // 登陆房间
-            ZGBaseHelper.sharedInstance().loginRoom(roomId, roomRole, new IZegoLoginCompletionCallback() {
-                @Override
-                public void onLoginCompletion(int errorCode, ZegoStreamInfo[] zegoStreamInfos) {
-                    // 关闭加载对话框
-                    CustomDialog.createDialog(LoginRoomPlayActivityUI.this).cancel();
+        // 登陆房间
+        boolean isLoginRoomSuccess = ZGBaseHelper.sharedInstance().loginRoom(roomId, roomRole, new IZegoLoginCompletionCallback() {
+            @Override
+            public void onLoginCompletion(int errorCode, ZegoStreamInfo[] zegoStreamInfos) {
+                // 关闭加载对话框
+                CustomDialog.createDialog(LoginRoomPlayActivityUI.this).cancel();
 
-                    if (errorCode == 0) {
-                        Toast.makeText(LoginRoomPlayActivityUI.this, getString(com.zego.common.R.string.tx_login_room_success), Toast.LENGTH_SHORT).show();
-                        AppLogger.getInstance().i(LoginRoomPlayActivityUI.class, "登陆房间成功 roomId : %s", finalRoomId);
-
-                        // 登陆房间成功，跳转推拉流页面
-                        jumpPublish(finalRoomId);
-
-                    } else {
-
-                        Toast.makeText(LoginRoomPlayActivityUI.this, getString(com.zego.common.R.string.tx_login_room_failure), Toast.LENGTH_SHORT).show();
-                        AppLogger.getInstance().i(LoginRoomPlayActivityUI.class, "登陆房间失败, errorCode : %d", errorCode);
-                    }
+                if (errorCode == 0) {
+                    loginRoomCompletion(true, finalRoomId, errorCode);
+                } else {
+                    loginRoomCompletion(false, finalRoomId, errorCode);
                 }
-            });
+            }
+        });
 
+        if (!isLoginRoomSuccess) {
+            loginRoomCompletion(false, finalRoomId, -1);
+        }
+    }
+
+
+    /**
+     * 处理登陆房间成功或失败的逻辑
+     *
+     * @param isLoginRoom 是否登陆房间成功
+     * @param finalRoomId roomID
+     * @param errorCode   登陆房间错误码
+     */
+    private void loginRoomCompletion(boolean isLoginRoom, String finalRoomId, int errorCode) {
+        // 关闭加载对话框
+        CustomDialog.createDialog(LoginRoomPlayActivityUI.this).cancel();
+        if (isLoginRoom) {
+            Toast.makeText(LoginRoomPlayActivityUI.this, getString(com.zego.common.R.string.tx_login_room_success), Toast.LENGTH_SHORT).show();
+            AppLogger.getInstance().i(LoginRoomPlayActivityUI.class, "登陆房间成功 roomId : %s", finalRoomId);
+
+            // 登陆房间成功，跳转推拉流页面
+            jumpPlay(finalRoomId);
         } else {
-            Toast.makeText(LoginRoomPlayActivityUI.this, getString(com.zego.common.R.string.tx_room_id_is_no_null), Toast.LENGTH_SHORT).show();
-            AppLogger.getInstance().i(LoginRoomPlayActivityUI.class, getString(com.zego.common.R.string.tx_room_id_is_no_null));
+            AppLogger.getInstance().i(LoginRoomPlayActivityUI.class, "登陆房间失败 errorCode : %s", errorCode == -1 ? "api调用失败" : String.valueOf(errorCode));
+            Toast.makeText(LoginRoomPlayActivityUI.this, getString(com.zego.common.R.string.tx_login_room_failure), Toast.LENGTH_SHORT).show();
         }
     }
 
     /**
-     * 跳转推拉流页面
+     * 跳转拉流页面
      */
-    private void jumpPublish(String roomID) {
+    private void jumpPlay(String roomID) {
         PlayActivityUI.actionStart(this, roomID);
     }
 

@@ -45,6 +45,4 @@ public class SDKConfigInfo extends BaseObservable {
         this.enableMic = enableMic;
         notifyPropertyChanged(BR.enableMic);
     }
-
-
 }

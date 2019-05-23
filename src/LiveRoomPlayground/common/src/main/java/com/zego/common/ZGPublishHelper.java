@@ -61,15 +61,16 @@ public class ZGPublishHelper {
      *                 也不能包含特殊字符。
      * @param title    标题，长度不可超过 255 byte
      * @param flag     推流标记, 详见 {@link com.zego.zegoliveroom.constants.ZegoConstants.PublishFlag}
+     * @return true 为推流成功 false 为推流失败
      */
-    public void startPublishing(@NonNull String streamID, @NonNull String title, int flag) {
+    public boolean startPublishing(@NonNull String streamID, @NonNull String title, int flag) {
         if (!isInitSDKSuccess()) {
             AppLogger.getInstance().w(ZGPublishHelper.class, "推流失败, 请先初始化sdk再进行推流");
-            return;
+            return false;
         }
         AppLogger.getInstance().i(ZGPublishHelper.class, "开始推流, streamID : %s, title : %s, flag : %s", streamID, title, flag);
         ZegoLiveRoom zegoLiveRoom = ZGBaseHelper.sharedInstance().getZegoLiveRoom();
-        zegoLiveRoom.startPublishing(streamID, title, flag);
+        return zegoLiveRoom.startPublishing(streamID, title, flag);
     }
 
 

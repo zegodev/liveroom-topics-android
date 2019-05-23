@@ -174,7 +174,7 @@ public class PublishSettingActivityUI extends FragmentActivity {
         ZGConfigHelper.sharedInstance().enableCamera(true);
         ZGConfigHelper.sharedInstance().enablePreviewMirror(true);
         ZGConfigHelper.sharedInstance().zegoAvConfig = new ZegoAvConfig(ZegoAvConfig.Level.High);
-        ZGBaseHelper.sharedInstance().getZegoLiveRoom().setAVConfig( ZGConfigHelper.sharedInstance().zegoAvConfig);
+        ZGBaseHelper.sharedInstance().getZegoLiveRoom().setAVConfig(ZGConfigHelper.sharedInstance().zegoAvConfig);
 
         ZGBaseHelper.sharedInstance().getZegoLiveRoom().enableTrafficControl(
                 ZegoConstants.ZegoTrafficControlProperty.ZEGOAPI_TRAFFIC_CONTROL_ADAPTIVE_FPS|

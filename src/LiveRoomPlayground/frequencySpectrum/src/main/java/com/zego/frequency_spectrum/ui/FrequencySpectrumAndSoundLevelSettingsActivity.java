@@ -66,11 +66,11 @@ public class FrequencySpectrumAndSoundLevelSettingsActivity extends BaseActivity
 
         sw_frequency_spectrum.setChecked(last_frequency_spectrum_monitor_state);
         sw_sound_level.setChecked(last_sound_level_monitor_state);
-        tv_frequency_spectrum_current_monitor_cycle.setText(last_frequency_spectrum_monitor_circle+"ms");
-        tv_sound_level_current_monitor_cycle.setText(last_sound_level_monitor_circle+"ms");
+        tv_frequency_spectrum_current_monitor_cycle.setText(last_frequency_spectrum_monitor_circle +"ms");
+        tv_sound_level_current_monitor_cycle.setText(last_sound_level_monitor_circle + "ms");
 
-        sb_frequency_spectrum_monitor_cycle_settings.setProgress(last_frequency_spectrum_monitor_circle);
-        sb_sound_level_monitor_cycle_settings.setProgress(last_sound_level_monitor_circle);
+        sb_frequency_spectrum_monitor_cycle_settings.setProgress(last_frequency_spectrum_monitor_circle - 10);
+        sb_sound_level_monitor_cycle_settings.setProgress(last_sound_level_monitor_circle - 100);
         sb_frequency_spectrum_monitor_cycle_settings.setEnabled(last_frequency_spectrum_monitor_state);
         sb_sound_level_monitor_cycle_settings.setEnabled(last_sound_level_monitor_state);
 
@@ -78,18 +78,8 @@ public class FrequencySpectrumAndSoundLevelSettingsActivity extends BaseActivity
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // 不同手机的SeekBar控件表现不一样，一些手机不能拖到顶部，使用取巧的方式解决
-                if(progress >= 2990){
-                    tv_frequency_spectrum_current_monitor_cycle.setText(3000+"ms");
-                    last_frequency_spectrum_monitor_circle = 3000;
-                    seekBar.setProgress(3000);
-
-
-                }else {
-                    tv_frequency_spectrum_current_monitor_cycle.setText(progress + "ms");
-                    last_frequency_spectrum_monitor_circle = progress;
-
-                }
+                last_frequency_spectrum_monitor_circle = progress+10;
+                tv_frequency_spectrum_current_monitor_cycle.setText(progress+ 10 + "ms");
 
             }
 
@@ -101,7 +91,7 @@ public class FrequencySpectrumAndSoundLevelSettingsActivity extends BaseActivity
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
-                ZGFrequencySpectrumAndSoundLevelHelper.modifyFrequencySpectrumMonitorCycle(seekBar.getProgress());
+                ZGFrequencySpectrumAndSoundLevelHelper.modifyFrequencySpectrumMonitorCycle(seekBar.getProgress()+10);
 
             }
         });
@@ -110,25 +100,8 @@ public class FrequencySpectrumAndSoundLevelSettingsActivity extends BaseActivity
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // 不同手机的SeekBar控件表现不一样，一些手机不能拖到顶部，使用取巧的方式解决
-                if(progress == 3000){
-                    tv_sound_level_current_monitor_cycle.setText(progress + "ms");
-                    last_sound_level_monitor_circle = progress;
-                }
-                else if(progress>=2800 && fromUser == true){
-
-
-                    tv_sound_level_current_monitor_cycle.setText(2800+2*(progress-2800)+"ms");
-                    last_sound_level_monitor_circle = 2800+2*(progress-2800);
-                    seekBar.setProgress(2800+2*(progress-2800));
-
-                }
-                else {
-                    tv_sound_level_current_monitor_cycle.setText(progress + "ms");
-                    last_sound_level_monitor_circle = progress;
-
-                }
-
+                last_sound_level_monitor_circle = progress+100;
+                tv_sound_level_current_monitor_cycle.setText(progress+ 100 + "ms");
             }
 
             @Override
@@ -139,7 +112,7 @@ public class FrequencySpectrumAndSoundLevelSettingsActivity extends BaseActivity
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
-                ZGFrequencySpectrumAndSoundLevelHelper.modifySoundLevelMonitorCycle(seekBar.getProgress());
+                ZGFrequencySpectrumAndSoundLevelHelper.modifySoundLevelMonitorCycle(seekBar.getProgress() + 100);
             }
         });
 

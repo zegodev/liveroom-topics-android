@@ -130,6 +130,7 @@ public class ZGBaseHelper {
      * @param testEnv  注意!!! 如果没有向 Zego 申请正式环境的 appID, 则需设置成测试环境, 否则SDK会初始化失败
      * @param callback 初始化sdk代理, 初始化结果会在{@link IZegoInitSDKCompletionCallback#onInitSDK(int)} 中回调。
      *                 返回 非0 代表初始化sdk失败, 具体错误码说明请查看<a> https://doc.zego.im/CN/308.html </a>
+     * @return true 为调用成功，false 为调用失败
      */
     public boolean initZegoSDK(long appID, byte[] appSign, boolean testEnv, final IZegoInitSDKCompletionCallback callback) {
 
@@ -175,14 +176,19 @@ public class ZGBaseHelper {
      * 释放 zegoSDK
      * 当开发者不再需要使用到 sdk 时, 可以释放 sdk。
      * 注意!!! 请根据业务需求来释放 sdk。
+     * <p>
+     *
+     * @return true 为调用成功，false 为调用失败
      */
-    public void unInitZegoSDK() {
+    public boolean unInitZegoSDK() {
+        boolean isUnitSDK = false;
         if (zegoLiveRoom != null) {
             setZGBaseState(ZGBaseState.WaitInitState);
-            zegoLiveRoom.unInitSDK();
+            isUnitSDK = zegoLiveRoom.unInitSDK();
             AppLogger.getInstance().i(ZGBaseHelper.class, "释放zego SDK!");
             zegoLiveRoom = null;
         }
+        return isUnitSDK;
     }
 
 
@@ -196,18 +202,17 @@ public class ZGBaseHelper {
      *               每个房间 ID 代表着一个房间。
      * @param role   用户角色，参考{@link ZegoConstants.RoomRole} 分主播和观众。请
      *               根据场景选择对应角色
+     * @return true 为调用成功，false 为调用失败
      */
-    public void loginRoom(String roomID, int role, final IZegoLoginCompletionCallback callback) {
-
+    public boolean loginRoom(String roomID, int role, final IZegoLoginCompletionCallback callback) {
         if (getZGBaseState() != ZGBaseState.InitSuccessState) {
             AppLogger.getInstance().i(ZGBaseHelper.class, "登陆失败: 请先InitSdk");
-            return;
+            return false;
         }
 
         AppLogger.getInstance().i(ZGBaseHelper.class, "开始登陆房间!");
 
-
-        zegoLiveRoom.loginRoom(roomID, role, new IZegoLoginCompletionCallback() {
+        return zegoLiveRoom.loginRoom(roomID, role, new IZegoLoginCompletionCallback() {
             @Override
             public void onLoginCompletion(int i, ZegoStreamInfo[] zegoStreamInfos) {
                 // zegoStreamInfos，内部封装了 userID、userName、streamID 和 extraInfo。
@@ -329,13 +334,16 @@ public class ZGBaseHelper {
      * 登出房间
      * 注意!!! 停止所有的推流和拉流后，才能执行 logoutRoom
      * 否则会影响房间业务.
+     *
+     * @return true 为调用成功，false 为调用失败
      */
-    public void loginOutRoom() {
+    public boolean loginOutRoom() {
         if (zegoLiveRoom != null) {
             AppLogger.getInstance().i(ZGBaseHelper.class, "退出房间");
             zegoLiveRoom.setZegoRoomCallback(null);
-            zegoLiveRoom.logoutRoom();
+           return zegoLiveRoom.logoutRoom();
         }
+        return false;
     }
 
 }

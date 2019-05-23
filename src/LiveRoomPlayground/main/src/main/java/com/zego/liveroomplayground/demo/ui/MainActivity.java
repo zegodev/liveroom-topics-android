@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.zego.frequency_spectrum.ui.FrequencySpectrumAndSoundLevelMainActivity;
+import com.zego.interrupthandler.ui.InterruptHandlerMainActivityUI;
 import com.zego.liveroomplayground.R;
 import com.zego.liveroomplayground.databinding.ActivityMainBinding;
 import com.zego.liveroomplayground.demo.adapter.MainAdapter;
@@ -73,6 +74,9 @@ public class MainActivity extends BaseActivity {
                     case "音频频谱":
                         FrequencySpectrumAndSoundLevelMainActivity.actionStart(MainActivity.this);
                         break;
+                    case "摄像头、音频打断事件处理":
+                        InterruptHandlerMainActivityUI.actionStart(MainActivity.this);
+                        break;
                     case "mediaPlayer":
                         intent = new Intent(MainActivity.this, ZGPlayerTypeUI.class);
                         MainActivity.this.startActivity(intent);
@@ -124,6 +128,8 @@ public class MainActivity extends BaseActivity {
                 .moduleName("变声/混响/立体声").titleName("进阶模块"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("音频频谱"));
+        mainAdapter.addModuleInfo(new ModuleInfo()
+                .moduleName("摄像头、音频打断事件处理"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("mediaPlayer"));
         mainAdapter.addModuleInfo(new ModuleInfo()

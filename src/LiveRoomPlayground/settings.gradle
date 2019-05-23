@@ -1,5 +1,6 @@
 include ':main',
         ':frequencySpectrum',
+        ':interruptHandler',
         ':soundProcessing',
         ':mediaPlayer',
         ':common',

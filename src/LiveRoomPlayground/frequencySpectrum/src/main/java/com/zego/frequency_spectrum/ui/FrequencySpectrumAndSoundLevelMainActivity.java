@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.zego.common.ZGBaseHelper;
 import com.zego.common.ZGManager;
 import com.zego.common.ui.BaseActivity;
+import com.zego.common.ui.WebActivity;
 import com.zego.common.util.AppLogger;
 import com.zego.frequency_spectrum.R;
 import com.zego.zegoliveroom.callback.IZegoInitSDKCompletionCallback;
@@ -70,6 +71,11 @@ public class FrequencySpectrumAndSoundLevelMainActivity extends BaseActivity{
             AppLogger.getInstance().i(FrequencySpectrumAndSoundLevelMainActivity.class, getString(com.zego.common.R.string.tx_room_id_is_no_null));
         }
 
+    }
+
+    public void goToFrequencySpectrumAndSoundLevelDocs(View view){
+
+        WebActivity.actionStart(this, "https://doc.zego.im/CN/709.html", "音频频谱与声浪");
     }
 
     /**

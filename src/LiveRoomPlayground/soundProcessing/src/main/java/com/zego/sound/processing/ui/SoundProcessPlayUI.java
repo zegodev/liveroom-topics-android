@@ -76,7 +76,7 @@ public class SoundProcessPlayUI extends BaseActivity {
                     Toast.makeText(SoundProcessPlayUI.this, getString(com.zego.common.R.string.tx_play_success), Toast.LENGTH_SHORT).show();
 
                     // 修改标题状态拉流成功状态
-                    binding.title.setTitleName(getString(com.zego.common.R.string.tx_play_success));
+                    binding.title.setTitleName(getString(com.zego.common.R.string.tx_playing));
                 } else {
                     // 修改标题状态拉流失败状态
                     binding.title.setTitleName(getString(com.zego.common.R.string.tx_play_fail));

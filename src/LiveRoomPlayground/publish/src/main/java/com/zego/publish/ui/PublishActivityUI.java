@@ -1,14 +1,17 @@
 package com.zego.publish.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.zego.common.ZGPlayHelper;
+import com.zego.common.application.ZegoApplication;
 import com.zego.common.entity.SDKConfigInfo;
 import com.zego.common.entity.StreamQuality;
 import com.zego.publish.R;
@@ -39,11 +42,6 @@ public class PublishActivityUI extends BaseActivity {
     private StreamQuality streamQuality = new StreamQuality();
     private SDKConfigInfo sdkConfigInfo = new SDKConfigInfo();
 
-    //  记录当前是否推流，如果有推流的话，在应用退后台时，需要停止推流，界面回到前台继续推流
-    //  原因是在某些华为手机上，应用在后台超过2分钟左右，华为系统会把摄像头资源给释放掉，并且可能会断开你应用的网络连接
-    //  关于后台会断开网络的问题可以通过在设置-应用-权限管理-菜单-特殊访问权限-电池优化，将设置成不允许使用电池优化，才能解决。
-    private boolean isPublishing = false;
-
     private String streamID;
 
     @Override
@@ -61,6 +59,8 @@ public class PublishActivityUI extends BaseActivity {
 
         streamQuality.setRoomID(String.format("RoomID : %s", getIntent().getStringExtra("roomID")));
 
+        // 调用sdk 开始预览接口 设置view 启用预览
+        ZGPublishHelper.sharedInstance().startPreview(binding.preview);
         // 设置推流回调
         ZGPublishHelper.sharedInstance().setPublisherCallback(new IZegoLivePublisherCallback() {
 
@@ -72,12 +72,10 @@ public class PublishActivityUI extends BaseActivity {
                 // 推流常见错误码请看文档: <a>https://doc.zego.im/CN/308.html</a>
 
                 if (errorCode == 0) {
-                    isPublishing = true;
                     binding.title.setTitleName(getString(R.string.tx_publish_success));
                     AppLogger.getInstance().i(ZGPublishHelper.class, "推流成功, streamID : %s", streamID);
                     Toast.makeText(PublishActivityUI.this, getString(R.string.tx_publish_success), Toast.LENGTH_SHORT).show();
                 } else {
-                    isPublishing = false;
                     binding.title.setTitleName(getString(R.string.tx_publish_fail));
                     AppLogger.getInstance().i(ZGPublishHelper.class, "推流失败, streamID : %s, errorCode : %d", streamID, errorCode);
                     Toast.makeText(PublishActivityUI.this, getString(R.string.tx_publish_fail), Toast.LENGTH_SHORT).show();
@@ -197,26 +195,17 @@ public class PublishActivityUI extends BaseActivity {
 
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        // 当用户退后台时先停止预览
-        ZGPublishHelper.sharedInstance().stopPreviewView();
-        if (isPublishing) {
-            ZGPublishHelper.sharedInstance().stopPublishing();
-        }
-    }
-
+    //  某些华为手机上，应用在后台超过2分钟左右，华为系统会把摄像头资源给释放掉，并且可能会断开你应用的网络连接
+    //  关于后台会断开网络的问题可以通过在设置-应用-权限管理-菜单-特殊访问权限-电池优化，将设置成不允许使用电池优化，才能解决。
     @Override
     protected void onResume() {
         super.onResume();
 
-        // 调用sdk 开始预览接口 设置view 启用预览
-        ZGPublishHelper.sharedInstance().startPreview(binding.preview);
-        if (isPublishing) {
-            // 开始推流ßß
-            ZGPublishHelper.sharedInstance().startPublishing(streamID, "", ZegoConstants.PublishFlag.JoinPublish);
-        }
+        // 华为某些机器会在应用退后台，或者锁屏的时候释放掉摄像头。达到省电的目的。
+        // 所以这里做了一个关开摄像头的操作，以便恢复摄像头。但是这种做法是不推荐的。
+        // 推荐使用interruptHandle 打断事件处理专题 中的方式去处理
+        ZGConfigHelper.sharedInstance().enableCamera(false);
+        ZGConfigHelper.sharedInstance().enableCamera(true);
     }
 
     public void goSetting(View view) {
@@ -240,31 +229,43 @@ public class PublishActivityUI extends BaseActivity {
      */
     public void onStart(View view) {
         streamID = layoutBinding.edStreamId.getText().toString();
-        if (!"".equals(streamID)) {
-            // 隐藏输入StreamID布局
-            hideInputStreamIDLayout();
+        // 隐藏输入StreamID布局
+        hideInputStreamIDLayout();
 
-            streamQuality.setStreamID(String.format("StreamID : %s", streamID));
+        streamQuality.setStreamID(String.format("StreamID : %s", streamID));
 
-            // 开始推流
-            ZGPublishHelper.sharedInstance().startPublishing(streamID, "", ZegoConstants.PublishFlag.JoinPublish);
+        // 开始推流
+        boolean isPublishSuccess = ZGPublishHelper.sharedInstance().startPublishing(streamID, "", ZegoConstants.PublishFlag.SingleAnchor);
 
-        } else {
-            AppLogger.getInstance().i(PublishActivityUI.class, getString(com.zego.common.R.string.tx_stream_id_cannot_null));
-            Toast.makeText(this, getString(com.zego.common.R.string.tx_stream_id_cannot_null), Toast.LENGTH_LONG).show();
+        if (!isPublishSuccess) {
+            AppLogger.getInstance().i(ZGPublishHelper.class, "推流失败, streamID : %s", streamID);
+            Toast.makeText(PublishActivityUI.this, getString(com.zego.common.R.string.tx_publish_fail), Toast.LENGTH_SHORT).show();
+            // 修改标题状态拉流失败状态
+            binding.title.setTitleName(getString(com.zego.common.R.string.tx_publish_fail));
         }
+
     }
 
     private void hideInputStreamIDLayout() {
         // 隐藏InputStreamIDLayout布局
         layoutBinding.getRoot().setVisibility(View.GONE);
         binding.publishStateView.setVisibility(View.VISIBLE);
+        hideKeyboard(ZegoApplication.zegoApplication, layoutBinding.edStreamId);
     }
 
     private void showInputStreamIDLayout() {
         // 显示InputStreamIDLayout布局
         layoutBinding.getRoot().setVisibility(View.VISIBLE);
         binding.publishStateView.setVisibility(View.GONE);
+    }
+
+    //隐藏虚拟键盘
+    public static void hideKeyboard(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm.isActive()) {
+            imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
+
+        }
     }
 
 

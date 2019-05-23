@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.zego.common.ZGBaseHelper;
+import com.zego.common.ZGConfigHelper;
 import com.zego.common.ZGPublishHelper;
 import com.zego.common.entity.StreamQuality;
 import com.zego.common.ui.BaseActivity;
@@ -47,11 +48,6 @@ public class SoundProcessPublishBaseUI extends BaseActivity {
 
     protected String streamID;
 
-    //  记录当前是否推流，如果有推流的话，在应用退后台时，需要停止推流，界面回到前台继续推流
-    //  原因是在某些华为手机上，应用在后台超过2分钟左右，华为系统会把摄像头资源给释放掉，并且可能会断开你应用的网络连接
-    //  关于后台会断开网络的问题可以通过在设置-应用-权限管理-菜单-特殊访问权限-电池优化，将设置成不允许使用电池优化，才能解决。
-    protected boolean isPublishing = false;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +61,9 @@ public class SoundProcessPublishBaseUI extends BaseActivity {
 
         // 初始化 SDK 回调代理
         initSDKCallback();
+
+        // 调用sdk 开始预览接口 设置view 启用预览
+        ZGPublishHelper.sharedInstance().startPreview(binding.publishView);
     }
 
     /**
@@ -92,12 +91,10 @@ public class SoundProcessPublishBaseUI extends BaseActivity {
                 // 推流常见错误码请看文档: <a>https://doc.zego.im/CN/308.html</a>
 
                 if (errorCode == 0) {
-                    isPublishing = true;
                     binding.title.setTitleName(getString(R.string.tx_publish_success));
                     AppLogger.getInstance().i(ZGPublishHelper.class, "推流成功, streamID : %s", streamID);
                     Toast.makeText(SoundProcessPublishBaseUI.this, getString(R.string.tx_publish_success), Toast.LENGTH_SHORT).show();
                 } else {
-                    isPublishing = false;
                     binding.title.setTitleName(getString(R.string.tx_publish_fail));
                     AppLogger.getInstance().i(ZGPublishHelper.class, "推流失败, streamID : %s, errorCode : %d", streamID, errorCode);
                     Toast.makeText(SoundProcessPublishBaseUI.this, getString(R.string.tx_publish_fail), Toast.LENGTH_SHORT).show();
@@ -207,27 +204,16 @@ public class SoundProcessPublishBaseUI extends BaseActivity {
         binding.publishStateView.setVisibility(View.VISIBLE);
     }
 
+    //  某些华为手机上，应用在后台超过2分钟左右，华为系统会把摄像头资源给释放掉，并且可能会断开你应用的网络连接
+    //  关于后台会断开网络的问题可以通过在设置-应用-权限管理-菜单-特殊访问权限-电池优化，将设置成不允许使用电池优化，才能解决。
     @Override
     protected void onResume() {
         super.onResume();
-        // 调用 ZEGO SDK开始预览，这个时候可以在设置的 view 上看到自己画面 不会进行推流
-        ZGPublishHelper.sharedInstance().startPreview(binding.publishView);
-
-        if (isPublishing) {
-            // 开始推流
-            ZGPublishHelper.sharedInstance().startPublishing(streamID, "", ZegoConstants.PublishFlag.JoinPublish);
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        // 当用户退后台时先停止预览
-        ZGPublishHelper.sharedInstance().stopPreviewView();
-        if (isPublishing) {
-            ZGPublishHelper.sharedInstance().stopPublishing();
-        }
+        // 华为某些机器会在应用退后台，或者锁屏的时候释放掉摄像头。达到省电的目的。
+        // 所以这里做了一个关开摄像头的操作，以便恢复摄像头。但是这种做法是不推荐的。
+        // 推荐使用interruptHandle 打断事件处理专题 中的方式去处理
+        ZGConfigHelper.sharedInstance().enableCamera(false);
+        ZGConfigHelper.sharedInstance().enableCamera(true);
     }
 
     @Override

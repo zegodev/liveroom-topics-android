@@ -46,6 +46,7 @@
     <string name="tx_speaker">扬声器</string>
     <string name="tx_start_play">开始拉流</string>
     <string name="tx_play_success">拉流成功</string>
+    <string name="tx_playing">拉流中</string>
     <string name="tx_play_fail">拉流失败</string>
     <string name="tx_common">常用功能</string>
     <string name="play_volume">拉流音量</string>

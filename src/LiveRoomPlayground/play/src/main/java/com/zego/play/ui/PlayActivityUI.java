@@ -60,7 +60,7 @@ public class PlayActivityUI extends BaseActivity {
                     Toast.makeText(PlayActivityUI.this, getString(com.zego.common.R.string.tx_play_success), Toast.LENGTH_SHORT).show();
 
                     // 修改标题状态拉流成功状态
-                    binding.title.setTitleName(getString(com.zego.common.R.string.tx_play_success));
+                    binding.title.setTitleName(getString(com.zego.common.R.string.tx_playing));
                 } else {
                     // 当拉流失败 当前 mStreamID 初始化成 null 值
                     mStreamID = null;
@@ -205,19 +205,17 @@ public class PlayActivityUI extends BaseActivity {
      */
     public void onStart(View view) {
         String streamID = layoutBinding.edStreamId.getText().toString();
-        if (!"".equals(streamID)) {
-            // 隐藏输入StreamID布局
-            hideInputStreamIDLayout();
-            // 更新界面上流名
-            streamQuality.setStreamID(String.format("StreamID : %s", streamID));
-
-            // 开始拉流
-            ZGPlayHelper.sharedInstance().startPlaying(streamID, binding.playView);
-
-        } else {
-            AppLogger.getInstance().i(PlayActivityUI.class, getString(com.zego.common.R.string.tx_stream_id_cannot_null));
-            Toast.makeText(this, getString(com.zego.common.R.string.tx_stream_id_cannot_null), Toast.LENGTH_LONG).show();
-
+        // 隐藏输入StreamID布局
+        hideInputStreamIDLayout();
+        // 更新界面上流名
+        streamQuality.setStreamID(String.format("StreamID : %s", streamID));
+        // 开始拉流
+        boolean isPlaySuccess = ZGPlayHelper.sharedInstance().startPlaying(streamID, binding.playView);
+        if (!isPlaySuccess) {
+            AppLogger.getInstance().i(ZGPublishHelper.class, "拉流失败, streamID : %s", streamID);
+            Toast.makeText(PlayActivityUI.this, getString(com.zego.common.R.string.tx_play_fail), Toast.LENGTH_SHORT).show();
+            // 修改标题状态拉流失败状态
+            binding.title.setTitleName(getString(com.zego.common.R.string.tx_play_fail));
         }
     }
 
