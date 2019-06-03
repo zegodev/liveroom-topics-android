@@ -174,6 +174,7 @@ public class CameraInterruptHandler {
         this.mLiveRoom = null;
 
         if (isApi21()) {
+            // 移除延时唤醒摄像头任务
             mUIHandler.removeCallbacksAndMessages(null);
             mCameraManager.unregisterAvailabilityCallback(mCameraAvailabilityCallback);
             mCameraManager = null;
@@ -226,7 +227,7 @@ public class CameraInterruptHandler {
     }
 
     /**
-     * 后台时长是否超过 {@link #BACKGROUND_TIME_INTERVAL_NEED_RESUME_CAMERA_FOR_API_29}
+     * 后台时长是否超过指定时长 {@link #BACKGROUND_TIME_INTERVAL_NEED_RESUME_CAMERA_FOR_API_29}
      */
     @TargetApi(28)
     private boolean isMoreThanBackgroundTimeInterval() {
@@ -241,9 +242,11 @@ public class CameraInterruptHandler {
      */
     @TargetApi(21)
     private void startResumeCameraTask() {
+        // 如果存在延时唤醒摄像头任务，则返回
         if (mUIHandler.hasMessages(MSG_RESUME_CAMERA)) {
             return;
         }
+        // 启动延时任务去唤醒摄像头
         mUIHandler.sendEmptyMessageDelayed(MSG_RESUME_CAMERA, RESUME_CAMERA_TASK_DELAY);
     }
 
@@ -263,7 +266,9 @@ public class CameraInterruptHandler {
     private void resumeCamera() {
         Log.d(TAG, "resumeCamera isCameraEnable: " + isCameraEnable);
         if (isCameraEnable) {
+            // enableCamera false 将会导致SDK释放掉旧的不能正常使用的摄像头对象
             mLiveRoom.enableCamera(false);
+            // enableCamera true 将会重新创建新的摄像头对象。除了不允许抢占摄像头和Android9.0后台一分钟的场景外，新建的摄像头对象是正常可用的。
             mLiveRoom.enableCamera(true);
         }
     }
@@ -276,12 +281,14 @@ public class CameraInterruptHandler {
 
         @Override
         public void onActivityStarted(Activity activity) {
-            // 下面的注释都是基于API21以下。
-            // 由于没有方法监听到摄像头的抢占，所以默认都重新启动Camera
-            // 下面的逻辑会导致后台切前台时，如果正在使用摄像头，并且没有出现抢占的情况下，拉流端会卡一下。
-            // 对于华为手机，同时只能一个应用使用摄像头，先用先得，所以可以不使用下面的判断
-            // 但是其他厂商机型，摄像头会被抢占，下面的逻辑可以正常唤醒摄像头。
-            // 客户需根据实际情况，在使用了Camera的时候，或者在预览推流页面的时候，才执行这操作
+            // Android 5.0以下
+            // 由于没有方法监听到摄像头的抢占，为了能保证当前应用持有的摄像头对象可用，当应用回到前台时都需执行唤醒摄像头操作。
+            // 当没有出现摄像头被抢占使用的情况下，如果执行唤醒摄像头操作，将会导致拉流端拉到的画面会轻微卡顿一下。
+            // 对于华为手机，同时只能一个应用使用摄像头，先用先得，即假设当前应用正在使用摄像头，其他应用将不能使用摄像头，直到前者将摄像头释放。所以可以不需要执行唤醒操作。
+
+            // Android 9.0以上
+            // Android9.0以上，如果当前应用进入后台超过1分钟，系统将不允许当前应用使用摄像头，即任何的恢复手段在后台都是无效的，只能应用回到前台后，才能执行唤醒摄像头操作。
+            // 所以当应用回到前台时，需根据 mNeedResumeCameraWhileOnStart 的值，确定是否需要唤醒摄像头。
             if (!isApi21() || mNeedResumeCameraWhileOnStart) {
                 AppLogger.getInstance().d(CameraInterruptHandler.class, "onActivityStarted mNeedResumeCameraWhileOnStart: " + mNeedResumeCameraWhileOnStart);
                 resumeCamera();
@@ -349,6 +356,7 @@ public class CameraInterruptHandler {
                 if (isCameraEnable) {
                     boolean isAllCameraAvailable = true;
 
+                    // 检查当前是否所有摄像头都是可用状态
                     for (String key : mCameraIDUsingMap.keySet()) {
                         Boolean isCameraAvailable = mCameraIDUsingMap.get(key);
                         if (isCameraAvailable == null || !isCameraAvailable) {

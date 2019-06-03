@@ -50,8 +50,11 @@ public class GlUtil {
         final int frameBufferArray[] = new int[1];
         GLES20.glGenFramebuffers(1, frameBufferArray, 0);
         final int frameBufferId = frameBufferArray[0];
+        // 绑定帧缓冲区
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, frameBufferId);
+        // 将2D纹理附着到帧缓冲对象
         GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, textureId, 0);
+        // 检查帧缓冲区是否完整
         int status = GLES20.glCheckFramebufferStatus(GLES20.GL_FRAMEBUFFER);
 
         if (status != GLES20.GL_FRAMEBUFFER_COMPLETE) {

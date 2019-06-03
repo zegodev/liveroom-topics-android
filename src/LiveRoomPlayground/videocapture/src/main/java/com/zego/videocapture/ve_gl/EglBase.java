@@ -75,7 +75,7 @@ public abstract class EglBase {
             EGL10.EGL_GREEN_SIZE, 8,
             EGL10.EGL_BLUE_SIZE, 8,
             EGL10.EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-            EGL_RECORDABLE_ANDROID, 1,
+            EGL_RECORDABLE_ANDROID, 1, //表示该EGL使用的Surface将用做实时采集
             EGL10.EGL_NONE
     };
     // clang-format on

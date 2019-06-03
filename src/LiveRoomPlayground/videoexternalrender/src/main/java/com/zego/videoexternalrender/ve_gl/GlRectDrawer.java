@@ -225,6 +225,7 @@ public class GlRectDrawer {
         GLES20.glEnableVertexAttribArray(shader.tcLocation);
         GLES20.glVertexAttribPointer(shader.posLocation, 2, GLES20.GL_FLOAT, false, 0, FULL_RECTANGLE_BUF);
         GLES20.glVertexAttribPointer(shader.tcLocation, 2, GLES20.GL_FLOAT, false, 0, FULL_RECTANGLE_TEX_BUF);
+        // 将投影和视图转换传递给着色器
         GLES20.glUniformMatrix4fv(shader.texMatrixLocation, 1, false, texMatrix, 0);
     }
 

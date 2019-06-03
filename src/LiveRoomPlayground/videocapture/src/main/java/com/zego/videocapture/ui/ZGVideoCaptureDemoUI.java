@@ -25,6 +25,10 @@ import com.zego.zegoliveroom.entity.ZegoStreamInfo;
 
 import java.util.HashMap;
 
+/**
+ * ZGVideoCaptureDemoUI
+ * 主要是处理推拉流并展示渲染视图
+ */
 @TargetApi(21)
 public class ZGVideoCaptureDemoUI extends BaseActivity implements IZegoLivePublisherCallback, IZegoLivePlayerCallback {
 
@@ -40,6 +44,7 @@ public class ZGVideoCaptureDemoUI extends BaseActivity implements IZegoLivePubli
     private String mPlayStreamID = "";
 
     private boolean isLoginSuccess = false;
+    // 采集源是否是录屏
     private boolean isScreen = false;
 
     private int nCur = 0;
@@ -56,12 +61,15 @@ public class ZGVideoCaptureDemoUI extends BaseActivity implements IZegoLivePubli
         mDealBtn = (Button)findViewById(R.id.publish_btn);
         mDealPlayBtn = (Button)findViewById(R.id.play_btn);
 
+        // 获取设备唯一ID
         String deviceID = DeviceInfoManager.generateDeviceId(this);
         mRoomID += deviceID;
 
+        // 采集源是否是录屏
         isScreen = getIntent().getBooleanExtra("IsScreenCapture", false);
 
         if (isScreen) {
+            // 采集源为录屏时，启动一个线程在界面上显示动态数字
             new Thread(new ThreadShow()).start();
         }
 
@@ -76,9 +84,11 @@ public class ZGVideoCaptureDemoUI extends BaseActivity implements IZegoLivePubli
     protected void onDestroy() {
         super.onDestroy();
 
+        // 登出房间并释放ZEGO SDK
         logoutLiveRoom();
     }
 
+    // 登录房间并设置推拉流回调监听
     public void loginLiveRoom(){
         //设置推流回调监听
         ZGManager.sharedInstance().api().setZegoLivePublisherCallback(ZGVideoCaptureDemoUI.this);
@@ -100,16 +110,21 @@ public class ZGVideoCaptureDemoUI extends BaseActivity implements IZegoLivePubli
         });
     }
 
+    // 推流
     public void doPublish(){
+        // 设置预览视图及视图展示模式
         ZGManager.sharedInstance().api().setPreviewView(mPreView);
         ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleToFill);
         // 设置推流分辨率
         ZGManager.sharedInstance().api().setAVConfig(new ZegoAvConfig(ZegoAvConfig.Level.High));
+        // 启动预览
         ZGManager.sharedInstance().api().startPreview();
+        // 开始推流
         boolean ret = ZGManager.sharedInstance().api().startPublishing(mRoomID, mRoomName, ZegoConstants.PublishFlag.JoinPublish);
 
     }
 
+    // 登出房间，去除推拉流回调监听并释放ZEGO SDK
     public void logoutLiveRoom(){
         ZGManager.sharedInstance().api().logoutRoom();
         ZGManager.sharedInstance().api().setZegoLivePublisherCallback(null);
@@ -118,9 +133,12 @@ public class ZGVideoCaptureDemoUI extends BaseActivity implements IZegoLivePubli
     }
 
 
+    // 处理推流操作
     public void DealPublishing(View view){
+        // 界面button==停止推流
         if (mDealBtn.getText().toString().equals("StopPublish")){
 
+            // 停止预览和推流
             ZGManager.sharedInstance().api().stopPreview();
             ZGManager.sharedInstance().api().setPreviewView(null);
             ZGManager.sharedInstance().api().stopPublishing();
@@ -130,15 +148,19 @@ public class ZGVideoCaptureDemoUI extends BaseActivity implements IZegoLivePubli
             });
 
         } else {
+            // 界面button==开始推流
             doPublish();
         }
     }
 
+    // 处理拉流操作
     public void DealPlay(View view){
+        // 界面button==开始拉流
         if (mDealPlayBtn.getText().toString().equals("StartPlay") && !mPlayStreamID.equals("")) {
 
             // 开始拉流
             boolean ret = ZGManager.sharedInstance().api().startPlayingStream(mPlayStreamID, mPlayView);
+            // 设置拉流视图模式，填充整个view
             ZGManager.sharedInstance().api().setViewMode(ZegoVideoViewMode.ScaleToFill, mPlayStreamID);
             mErrorTxt.setText("");
             if (!ret){
@@ -147,6 +169,7 @@ public class ZGVideoCaptureDemoUI extends BaseActivity implements IZegoLivePubli
                 });
             }
         } else {
+            // 界面button==停止拉流
             if (!mPlayStreamID.equals("")){
                 //停止拉流
                 ZGManager.sharedInstance().api().stopPlayingStream(mPlayStreamID);
@@ -157,7 +180,7 @@ public class ZGVideoCaptureDemoUI extends BaseActivity implements IZegoLivePubli
         }
     }
 
-    // 推流回调
+    // 推流状态回调
     @Override
     public void onPublishStateUpdate(int stateCode, String streamID, HashMap<String, Object> hashMap) {
         if (stateCode != 0) {
@@ -201,7 +224,7 @@ public class ZGVideoCaptureDemoUI extends BaseActivity implements IZegoLivePubli
 
     }
 
-    // 拉流回调
+    // 拉流状态回调
     @Override
     public void onPlayStateUpdate(int stateCode, String streamID) {
         if (stateCode != 0){
@@ -250,6 +273,7 @@ public class ZGVideoCaptureDemoUI extends BaseActivity implements IZegoLivePubli
                         mNumTxt.setText(String.valueOf(nCur));
                     });
 
+                    // 实现界面上的数字递增
                     nCur++;
                 } catch (Exception e) {
                     // TODO Auto-generated catch block

@@ -23,7 +23,9 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
 /**
- * Created by zego on 2018/12/28.
+ * Renderer
+ * 渲染类
+ * 展示了如何渲染 RGB、YUV 类型的视频数据
  */
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -46,26 +48,36 @@ public class Renderer implements TextureView.SurfaceTextureListener {
     private TextureView mTextureView;
     private String streamID;
 
+    // 处理 yuv 格式视频数据的 drawer
     private GlRectDrawer mDrawer = null;
+    // 处理 rgb 格式视频数据的 drawer
     private GlRectDrawer mRgbDrawer = null;
-    private final Matrix renderMatrix = new Matrix();
+
+    // 纹理变换矩阵，图像会正立显示
     private float[] flipMatrix = new float[]{1.0f, 0.0f, 0.0f, 0.0f,
             0.0f, -1.0f, 0.0f, 0.0f,
             0.0f, 0.0f, 1.0f, 0.0f,
             0.0f, 1.0f, 0.0f, 0.0f};
 
+    // 设置流名，是当前待渲染的拉流或者推流的流名
     public void setStreamID(String streamID) {
         this.streamID = streamID;
     }
 
 
+    /** 初始化 Renderer
+     *
+     * @param eglContext OpenGL的共享上下文
+     * @param eglDisplay 关联显示屏的通用数据类型
+     * @param eglConfig  绘图配置
+     */
     public Renderer(EGLContext eglContext, EGLDisplay eglDisplay, EGLConfig eglConfig) {
         this.eglContext = eglContext;
         this.eglDisplay = eglDisplay;
         this.eglConfig = eglConfig;
     }
 
-    // 绑定context
+    // 绑定eglContext、eglDisplay、eglSurface
     private void makeCurrent() {
         if (eglSurface == EGL14.EGL_NO_SURFACE) {
             throw new RuntimeException("No EGLSurface - can't make current");
@@ -78,7 +90,7 @@ public class Renderer implements TextureView.SurfaceTextureListener {
         }
     }
 
-    // 绘制Buffer到当前的view
+    // 将Buffer绘制到当前的view上
     public void draw(VideoRenderer.PixelBuffer pixelBuffer) {
 
         if (mTextureView != null) {
@@ -92,53 +104,63 @@ public class Renderer implements TextureView.SurfaceTextureListener {
             return;
         }
 
-        // if yuv
+        // 绘制 yuv 格式的buffer
         if (pixelBuffer.strides[2] > 0) {
 
             if (mDrawer == null) {
+                // 创建 yuv 格式的 drawer
                 mDrawer = new GlRectDrawer();
             }
 
-            // 正图像
-            renderMatrix.reset();
-            renderMatrix.preTranslate(0.5f, 0.5f);
-            renderMatrix.preScale(1f,-1f); // I420上下颠倒
-            renderMatrix.preTranslate(-0.5f, -0.5f);
-
+            // 绑定eglContext、eglDisplay、eglSurface
             makeCurrent();
 
-            // Bind the textures.
+            // 生成Texture并上传贴图
             yuvTextures = uploadYuvData(pixelBuffer.width,pixelBuffer.height,pixelBuffer.strides,pixelBuffer.buffer);
 
             int[] value = measure(pixelBuffer.width, pixelBuffer.height, viewWidth, viewHeight);
-            float[] matrix = convertMatrixFromAndroidGraphicsMatrix(renderMatrix);
-            mDrawer.drawYuv(yuvTextures,matrix,pixelBuffer.width,pixelBuffer.height,value[0], value[1], value[2], value[3]);
+            // 渲染yuv格式图像
+            mDrawer.drawYuv(yuvTextures,flipMatrix,pixelBuffer.width,pixelBuffer.height,value[0], value[1], value[2], value[3]);
+            // 交换渲染好的buffer 去显示
             swapBuffers();
+            // 分离当前eglContext
             detachCurrent();
         } else {
 
+            // 绘制 rgb 格式的buffer
+
+            // 绑定eglContext、eglDisplay、eglSurface
             makeCurrent();
 
             if (mTextureId == 0) {
+                // 生成纹理
                 mTextureId = GlUtil.generateTexture(GLES20.GL_TEXTURE_2D);
             }
 
+            // 选择可以由纹理函数进行修改的当前纹理单位
             GLES20.glActiveTexture(GLES20.GL_TEXTURE4);
+            // 绑定纹理
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureId);
 
             if (mRgbDrawer == null) {
+                // 创建绘制rgb的drawer
                 mRgbDrawer = new GlRectDrawer();
             }
 
+            // 生成2D纹理
             GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, pixelBuffer.width, pixelBuffer.height, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, pixelBuffer.buffer[0]);
+            // 获取展示图像的平面坐标及宽高
             int[] value = measure(pixelBuffer.width, pixelBuffer.height, viewWidth, viewHeight);
+            // 渲染rgb格式图像
             mRgbDrawer.drawRgb(mTextureId,flipMatrix,pixelBuffer.width,pixelBuffer.height,value[0], value[1], value[2], value[3]);
+            // 交换渲染好的buffer 去显示
             swapBuffers();
+            // 分离当前eglContext
             detachCurrent();
         }
     }
 
-
+    // 根据图像数据和展示视图的宽高计算缩放后的实际图像宽高及平面坐标
     private int[] measure(int imageWidth, int imageHeight, int viewWidth, int viewHeight) {
         int[] value = {0, 0, viewWidth, viewHeight};
         float scale;
@@ -151,6 +173,7 @@ public class Renderer implements TextureView.SurfaceTextureListener {
         return value;
     }
 
+    // 设置渲染视图
     public int setRendererView(TextureView view) {
         if (view != null && view == mTextureView) {
             return 0;
@@ -176,6 +199,7 @@ public class Renderer implements TextureView.SurfaceTextureListener {
         return 0;
     }
 
+    // 将待展示的TextureView附着到EGL Surface上
     private void attachTextureView() {
         if (eglSurface != EGL14.EGL_NO_SURFACE
                 && eglContext != EGL14.EGL_NO_CONTEXT
@@ -199,11 +223,12 @@ public class Renderer implements TextureView.SurfaceTextureListener {
         }
     }
 
-    // 创建Surface
+    // 创建EGL Surface
     private void initEGLSurface(Surface surface) {
         try {
             // Both these statements have been observed to fail on rare occasions, see BUG=webrtc:5682.
             createSurface(surface);
+            // 绑定eglContext、eglDisplay、eglSurface
             makeCurrent();
         } catch (RuntimeException e) {
             // Clean up before rethrowing the exception.
@@ -211,10 +236,11 @@ public class Renderer implements TextureView.SurfaceTextureListener {
             throw e;
         }
 
+        // 分离当前的EGL context
         detachCurrent();
     }
 
-    // Detach the current EGL context, so that it can be made current on another thread.
+    // 分离当前的EGL context，以便可以在另一个线程上使其成为当前的EGL context
     private void detachCurrent() {
         synchronized (lock) {
             if (!EGL14.eglMakeCurrent(
@@ -225,6 +251,7 @@ public class Renderer implements TextureView.SurfaceTextureListener {
         }
     }
 
+    // 创建EGL Surface
     private void createSurface(Object surface) {
         if (!(surface instanceof Surface) && !(surface instanceof SurfaceTexture)) {
             throw new IllegalStateException("Input must be either a Surface or SurfaceTexture");
@@ -243,6 +270,7 @@ public class Renderer implements TextureView.SurfaceTextureListener {
         Log.i(TAG, "createSurface");
     }
 
+    // 释放EGL Surface
     public void uninitEGLSurface() {
         if (mTextureId != 0) {
             int[] textures = new int[]{mTextureId};
@@ -277,6 +305,7 @@ public class Renderer implements TextureView.SurfaceTextureListener {
         }
     }
 
+    // 释放 Render
     public void uninit() {
         if (mTextureView != null) {
             mTextureView.setSurfaceTextureListener(null);
@@ -326,9 +355,12 @@ public class Renderer implements TextureView.SurfaceTextureListener {
     private int[] yuvTextures;
     private ByteBuffer[] packedByteBuffer =  new ByteBuffer[3];
 
+    // 上传yuv plane
     public int[] uploadYuvData(int width, int height, int[] strides, ByteBuffer[] planes) {
+        // 三个plane的width
         final int[] planeWidths = new int[] {width, width / 2, width / 2};
         // 确保strides裁剪后是4字节对齐
+        // 三个plane的stride
         final int[] destStrides = new int[3];
         for (int i = 0; i < planeWidths.length; i++){
             if (planeWidths[i]%4 == 0){
@@ -337,21 +369,22 @@ public class Renderer implements TextureView.SurfaceTextureListener {
                 destStrides[i] = (planeWidths[i]/4+1)*4;
             }
         }
+        // 三个plane的height
         final int[] planeHeights = new int[] {height, height / 2, height / 2};
 
-        // Make a first pass to see if we need a temporary copy buffer.
+        // 确定中间变量buffer的存储大小
         int copyCapacityNeeded = 0;
         for (int i = 0; i < 3; ++i) {
             if (strides[i] > planeWidths[i]) {
                 copyCapacityNeeded = Math.max(copyCapacityNeeded, planeWidths[i] * planeHeights[i]);
             }
         }
-        // Allocate copy buffer if necessary.
+        // 为中间变量buffer分配存储
         if (copyCapacityNeeded > 0
                 && (copyBuffer == null || copyBuffer.capacity() < copyCapacityNeeded)) {
             copyBuffer = ByteBuffer.allocateDirect(copyCapacityNeeded);
         }
-        // Make sure YUV textures are allocated.
+        // 生成三个纹理
         if (yuvTextures == null) {
             yuvTextures = new int[3];
             for (int i = 0; i < 3; i++) {
@@ -359,61 +392,36 @@ public class Renderer implements TextureView.SurfaceTextureListener {
             }
         }
 
-        // Upload each plane.
+        // 上传三个贴图
         for (int i = 0; i < 3; ++i) {
+            // 选择可以由纹理函数进行修改的当前纹理单位
             GLES20.glActiveTexture(GLES20.GL_TEXTURE0 + i);
+            // 绑定纹理
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, yuvTextures[i]);
 
-            // GLES only accepts packed data, i.e. stride == planeWidth.
+            // GLES 只接收 packed data, 即 stride == planeWidth.
             if (strides[i] == planeWidths[i]) {
-                // Input is packed already.
+                // 此plane是 packed data
                 packedByteBuffer[i] = planes[i];
 
             } else {
                 copyBuffer.clear();
                 planes[i].position(0);
+                // 裁剪plane，使其是 packed data，裁剪后的数据存入 copybuffer
                 copyPlane(
                         planes[i], strides[i], copyBuffer, destStrides[i], planeWidths[i], planeHeights[i]);
                 packedByteBuffer[i] = copyBuffer;
             }
             packedByteBuffer[i].position(0);
 //            GLES20.glPixelStorei(GLES20.GL_UNPACK_ALIGNMENT, 1); // 1像素对齐
+            // 生成2D纹理
             GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, planeWidths[i],
                     planeHeights[i], 0, GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, packedByteBuffer[i]);
         }
         return yuvTextures;
     }
 
-    // tools
-    public static float[] convertMatrixFromAndroidGraphicsMatrix(android.graphics.Matrix matrix) {
-        float[] values = new float[9];
-        matrix.getValues(values);
-
-        // The android.graphics.Matrix looks like this:
-        // [x1 y1 w1]
-        // [x2 y2 w2]
-        // [x3 y3 w3]
-        // We want to contruct a matrix that looks like this:
-        // [x1 y1  0 w1]
-        // [x2 y2  0 w2]
-        // [ 0  0  1  0]
-        // [x3 y3  0 w3]
-        // Since it is stored in column-major order, it looks like this:
-        // [x1 x2 0 x3
-        //  y1 y2 0 y3
-        //   0  0 1  0
-        //  w1 w2 0 w3]
-        // clang-format off
-        float[] matrix4x4 = {
-                values[0 * 3 + 0], values[1 * 3 + 0], 0, values[2 * 3 + 0],
-                values[0 * 3 + 1], values[1 * 3 + 1], 0, values[2 * 3 + 1],
-                0, 0, 1, 0,
-                values[0 * 3 + 2], values[1 * 3 + 2], 0, values[2 * 3 + 2],
-        };
-        // clang-format on
-        return matrix4x4;
-    }
-
+    // 根据stride裁剪plane
     public native void copyPlane(ByteBuffer src, int srcStride, ByteBuffer dst, int dstStride, int width, int height);
 
 }

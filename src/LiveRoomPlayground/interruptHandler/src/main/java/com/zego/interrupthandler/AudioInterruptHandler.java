@@ -3,11 +3,11 @@ package com.zego.interrupthandler;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.media.AudioFormat;
 import android.media.AudioManager;
-import android.media.AudioRecord;
-import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 
 import com.zego.common.util.AppLogger;
 import com.zego.zegoliveroom.ZegoLiveRoom;
@@ -39,6 +39,25 @@ public class AudioInterruptHandler {
         return AudioFocusManagerHolder.sInstance;
     }
 
+    private final static int MSG_RESUME_AUDIO = 0x10;
+
+    /**
+     * 延时1秒执行恢复音频设备任务
+     * <p>
+     * 为了避免音频焦点恢复时，麦克风其实还没有完整释放导致麦克风不能正常恢复问题，需延时1秒执行恢复音频设备任务<br>
+     * 同时，避免短暂时间内频繁丢失重获音频焦点的情况下，导致的无用操作。（QQ小视频录制-开始录制-录制完成效果，将会导致 丢失音频焦点-获取音频焦点-丢失音频焦点）
+     */
+    private final static int RESUME_AUDIO_TASK_DELAY = 1000;
+
+    private Handler mUIHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            if (MSG_RESUME_AUDIO == msg.what) {
+                resumeAudioModuleIfNeed();
+            }
+        }
+    };
+
     private ZegoLiveRoom mLiveRoom;
 
     private AudioManager mAudioManager;
@@ -48,7 +67,9 @@ public class AudioInterruptHandler {
     private AudioFocusManagerActivityLifecycleCallbacks mActivityLifecycleCallbacks;
 
     /**
-     * 是否持有音频焦点
+     * 是否持有音频焦点。
+     * <p>
+     * 短暂失去音频焦点不会影响该值。
      */
     private boolean isAudioFocusGranted = false;
 
@@ -71,6 +92,8 @@ public class AudioInterruptHandler {
     public void setApplicationContext(Application applicationContext) {
         applicationContext.registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
         mAudioManager = (AudioManager) applicationContext.getSystemService(Context.AUDIO_SERVICE);
+
+        // 直到 mAudioManager 和 mLiveRoom 两个变量都被初始化的时候，才会尝试请求获取音频焦点
         if (mLiveRoom != null) {
             requestAudioFocusIfNeed();
         }
@@ -85,6 +108,8 @@ public class AudioInterruptHandler {
      */
     public void setLiveRoom(ZegoLiveRoom liveRoom) {
         mLiveRoom = liveRoom;
+
+        // 直到 mAudioManager 和 mLiveRoom 两个变量都被初始化的时候，才会尝试请求获取音频焦点
         if (mAudioManager != null) {
             requestAudioFocusIfNeed();
         }
@@ -104,12 +129,14 @@ public class AudioInterruptHandler {
     }
 
     /**
-     * 释放相关资源
+     * 释放资源，重置变量
      *
      * @param applicationContext ApplicationContext 对象
      */
     public void release(Application applicationContext) {
         applicationContext.unregisterActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
+
+        mUIHandler.removeCallbacksAndMessages(null);
 
         this.mLiveRoom = null;
 
@@ -122,20 +149,21 @@ public class AudioInterruptHandler {
      * 获取到焦点
      */
     private void onAudioFocusGain() {
-        resumeAudioModuleIfNeed();
+        startResumeAudioTaskIfNeed();
     }
 
     /**
      * 短暂失去焦点后重新获取回焦点
      */
     private void onAudioFocusRegain() {
-        resumeAudioModuleIfNeed();
+        startResumeAudioTaskIfNeed();
     }
 
     /**
      * 短暂失去焦点
      */
     private void onAudioFocusLossTransient() {
+        removeResumeAudioTask();
         mLiveRoom.pauseModule(ZegoConstants.ModuleType.AUDIO);
     }
 
@@ -143,77 +171,62 @@ public class AudioInterruptHandler {
      * 不确定时长的失去焦点
      */
     private void onAudioFocusLoss() {
+        removeResumeAudioTask();
         mLiveRoom.pauseModule(ZegoConstants.ModuleType.AUDIO);
     }
 
+    /**
+     * 恢复使用音频设备
+     */
     private void resumeAudioModuleIfNeed() {
+        AppLogger.getInstance().d(AudioInterruptHandler.class, "resumeAudioModuleIfNeed isAudioModuleEnable: " + isAudioModuleEnable);
+        // 只有在允许使用音频设备的情况下，才进行恢复操作。
         if (isAudioModuleEnable) {
             mLiveRoom.resumeModule(ZegoConstants.ModuleType.AUDIO);
         }
     }
 
     /**
-     * 尝试请求音频焦点。
+     * 启动延时任务恢复使用音频设备
+     *
+     * @see #resumeAudioModuleIfNeed()
+     * @see #removeResumeAudioTask()
      */
-    private void requestAudioFocusIfNeed() {
-        // 如果已经持有了音频焦点，这不需要请求。
-        // 如果麦克风被别的应用持有，则不予请求。
-        AppLogger.getInstance().d(AudioInterruptHandler.class, "requestAudioFocusIfNeed");
-        if (!isAudioFocusGranted && isMicAvailability()) {
-            int ref = mAudioManager.requestAudioFocus(mOnAudioFocusChangeListener, AudioManager.STREAM_VOICE_CALL, AudioManager.AUDIOFOCUS_GAIN);
-            AppLogger.getInstance().d(AudioInterruptHandler.class, "requestAudioFocus ref: " + ref);
-            if (ref == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                isAudioFocusGranted = true;
-                onAudioFocusGain();
-            } else {
-                isAudioFocusGranted = false;
-                onAudioFocusLoss();
-            }
+    private void startResumeAudioTaskIfNeed() {
+        AppLogger.getInstance().d(AudioInterruptHandler.class, "startResumeAudioTaskIfNeed isAudioModuleEnable: " + isAudioModuleEnable);
+        if (isAudioModuleEnable) {
+            mUIHandler.sendEmptyMessageDelayed(MSG_RESUME_AUDIO, RESUME_AUDIO_TASK_DELAY);
         }
     }
 
     /**
-     * 麦克风是否可用
-     * <h2>使用注意事项：</h2>
-     * 如果LiveRoomSDK已经使用过麦克风功能，必须调用 {@link ZegoLiveRoom#enableMicDevice(boolean)} 参数：false
-     * 或者 {@link ZegoLiveRoom#pauseModule(int)} 参数 {@link ZegoConstants.ModuleType#AUDIO}
-     * 暂停使用麦克风才能准确获取麦克风是否被其他应用占用
+     * 移除恢复音频设备的延时任务
      *
-     * @return 麦克风是否可用
+     * @see #startResumeAudioTaskIfNeed
      */
-    private boolean isMicAvailability() {
-        AudioRecord recorder = null;
-        boolean available = true;
-        try {
-            int baseSampleRate = 44100;
-            int channel = AudioFormat.CHANNEL_IN_MONO;
-            int format = AudioFormat.ENCODING_PCM_16BIT;
-            int buffSize = AudioRecord.getMinBufferSize(baseSampleRate, channel, format);
-            recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, baseSampleRate, channel, format, buffSize);
+    private void removeResumeAudioTask() {
+        mUIHandler.removeMessages(MSG_RESUME_AUDIO);
+    }
 
-            if (recorder.getRecordingState() != AudioRecord.RECORDSTATE_STOPPED) {
-                available = false;
+    /**
+     * 尝试请求音频焦点。
+     */
+    private void requestAudioFocusIfNeed() {
+        AppLogger.getInstance().d(AudioInterruptHandler.class, "requestAudioFocusIfNeed");
+        // 如果已经持有了音频焦点，这不需要请求。
+        if (!isAudioFocusGranted) {
+            int ref = mAudioManager.requestAudioFocus(mOnAudioFocusChangeListener, AudioManager.STREAM_VOICE_CALL, AudioManager.AUDIOFOCUS_GAIN);
+            AppLogger.getInstance().d(AudioInterruptHandler.class, "requestAudioFocus ref: " + ref);
+            if (ref == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                // 获取到音频焦点
+                isAudioFocusGranted = true;
+                onAudioFocusGain();
             } else {
-                recorder.startRecording();
-                if (recorder.getRecordingState() != AudioRecord.RECORDSTATE_RECORDING) {
-                    recorder.stop();
-                    available = false;
-                }
-                recorder.stop();
-            }
-        } catch (Exception e) {
-            available = false;
-        } finally {
-            try {
-                if (recorder != null) {
-                    recorder.release();
-                }
-            } catch (Exception ignore) {
+                // 不能获取音频焦点
+                isAudioFocusGranted = false;
+                onAudioFocusLoss();
             }
         }
-
-        AppLogger.getInstance().d(AudioInterruptHandler.class, "isMicAvailability " + available);
-        return available;
     }
 
     private final class AudioFocusManagerActivityLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
@@ -269,7 +282,7 @@ public class AudioInterruptHandler {
                         // 如果之前已经获取过焦点，证明这一次是由于短暂失去焦点后，重新获取到焦点。
                         onAudioFocusRegain();
                     } else {
-                        // 之前是不确定时长失去焦点，
+                        // 之前是不确定时长失去焦点。
                         isAudioFocusGranted = true;
                         onAudioFocusGain();
                     }

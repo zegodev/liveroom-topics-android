@@ -38,8 +38,10 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
     private String mRoomName = "VideoExternalRenderDemo";
     private String mPlayStreamID = "";
 
+    // SDK 外部渲染类
     private ZegoExternalVideoRender zegoExternalVideoRender = null;
 
+    // 渲染类
     private VideoRenderer videoRenderer;
     private int chooseRenderType;
 
@@ -54,12 +56,15 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
         mDealBtn = (Button)findViewById(R.id.publish_btn);
         mDealPlayBtn = (Button)findViewById(R.id.play_btn);
 
+        // 获取已选的渲染类型
         chooseRenderType = getIntent().getIntExtra("RenderType", 0);
 
+        // 获取设备唯一ID
         String deviceID = DeviceInfoManager.generateDeviceId(this);
         mRoomID += deviceID;
 
         videoRenderer = new VideoRenderer();
+
         videoRenderer.init();
         // 添加外部渲染视图
         videoRenderer.addView (com.zego.zegoavkit2.ZegoConstants.ZegoVideoDataMainPublishingStream, mPreView);
@@ -68,20 +73,22 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
         // 设置外部渲染回调监听
         zegoExternalVideoRender.setZegoExternalRenderCallback2(videoRenderer);
 
-        //设置推流回调监听
+        // 设置推流回调监听
         ZGManager.sharedInstance().api().setZegoLivePublisherCallback(this);
-        //设置拉流回调监听
+        // 设置拉流回调监听
         ZGManager.sharedInstance().api().setZegoLivePlayerCallback(this);
 
+        // 登录房间
         boolean ret = ZGManager.sharedInstance().api().loginRoom(mRoomID, mRoomName, ZegoConstants.RoomRole.Anchor, new IZegoLoginCompletionCallback() {
             @Override
             public void onLoginCompletion(int errorcode, ZegoStreamInfo[] zegoStreamInfos) {
+                // 登录成功后设置预览视图，开启预览并推流
                 if (errorcode == 0){
 
                     ZGManager.sharedInstance().api().setPreviewView(mPreView);
                     ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleToFill);
                     ZGManager.sharedInstance().api().enableCamera(true);
-                    // 设置推流分辨率
+                    // 设置推流分辨率，540*960
                     ZGManager.sharedInstance().api().setAVConfig (new ZegoAvConfig(ZegoAvConfig.Level.High));
                     ZGManager.sharedInstance().api().startPreview();
                     ZGManager.sharedInstance().api().startPublishing(mRoomID, mRoomName, ZegoConstants.PublishFlag.JoinPublish);
@@ -101,16 +108,20 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
     protected void onDestroy() {
         super.onDestroy();
 
+        // 释放渲染类
         videoRenderer.uninit();
+        // 登出房间，去除推拉流回调监听，释放 ZEGO SDK
         ZGManager.sharedInstance().api().logoutRoom();
         ZGManager.sharedInstance().api().setZegoLivePublisherCallback(null);
         ZGManager.sharedInstance().api().setZegoLivePlayerCallback(null);
         ZGManager.sharedInstance().unInitSDK();
     }
 
+    // 处理推流相关操作
     public void DealPublishing(View view){
+        // 界面button==停止推流
         if (mDealBtn.getText().toString().equals("StopPublish")){
-            //停止推流
+            //停止预览，停止推流
             ZGManager.sharedInstance().api().stopPreview();
             ZGManager.sharedInstance().api().setPreviewView(null);
             ZGManager.sharedInstance().api().stopPublishing();
@@ -120,24 +131,29 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
             });
 
         } else {
-            //开始推流
+            // 界面button==开始推流
+            // 开启预览再开始推流
             ZGManager.sharedInstance().api().setPreviewView(mPreView);
             ZGManager.sharedInstance().api().startPreview();
             ZGManager.sharedInstance().api().startPublishing(mRoomID, mRoomName, ZegoConstants.PublishFlag.JoinPublish);
         }
     }
 
+    // 处理拉流相关操作
     public void dealPlay(View view){
 
+        // 界面button==开始拉流
         if (mDealPlayBtn.getText().toString().equals("StartPlay") && !mPlayStreamID.equals("")){
-            // 拉流视图
+            // 设置拉流视图
             if (chooseRenderType == VideoExternalRenderType.NOT_DECODE.value()) {
+                // 若选择的外部渲染类型是未解码型，设置添加解码类渲染视图
                 videoRenderer.addDecodView(mPlayView);
             } else {
+                // 选择的外部渲染类型不是未解码型，根据拉流流名设置渲染视图
                 videoRenderer.addView (mPlayStreamID, mPlayView);
             }
 
-            // 开始拉流
+            // 开始拉流，不为 SDK 设置渲染视图，使用自渲染的视图
             boolean ret = ZGManager.sharedInstance().api().startPlayingStream(mPlayStreamID, null);
 
             mErrorTxt.setText("");
@@ -148,6 +164,7 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
             }
 
         } else {
+            // 界面button==停止拉流
             if (!mPlayStreamID.equals("")){
                 //停止拉流
                 ZGManager.sharedInstance().api().stopPlayingStream(mPlayStreamID);
@@ -158,7 +175,7 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
         }
     }
 
-    //推流回调
+    // 推流状态回调
     @Override
     public void onPublishStateUpdate(int stateCode, String streamID, HashMap<String, Object> hashMap) {
         if (stateCode != 0) {
@@ -202,7 +219,7 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
 
     }
 
-    // 拉流回调
+    // 拉流状态回调
     @Override
     public void onPlayStateUpdate(int stateCode, String streamID) {
 

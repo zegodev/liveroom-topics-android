@@ -28,7 +28,9 @@ import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * Created by robotding on 17/2/15.
+ * VideoCaptureFromImage2
+ * 实现将图片源作为视频数据并传给ZEGO SDK，需要继承实现ZEGO SDK的ZegoVideoCaptureDevice类
+ * 采用GL_TEXTURE_2D方式传递数据，即OpenGL ES的2d贴图，通过client的onTextureCaptured传递采集数据
  */
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -43,10 +45,12 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
     private int mFrameBufferId = 0;
 
     private GlRectDrawer previewDrawer;
+    // 纹理变换矩阵
     private float[] flipMatrix = new float[]{1.0f, 0.0f, 0.0f, 0.0f,
             0.0f, -1.0f, 0.0f, 0.0f,
             0.0f, 0.0f, 1.0f, 0.0f,
             0.0f, 1.0f, 0.0f, 0.0f};
+
     private float[] transformationMatrix = new float[]{1.0f, 0.0f, 0.0f, 0.0f,
             0.0f, 1.0f, 0.0f, 0.0f,
             0.0f, 0.0f, 1.0f, 0.0f,
@@ -66,16 +70,20 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
     private Handler mHandler = null;
 
     private Context mContext = null;
+    // SDK 内部实现的、同样实现 ZegoVideoCaptureDevice.Client 协议的客户端，用于通知SDK采集结果
     private ZegoVideoCaptureDevice.Client mClient = null;
 
+    // 图片坐标参数
     private int mX = 0;
     private int mY = 0;
     private int mDrawCounter = 0;
 
+    // context用于获取图片资源
     VideoCaptureFromImage2(Context context) {
         mContext = context;
     }
 
+    // 初始化 OpenGL ES 的资源，为保证后续调用都是合法的，此处使用同步方式初始化
     public final int init() {
         mThread = new HandlerThread("VideoCaptureFromImage2" + hashCode());
         mThread.start();
@@ -88,6 +96,7 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
                 previewEglBase = EglBase.create(null, EglBase.CONFIG_RGBA);
                 previewDrawer = new GlRectDrawer();
 
+                // 注册 Choreographer 的刷新回调，保证后续绘制图片时不会出现画面撕裂的问题
                 Choreographer.getInstance().postFrameCallback(VideoCaptureFromImage2.this);
                 mIsRunning = true;
 
@@ -102,6 +111,7 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         return 0;
     }
 
+    // 释放OpenGL ES 的资源
     public final int uninit() {
         final CountDownLatch barrier = new CountDownLatch(1);
         mHandler.post(new Runnable() {
@@ -129,6 +139,7 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         return 0;
     }
 
+    // 设置位图
     public void setBitmap(final Bitmap bitmap) {
         mHandler.post(new Runnable() {
             @Override
@@ -138,6 +149,11 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         });
     }
 
+    /**
+     * 更新采集数据
+     *
+     * 当 Choreographer 刷新回调触发时，绘制图像数据到屏幕和 SDK 提供的 EglSurface 上
+     */
     @Override
     public void doFrame(long frameTimeNanos) {
         if (!mIsRunning) {
@@ -150,12 +166,14 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         }
 
         if (mIsPreview) {
+            // 设置展示视图
             if (mTextureView != null) {
                 attachTextureView();
             } else if (mSurfaceView != null) {
                 attachSurfaceView();
             }
             if (previewEglBase.hasSurface()) {
+                // 绘制图片到屏幕
                 draw(mBitmap);
             }
         }
@@ -169,8 +187,10 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         mDrawCounter = (mDrawCounter + 1) % 60;
     }
 
+    // 绘制图片到屏幕
     private void draw(final Bitmap bitmap) {
         try {
+            // 绑定eglContext、eglDisplay、eglSurface
             previewEglBase.makeCurrent();
 
             if (mBitmapTextureId == 0) {
@@ -184,45 +204,64 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
                 mPreviewTextureId = GlUtil.generateTexture(GLES20.GL_TEXTURE_2D);
                 GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, mImageWidth, mImageHeight, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
 
+                // 创建帧缓冲对象，绘制纹理到帧缓冲区并返回缓冲区索引
                 mFrameBufferId = GlUtil.generateFrameBuffer(mPreviewTextureId);
             } else {
+                // 绑定帧缓冲区
                 GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, mFrameBufferId);
             }
 
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+            // 绘制rgb格式图像
             previewDrawer.drawRgb(mBitmapTextureId, transformationMatrix,
                     mImageWidth, mImageHeight,
                     mImageWidth / 4 * mX, mImageHeight / 4 * mY,
                     mImageWidth / 4, mImageHeight / 4);
+            // 解邦帧缓冲区
             GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+            // 绘制rgb格式图像
             previewDrawer.drawRgb(mPreviewTextureId, flipMatrix,
                     mViewWidth, mViewHeight,
                     0, 0,
                     mViewWidth, mViewHeight);
 
+            // 交换渲染好的buffer 去显示
             previewEglBase.swapBuffers();
+
 
             if (mIsCapture) {
                 long now = SystemClock.elapsedRealtime();
+                // 将图片数据传给ZEGO SDK，包括时间戳
                 mClient.onTextureCaptured(mPreviewTextureId, mImageWidth, mImageHeight, now);
             }
 
+            // 分离当前eglContext
             previewEglBase.detachCurrent();
         } catch (RuntimeException e) {
             System.out.println(e.toString());
         }
     }
 
+    /**
+     * 初始化资源，必须实现
+     * @param client 通知ZEGO SDK采集结果的客户端
+     */
     @Override
     protected void allocateAndStart(Client client) {
         mClient = client;
 
+        // 初始化 OpenGL ES 的资源
         init();
+        // 设置图片的位图
         setBitmap(createBitmapFromAsset());
     }
 
+    /**
+     * 释放资源，必须实现
+     * 先释放OpenGL ES相关资源再清理client对象，以保证ZEGO SDK调用stopAndDeAllocate后，没有残留的异步任务导致野指针crash
+     */
     @Override
     protected void stopAndDeAllocate() {
         uninit();
@@ -231,6 +270,7 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         mClient = null;
     }
 
+    // 开始推流时,ZEGO SDK 调用 startCapture 通知外部采集设备开始工作，必须实现
     @Override
     protected int startCapture() {
         mHandler.post(new Runnable() {
@@ -242,6 +282,7 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         return 0;
     }
 
+    // 停止推流时，ZEGO SDK 调用 stopCapture 通知外部采集设备停止采集，必须实现
     @Override
     protected int stopCapture() {
         mHandler.post(new Runnable() {
@@ -253,8 +294,10 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         return 0;
     }
 
+    // 告知ZEGO SDK当前采集数据的类型，必须实现
     @Override
     protected int supportBufferType() {
+        // GL_TEXTURE_2D 类型
         return PIXEL_BUFFER_TYPE_GL_TEXTURE_2D;
     }
 
@@ -263,6 +306,7 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         return 0;
     }
 
+    // 设置视图宽高
     @Override
     protected int setResolution(int width, int height) {
         mImageWidth = width;
@@ -270,11 +314,13 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         return 0;
     }
 
+    // 前后摄像头的切换
     @Override
     protected int setFrontCam(int bFront) {
         return 0;
     }
 
+    // 设置展示视图
     @Override
     protected int setView(View view) {
         if (view instanceof TextureView) {
@@ -301,6 +347,7 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         return 0;
     }
 
+    // 启动预览
     @Override
     protected int startPreview() {
         mHandler.post(new Runnable() {
@@ -312,6 +359,7 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         return 0;
     }
 
+    // 停止预览
     @Override
     protected int stopPreview() {
         mHandler.post(new Runnable() {
@@ -338,6 +386,7 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         return 0;
     }
 
+    // 从资源区获取图片位图
     private Bitmap createBitmapFromAsset() {
         Bitmap bitmap = null;
         try {
@@ -355,6 +404,7 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         return bitmap;
     }
 
+    // 设置渲染视图，TextureView格式
     public int setRendererView(final TextureView view) {
 
         if (mHandler == null) {
@@ -377,6 +427,7 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         return 0;
     }
 
+    // 设置SurfaceView回调监听
     private void doSetRendererView(SurfaceView view) {
         final SurfaceView temp = view;
 
@@ -391,6 +442,7 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         }
     }
 
+    // 设置Texture.SurfaceTextureListener回调监听
     private void doSetRendererView(TextureView view) {
         if (mTextureView != null) {
             if (mTextureView.getSurfaceTextureListener().equals(VideoCaptureFromImage2.this)) {
@@ -406,6 +458,7 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         }
     }
 
+    // 设置渲染视图，SurfaceView格式
     public int setRendererView(final SurfaceView view) {
         final SurfaceView temp = view;
         if (mHandler != null) {
@@ -433,6 +486,7 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         return 0;
     }
 
+    // 设置预览视图，TextureView格式
     private void attachTextureView() {
         if (previewEglBase.hasSurface()) {
             return;
@@ -445,6 +499,7 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         mViewWidth = mTextureView.getWidth();
         mViewHeight = mTextureView.getHeight();
         try {
+            // 创建用于预览的EGLSurface
             previewEglBase.createSurface(mTextureView.getSurfaceTexture());
         } catch (RuntimeException e) {
             previewEglBase.releaseSurface();
@@ -453,6 +508,7 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         }
     }
 
+    // 设置预览视图，SurfaceView格式
     private void attachSurfaceView() {
         if (previewEglBase.hasSurface()) {
             return;
@@ -467,6 +523,7 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         mViewWidth = size.width();
         mViewHeight = size.height();
         try {
+            // 创建用于预览的EGLSurface
             previewEglBase.createSurface(holder.getSurface());
         } catch (RuntimeException e) {
             previewEglBase.releaseSurface();
@@ -475,8 +532,10 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         }
     }
 
+    // 销毁用于预览的surface
     private void releasePreviewSurface() {
         if (previewEglBase.hasSurface()) {
+            // 绑定eglContext、eglDisplay、eglSurface
             previewEglBase.makeCurrent();
 
             if (mBitmapTextureId != 0) {
@@ -502,7 +561,9 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
         }
     }
 
+    // 释放绘制相关类
     private void release() {
+        // 销毁用于预览的surface
         releasePreviewSurface();
         if (previewDrawer != null) {
             previewDrawer.release();
@@ -521,11 +582,13 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
 
     @Override
     public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+        // 安全销毁用于预览的surface
         releasePreviewSurfaceSafe();
     }
 
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        // 安全销毁用于预览的surface
         releasePreviewSurfaceSafe();
         return true;
     }
@@ -540,14 +603,17 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        // 安全销毁用于预览的surface
         releasePreviewSurfaceSafe();
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        // 安全销毁用于预览的surface
         releasePreviewSurfaceSafe();
     }
 
+    // 安全销毁用于预览的surface
     private void releasePreviewSurfaceSafe() {
         final CountDownLatch barrier = new CountDownLatch(1);
         mHandler.post(new Runnable() {
