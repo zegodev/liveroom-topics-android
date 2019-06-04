@@ -402,32 +402,26 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
      */
     @Override
     public int dequeueInputBuffer(int width, int height, int[] strides, int[] byteBufferLens) {
-        if (strides[0] != 0) {
-            // isChange为false时是rgb格式视频帧，为true时是yuv I420格式视频帧
-            // rgb格式 strides[0] > 0,其余值 = 0；yuv格式 strides[0]~strides[2] > 0, 其余值 = 0
-            boolean isChange = false;
-            for (int i = 0; i < strides.length; i++){
-                if (strides[i] * height > mMaxBufferSize[i]) {
-                    mMaxBufferSize[i] = strides[i] *height;
-                    isChange = true;
-                }
+        boolean isBufferLensChange = false;
+        for (int i=0; i<byteBufferLens.length;i++){
+            if (byteBufferLens[i]>mMaxBufferSize[i]) {
+                mMaxBufferSize[i] = byteBufferLens[i];
+                isBufferLensChange = true;
             }
-            if (isChange) {
-                if (mMaxBufferSize[0]>0){
-                    mProduceQueue.clear();
-                }
-                // 创建一个视频帧buffer供SDK写视频数据
-                createPixelBufferPool(mMaxBufferSize, 1);
+        }
+        // buffer长度较原buffer长度有增长时，重新创建提供给SDK的视频帧buffer
+        if (isBufferLensChange) {
+            if (mMaxBufferSize[0]>0){
+                mProduceQueue.clear();
             }
-            // AVCANNEXB 格式视频帧
-        } else if ((strides[0] == 0) && (byteBufferLens[0] > 0)) {
-            mViewHeight = height;
-            mViewWidth = width;
-
-            mMaxBufferSize[0] = byteBufferLens[0];
-            mProduceQueue.clear();
             // 创建一个视频帧buffer供SDK写视频数据
             createPixelBufferPool(mMaxBufferSize, 1);
+        }
+
+        // 为解码 AVCANNEXB 格式视频帧数据，提供分辨率
+        if ((strides[0] == 0) && (byteBufferLens[0] > 0)) {
+            mViewHeight = height;
+            mViewWidth = width;
         }
 
         this.height = height;
@@ -508,6 +502,7 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
             // 处理 AVCANNEXB 格式视频帧数据，进行解码
             if ((pixelBuffer.strides[0] == 0) && (pixelBuffer.buffer[0].capacity() > 0)) {
                 byte[] tmpData = new byte[pixelBuffer.buffer[0].capacity()];
+                pixelBuffer.buffer[0].position(0); // 缺少此行，解码后的渲染画面会卡住
                 pixelBuffer.buffer[0].get(tmpData);
 
                 // 系统启动到现在的纳秒数，包含休眠时间

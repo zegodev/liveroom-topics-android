@@ -235,7 +235,7 @@ public class PublishActivityUI extends BaseActivity {
         streamQuality.setStreamID(String.format("StreamID : %s", streamID));
 
         // 开始推流
-        boolean isPublishSuccess = ZGPublishHelper.sharedInstance().startPublishing(streamID, "", ZegoConstants.PublishFlag.SingleAnchor);
+        boolean isPublishSuccess = ZGPublishHelper.sharedInstance().startPublishing(streamID, "", ZegoConstants.PublishFlag.JoinPublish);
 
         if (!isPublishSuccess) {
             AppLogger.getInstance().i(ZGPublishHelper.class, "推流失败, streamID : %s", streamID);
