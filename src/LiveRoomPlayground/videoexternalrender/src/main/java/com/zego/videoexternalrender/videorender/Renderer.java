@@ -116,11 +116,11 @@ public class Renderer implements TextureView.SurfaceTextureListener {
             makeCurrent();
 
             // 生成Texture并上传贴图
-            yuvTextures = uploadYuvData(pixelBuffer.width,pixelBuffer.height,pixelBuffer.strides,pixelBuffer.buffer);
+            yuvTextures = uploadYuvData(pixelBuffer.width, pixelBuffer.height, pixelBuffer.strides, pixelBuffer.buffer);
 
             int[] value = measure(pixelBuffer.width, pixelBuffer.height, viewWidth, viewHeight);
             // 渲染yuv格式图像
-            mDrawer.drawYuv(yuvTextures,flipMatrix,pixelBuffer.width,pixelBuffer.height,value[0], value[1], value[2], value[3]);
+            mDrawer.drawYuv(yuvTextures, flipMatrix, pixelBuffer.width, pixelBuffer.height, value[0], value[1], value[2], value[3]);
             // 交换渲染好的buffer 去显示
             swapBuffers();
             // 分离当前eglContext
@@ -152,7 +152,7 @@ public class Renderer implements TextureView.SurfaceTextureListener {
             // 获取展示图像的平面坐标及宽高
             int[] value = measure(pixelBuffer.width, pixelBuffer.height, viewWidth, viewHeight);
             // 渲染rgb格式图像
-            mRgbDrawer.drawRgb(mTextureId,flipMatrix,pixelBuffer.width,pixelBuffer.height,value[0], value[1], value[2], value[3]);
+            mRgbDrawer.drawRgb(mTextureId, flipMatrix, pixelBuffer.width, pixelBuffer.height, value[0], value[1], value[2], value[3]);
             // 交换渲染好的buffer 去显示
             swapBuffers();
             // 分离当前eglContext
@@ -164,7 +164,7 @@ public class Renderer implements TextureView.SurfaceTextureListener {
     private int[] measure(int imageWidth, int imageHeight, int viewWidth, int viewHeight) {
         int[] value = {0, 0, viewWidth, viewHeight};
         float scale;
-        scale = viewWidth / imageWidth;
+        scale = (float) viewWidth / (float)imageWidth;
         float height = imageHeight * scale;
         value[0] = 0;
         value[1] = (int) (viewHeight - height) / 2;
@@ -204,7 +204,7 @@ public class Renderer implements TextureView.SurfaceTextureListener {
         if (eglSurface != EGL14.EGL_NO_SURFACE
                 && eglContext != EGL14.EGL_NO_CONTEXT
                 && eglDisplay != EGL14.EGL_NO_DISPLAY
-                ) {
+        ) {
             return;
         }
 
@@ -314,10 +314,10 @@ public class Renderer implements TextureView.SurfaceTextureListener {
         if (shader != null) {
             shader.release();
         }
-        if (mDrawer != null){
+        if (mDrawer != null) {
             mDrawer.release();
         }
-        if (mRgbDrawer != null){
+        if (mRgbDrawer != null) {
             mRgbDrawer.release();
         }
         eglContext = null;
@@ -353,24 +353,24 @@ public class Renderer implements TextureView.SurfaceTextureListener {
 
     private ByteBuffer copyBuffer;
     private int[] yuvTextures;
-    private ByteBuffer[] packedByteBuffer =  new ByteBuffer[3];
+    private ByteBuffer[] packedByteBuffer = new ByteBuffer[3];
 
     // 上传yuv plane
     public int[] uploadYuvData(int width, int height, int[] strides, ByteBuffer[] planes) {
         // 三个plane的width
-        final int[] planeWidths = new int[] {width, width / 2, width / 2};
+        final int[] planeWidths = new int[]{width, width / 2, width / 2};
         // 确保strides裁剪后是4字节对齐
         // 三个plane的stride
         final int[] destStrides = new int[3];
-        for (int i = 0; i < planeWidths.length; i++){
-            if (planeWidths[i]%4 == 0){
+        for (int i = 0; i < planeWidths.length; i++) {
+            if (planeWidths[i] % 4 == 0) {
                 destStrides[i] = planeWidths[i];
-            }else {
-                destStrides[i] = (planeWidths[i]/4+1)*4;
+            } else {
+                destStrides[i] = (planeWidths[i] / 4 + 1) * 4;
             }
         }
         // 三个plane的height
-        final int[] planeHeights = new int[] {height, height / 2, height / 2};
+        final int[] planeHeights = new int[]{height, height / 2, height / 2};
 
         // 确定中间变量buffer的存储大小
         int copyCapacityNeeded = 0;

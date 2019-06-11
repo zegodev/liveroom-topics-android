@@ -170,11 +170,10 @@ public class MediaSideInfoDemoUI extends BaseActivity implements ZGMediaSideInfo
         allRecvContent += content;
         allRecvContent += "\n";
 
-        new Thread(){
-            public void run(){
-                handler.post(runnableShowRecvStr);
-            }
-        }.start();
+        runOnUiThread(()->{
+            //更新界面
+            mRecvContent.setText(allRecvContent);
+        });
     }
 
     @Override
@@ -182,11 +181,10 @@ public class MediaSideInfoDemoUI extends BaseActivity implements ZGMediaSideInfo
 
         allRecvContent += content;
         allRecvContent += "\n";
-        new Thread(){
-            public void run(){
-                handler.post(runnableShowRecvStr);
-            }
-        }.start();
+        runOnUiThread(()->{
+            //更新界面
+            mRecvContent.setText(allRecvContent);
+        });
     }
 
     @Override
@@ -214,14 +212,4 @@ public class MediaSideInfoDemoUI extends BaseActivity implements ZGMediaSideInfo
             ZGMediaSideInfoDemo.sharedInstance().activateMediaSideInfoForPublishChannel(isUseOnlyAudio, 0);
         }
     }
-
-    // 构建Runnable对象，在runnable中更新界面
-    Runnable runnableShowRecvStr =new  Runnable(){
-        @Override
-        public void run() {
-            //更新界面
-            mRecvContent.setText(allRecvContent);
-        }
-
-    };
 }
