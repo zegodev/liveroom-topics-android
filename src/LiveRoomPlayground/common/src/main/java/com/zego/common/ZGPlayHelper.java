@@ -79,6 +79,17 @@ public class ZGPlayHelper {
     }
 
     /**
+     * 释放拉流的代理
+     * 当不再使用ZegoSDK时，可以释放拉流的代理
+     * <p>
+     * 调用时机：建议在unInitSDK之前设置。
+     *
+     */
+    public void releasePlayerCallback() {
+        ZGBaseHelper.sharedInstance().getZegoLiveRoom().setZegoLivePlayerCallback(null);
+    }
+
+    /**
      * 停止拉流
      *
      * @param streamID 不能为null。

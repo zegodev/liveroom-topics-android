@@ -128,4 +128,15 @@ public class ZGPublishHelper {
             AppLogger.getInstance().w(ZGBaseHelper.class, "设置推流代理失败! SDK未初始化, 请先初始化SDK");
         }
     }
+
+    /**
+     * 释放推流的代理
+     * 当不再使用ZegoSDK时，可以释放推流的代理
+     * <p>
+     * 调用时机：建议在unInitSDK之前设置。
+     *
+     */
+    public void releasePublisherCallback() {
+        ZGBaseHelper.sharedInstance().getZegoLiveRoom().setZegoLivePublisherCallback(null);
+    }
 }

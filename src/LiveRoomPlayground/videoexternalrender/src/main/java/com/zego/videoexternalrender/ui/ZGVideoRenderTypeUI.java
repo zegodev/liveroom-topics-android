@@ -53,10 +53,12 @@ public class ZGVideoRenderTypeUI extends AppCompatActivity {
                     // 外部渲染时抛出未解码的视频数据--PIXEL_FORMAT_AVC_ANNEXB
                     renderType = VideoExternalRenderType.NOT_DECODE;
                 }
-                // 开启外部渲染功能
-                ZegoExternalVideoRender.enableExternalRender(true, renderType);
+                // 推流处开启外部采集功能
             }
         });
+
+
+
     }
 
     @Override
@@ -67,6 +69,12 @@ public class ZGVideoRenderTypeUI extends AppCompatActivity {
     }
 
     public void JumpPublish(View view){
+
+        if (renderType != null){
+            // 开启外部渲染功能
+            ZegoExternalVideoRender.enableExternalRender(true, renderType);
+        }
+
         Intent intent = new Intent(ZGVideoRenderTypeUI.this, ZGVideoRenderUI.class);
         intent.putExtra("RenderType",renderType.value());
         ZGVideoRenderTypeUI.this.startActivity(intent);

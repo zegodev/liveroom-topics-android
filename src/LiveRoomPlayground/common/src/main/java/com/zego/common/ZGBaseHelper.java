@@ -153,9 +153,6 @@ public class ZGBaseHelper {
             @Override
             public void onInitSDK(int i) {
 
-                if (callback != null) {
-                    callback.onInitSDK(i);
-                }
                 // 初始化完成
                 if (i == 0) {
                     setZGBaseState(ZGBaseState.InitSuccessState);
@@ -164,6 +161,10 @@ public class ZGBaseHelper {
 
                     // 当初始化失败时释放SDK, 避免下次再次初始化SDK会收不到回调
                     unInitZegoSDK();
+                }
+
+                if (callback != null) {
+                    callback.onInitSDK(i);
                 }
             }
         });
@@ -329,6 +330,18 @@ public class ZGBaseHelper {
         });
 
     }
+
+    /**
+     * 释放房间的代理
+     * 当不再使用ZegoSDK时，可以释放房间的代理
+     * <p>
+     * 调用时机：建议在unInitSDK之前设置。
+     *
+     */
+    public void releaseZegoRoomCallback() {
+        zegoLiveRoom.setZegoRoomCallback(null);
+    }
+
 
     /**
      * 登出房间

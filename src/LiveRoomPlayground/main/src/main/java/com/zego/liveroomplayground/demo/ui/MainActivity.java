@@ -26,6 +26,7 @@ import com.zego.sound.processing.ui.SoundProcessMainActivityUI;
 import com.zego.mediasideinfo.ui.MediaSideInfoDemoUI;
 import com.zego.publish.ui.InitSDKPublishActivityUI;
 import com.zego.videocapture.ui.ZGVideoCaptureOriginUI;
+import com.zego.videocommunication.ui.VideoCommunicationMainUI;
 import com.zego.videoexternalrender.ui.ZGVideoRenderTypeUI;
 
 
@@ -77,36 +78,40 @@ public class MainActivity extends BaseActivity {
                     case "摄像头、音频打断事件处理":
                         InterruptHandlerMainActivityUI.actionStart(MainActivity.this);
                         break;
-                    case "mediaPlayer":
+                    case "ZegoSDK自带的媒体播放器":
                         intent = new Intent(MainActivity.this, ZGPlayerTypeUI.class);
                         MainActivity.this.startActivity(intent);
                         break;
-                    case "mediaSideInfo":
+                    case "媒体边信息/媒体次要信息":
                         intent = new Intent(MainActivity.this, MediaSideInfoDemoUI.class);
                         MainActivity.this.startActivity(intent);
                         break;
-                    case "layeredCoding":
+                    case "分层编码":
                         intent = new Intent(MainActivity.this, ZGRoomListUI.class);
                         MainActivity.this.startActivity(intent);
                         break;
-                    case "mediaRecorder":
+                    case "本地媒体录制":
                         intent = new Intent(MainActivity.this, ZGMediaRecorderSettingUI.class);
                         MainActivity.this.startActivity(intent);
                         break;
-                    case "mixing":
+                    case "混音":
                         intent = new Intent(MainActivity.this, ZGMixingDemoUI.class);
                         MainActivity.this.startActivity(intent);
                         break;
-                    case "mixstream":
+                    case "混流":
                         intent = new Intent(MainActivity.this, ZGMixStreamRoomListUI.class);
                         MainActivity.this.startActivity(intent);
                         break;
-                    case "videoRender":
+                    case "视频外部渲染":
                         intent = new Intent(MainActivity.this, ZGVideoRenderTypeUI.class);
                         MainActivity.this.startActivity(intent);
                         break;
-                    case "videoCapture":
+                    case "视频外部采集":
                         intent = new Intent(MainActivity.this, ZGVideoCaptureOriginUI.class);
+                        MainActivity.this.startActivity(intent);
+                        break;
+                    case "视频通话":
+                        intent = new Intent(MainActivity.this, VideoCommunicationMainUI.class);
                         MainActivity.this.startActivity(intent);
                         break;
                 }
@@ -121,31 +126,35 @@ public class MainActivity extends BaseActivity {
 
         // 添加模块
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("拉流").titleName("基础模块"));
+                .moduleName("拉流").titleName("基础功能"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("推流"));
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("变声/混响/立体声").titleName("进阶模块"));
+                .moduleName("视频通话").titleName("常用功能"));
+        mainAdapter.addModuleInfo(new ModuleInfo()
+                .moduleName("变声/混响/立体声").titleName("进阶功能"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("音频频谱"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("摄像头、音频打断事件处理"));
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("mediaPlayer"));
+                .moduleName("ZegoSDK自带的媒体播放器"));
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("mediaSideInfo"));
+                .moduleName("媒体边信息/媒体次要信息"));
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("layeredCoding"));
+                .moduleName("分层编码"));
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("mediaRecorder"));
+                .moduleName("本地媒体录制"));
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("mixing"));
+                .moduleName("混音"));
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("mixstream"));
+                .moduleName("混流"));
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("videoRender"));
+                .moduleName("视频外部渲染"));
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("videoCapture"));
+                .moduleName("视频外部采集"));
+
+
 
     }
 
