@@ -2,7 +2,7 @@
 
 ## [推流专题](https://github.com/zegodev/liveroom-topics-android/tree/master/src/LiveRoomPlayground/publish)  
 ## [拉流专题](https://github.com/zegodev/liveroom-topics-android/tree/master/src/LiveRoomPlayground/play)  
-## [视频通话专题](https://github.com/zegodev/liveroom-topics-android/tree/master/src/LiveRoomPlayground/videoCommunicaton=)  
+## [多人视频通话专题](https://github.com/zegodev/liveroom-topics-android/tree/master/src/LiveRoomPlayground/videoCommunicaton=)  
 ## [变声/混响/立体声](https://github.com/zegodev/liveroom-topics-android/tree/master/src/LiveRoomPlayground/soundProcessing)
 ## [音频频谱与声浪](https://github.com/zegodev/liveroom-topics-android/tree/master/src/LiveRoomPlayground/frequencySpectrum)
 ## [摄像头、音频打断事件处理](https://github.com/zegodev/liveroom-topics-android/tree/master/src/LiveRoomPlayground/interruptHandler)
