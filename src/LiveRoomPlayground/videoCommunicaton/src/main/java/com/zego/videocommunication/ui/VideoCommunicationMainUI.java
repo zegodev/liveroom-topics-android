@@ -32,7 +32,7 @@ import java.util.HashMap;
  * 视频通话专题入口
  *
  */
-                                                                                    public class VideoCommunicationMainUI extends BaseActivity {
+public class VideoCommunicationMainUI extends BaseActivity {
 
     private VideoCommunicationMainBinding videoCommunicationMainBinding;
 

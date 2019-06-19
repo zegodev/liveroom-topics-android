@@ -74,13 +74,13 @@ public class AudioInterruptHandler {
     private boolean isAudioFocusGranted = false;
 
     /**
-     * 是否允许使用音频设备
+     * 是否允许使用音频设备，默认为true
      * <p>
      * 当满足恢复音频设备条件的时候，如果不允许使用音频设备，将不应该恢复音频设备。
      * <p>
      * 由于外部是不知道是否允许使用音频设备，所以在改变是否允许使用摄像头状态的同时 {@link ZegoLiveRoom#pauseModule(int)}、 {@link ZegoLiveRoom#resumeModule(int)} ，需在这进行同步，保证恢复音频设备操作的正确性。
      */
-    private boolean isAudioModuleEnable = false;
+    private boolean isAudioModuleEnable = true;
 
     /**
      * 设置 ApplicationContext 对象，必须执行该方法才能保证功能的正常
@@ -116,7 +116,7 @@ public class AudioInterruptHandler {
     }
 
     /**
-     * 设置是否允许使用音频设备
+     * 设置是否允许使用音频设备，默认为true
      * <p>
      * 当满足恢复音频设备条件的时候，如果不允许使用音频设备，将不应该恢复音频设备。
      * <p>

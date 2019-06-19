@@ -110,8 +110,8 @@ public class PublishStreamAndPlayStreamLayoutModel {
         for(LinearLayout linearLayout : this.linearLayoutHasViewLinkedHashMap.keySet()){
 
             if(this.linearLayoutHasViewLinkedHashMap.get(linearLayout).streamid.equals(streamid)){
-                this.linearLayoutHasViewLinkedHashMap.get(linearLayout).renderView = null;
                 linearLayout.removeView(this.linearLayoutHasViewLinkedHashMap.get(linearLayout).renderView);
+                this.linearLayoutHasViewLinkedHashMap.get(linearLayout).renderView = null;
                 this.linearLayoutHasViewLinkedHashMap.get(linearLayout).streamid = "";
                 this.linearLayoutHasViewLinkedHashMap.get(linearLayout).layoutHasViewFlag = false;
                 break;
@@ -129,7 +129,6 @@ public class PublishStreamAndPlayStreamLayoutModel {
         for(LinearLayout linearLayout : this.linearLayoutHasViewLinkedHashMap.keySet()) {
 
             if (this.linearLayoutHasViewLinkedHashMap.get(linearLayout).layoutHasViewFlag == true) {
-
                 linearLayout.removeView(this.linearLayoutHasViewLinkedHashMap.get(linearLayout).renderView);
                 this.linearLayoutHasViewLinkedHashMap.get(linearLayout).renderView = null;
                 this.linearLayoutHasViewLinkedHashMap.get(linearLayout).streamid = "";

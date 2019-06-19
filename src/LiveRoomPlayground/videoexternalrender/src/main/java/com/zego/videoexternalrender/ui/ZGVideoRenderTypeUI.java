@@ -20,6 +20,9 @@ public class ZGVideoRenderTypeUI extends AppCompatActivity {
     // 外部渲染类型
     private VideoExternalRenderType renderType;
 
+    // 是否已开启外部渲染
+    private boolean isEnableExternalRender = false;
+
     // 加载c++ so
     static {
         System.loadLibrary("nativeCutPlane");
@@ -64,8 +67,11 @@ public class ZGVideoRenderTypeUI extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // 关闭外部渲染功能
-        ZegoExternalVideoRender.enableExternalRender(false, renderType);
+        // 若开启过视频外部渲染，此处关闭
+        if (isEnableExternalRender) {
+            // 关闭外部渲染功能
+            ZegoExternalVideoRender.enableExternalRender(false, renderType);
+        }
     }
 
     public void JumpPublish(View view){
@@ -73,6 +79,7 @@ public class ZGVideoRenderTypeUI extends AppCompatActivity {
         if (renderType != null){
             // 开启外部渲染功能
             ZegoExternalVideoRender.enableExternalRender(true, renderType);
+            isEnableExternalRender = true;
         }
 
         Intent intent = new Intent(ZGVideoRenderTypeUI.this, ZGVideoRenderUI.class);
