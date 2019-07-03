@@ -30,7 +30,7 @@ public class ZGManager {
      *              (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
      *              (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
      *              (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00
- *              };
+     *          };
      **/
     public static byte[] appSign = ;
     public static long appId = ;
