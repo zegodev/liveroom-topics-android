@@ -21,16 +21,16 @@ public class ZGManager {
      * AppID 填写样式示例：
      *      public static long appId = 123456789L ;
      * appSign 填写样式示例：
-     *          public static final byte[] appSign = {
-     *              (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-     *              (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-     *              (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-     *              (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-     *              (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-     *              (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-     *              (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-     *              (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00
-     *          };
+     *      public static final byte[] appSign = {
+     *          (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+     *          (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+     *          (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+     *          (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+     *          (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+     *          (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+     *          (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+     *          (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00
+     *      };
      **/
     public static byte[] appSign = ;
     public static long appId = ;
