@@ -21,7 +21,7 @@ public class GetAppIdConfig {
      *          (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00
      *      };
      **/
-    public static final byte[] appSign = {};
+    public static final byte[] appSign = ;
     public static final long appId = ;
 }
 
