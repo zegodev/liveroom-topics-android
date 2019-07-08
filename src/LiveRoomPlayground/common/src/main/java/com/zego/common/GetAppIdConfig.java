@@ -27,3 +27,4 @@ public class GetAppIdConfig {
     public static final long appId = ;
 
     public static final byte[] appSign = ;
+}
