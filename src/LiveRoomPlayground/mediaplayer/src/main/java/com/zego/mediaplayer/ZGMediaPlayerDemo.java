@@ -464,6 +464,11 @@ public class ZGMediaPlayerDemo implements IZegoMediaPlayerVideoPlayCallback {
         public void onLoadComplete() {
 
         }
+
+        @Override
+        public void onProcessInterval(long l) {
+
+        }
     };
 
 

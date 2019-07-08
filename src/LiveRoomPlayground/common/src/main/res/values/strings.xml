@@ -11,7 +11,7 @@
     <string name="tx_initsdk">初始化SDK</string>
     <string name="tx_code_demo">代码演示</string>
     <string name="tx_mirror">镜像</string>
-    <string name="tx_login_console">登陆控制台</string>
+    <string name="tx_login_console">登录控制台</string>
     <string name="tx_capture_mirror">预览镜像</string>
     <string name="tx_hardware_decode_describe">开启硬解后，SDK会使用GPU去处理视频解码，会大大减少App对CPU的占用率,
 达到省电不发热的效果。</string>
@@ -25,11 +25,11 @@
     <string name="tx_test_env">测试环境</string>
     <string name="tx_init_success">初始化SDK完成</string>
     <string name="tx_init_failure">初始化SDK失败</string>
-    <string name="tx_login_room_title">第二步 登陆房间</string>
-    <string name="tx_login_room">登陆房间</string>
-    <string name="tx_login_room_guide">登陆房间指引</string>
-    <string name="tx_login_room_success">登陆房间成功</string>
-    <string name="tx_login_room_failure">登陆房间失败</string>
+    <string name="tx_login_room_title">第二步 登录房间</string>
+    <string name="tx_login_room">登录房间</string>
+    <string name="tx_login_room_guide">登录房间指引</string>
+    <string name="tx_login_room_success">登录房间成功</string>
+    <string name="tx_login_room_failure">登录房间失败</string>
     <string name="tx_stream_id_cannot_null">streamID不能为空</string>
     <string name="tx_start_publish_title">第三步 开始推流</string>
     <string name="tx_room_id_is_no_null">roomID不能为空</string>

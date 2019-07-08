@@ -202,4 +202,9 @@ public class ZGMixingDemoUI extends BaseActivity implements IZegoLivePublisherCa
     public void onCaptureVideoFirstFrame() {
 
     }
+
+    @Override
+    public void onCaptureAudioFirstFrame() {
+        // 当SDK音频采集设备捕获到第一帧时会回调该方法
+    }
 }

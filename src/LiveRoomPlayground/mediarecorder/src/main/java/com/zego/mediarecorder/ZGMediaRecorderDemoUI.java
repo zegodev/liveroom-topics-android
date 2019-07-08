@@ -325,6 +325,11 @@ public class ZGMediaRecorderDemoUI extends BaseActivity implements IZegoMediaRec
 
     }
 
+    @Override
+    public void onCaptureAudioFirstFrame() {
+
+    }
+
 
     public String generateAVFileName() {
         String fileName;
@@ -441,6 +446,11 @@ public class ZGMediaRecorderDemoUI extends BaseActivity implements IZegoMediaRec
 
     @Override
     public void onLoadComplete() {
+    }
+
+    @Override
+    public void onProcessInterval(long l) {
+
     }
 }
 

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import com.zego.common.ZGBaseHelper;
 import com.zego.common.ZGConfigHelper;
@@ -57,6 +58,9 @@ public class PublishStreamAndPlayStreamUI extends BaseActivity {
 
         // 使用DataBinding加载布局
         publishStreamAndPlayStreamBinding = DataBindingUtil.setContentView(this, R.layout.publish_stream_and_play_stream);
+        // 在退出重进房间的时候UI上记录上一次摄像头开关和麦克风开关的状态
+        publishStreamAndPlayStreamBinding.MicrophoneState.setChecked(ZGConfigHelper.sharedInstance().getZgMicState());
+        publishStreamAndPlayStreamBinding.CameraState.setChecked(ZGConfigHelper.sharedInstance().getZgCameraState());
 
 
         // 设置麦克风和摄像头的点击事件
@@ -146,17 +150,36 @@ public class PublishStreamAndPlayStreamUI extends BaseActivity {
 
                     AppLogger.getInstance().i(PublishStreamAndPlayStreamUI.class, "登录房间成功");
 
-                    //若该房间内有其他流在推，拉这些流并在推拉流的Model中渲染出来
-                    for(ZegoStreamInfo zegoStreamInfo : zegoStreamInfos){
+                    if(zegoStreamInfos.length < 12){
 
-                        TextureView playRenderView = PublishStreamAndPlayStreamUI.this.mPublishStreamAndPlayStreamLayoutModel.addStreamToViewInLayout(zegoStreamInfo.streamID);
-                        ZGPlayHelper.sharedInstance().startPlaying(zegoStreamInfo.streamID, playRenderView);
-                        ZGConfigHelper.sharedInstance().setPlayViewMode(ZegoVideoViewMode.ScaleAspectFill, zegoStreamInfo.streamID);
+                        // 这里在登录房间之后马上推流并做本地推流的渲染
+                        TextureView localPreviewView = PublishStreamAndPlayStreamUI.this.mPublishStreamAndPlayStreamLayoutModel.addStreamToViewInLayout(PublishStreamAndPlayStreamUI.this.mPublishStreamid);
+                        ZGPublishHelper.sharedInstance().startPreview(localPreviewView);
+                        ZGConfigHelper.sharedInstance().setPreviewViewMode(ZegoVideoViewMode.ScaleAspectFill);
+                        ZGPublishHelper.sharedInstance().startPublishing(mPublishStreamid, mPublishStreamid + "-title", ZegoConstants.PublishFlag.JoinPublish);
 
-                        playStreamids.add(zegoStreamInfo.streamID);
+                        //若该房间内有其他流在推，拉这些流并在推拉流的Model中渲染出来
+                        for(ZegoStreamInfo zegoStreamInfo : zegoStreamInfos){
 
-                        AppLogger.getInstance().i(PublishStreamAndPlayStreamUI.class, "当前房间存在：" + zegoStreamInfo.streamID);
+                            TextureView playRenderView = PublishStreamAndPlayStreamUI.this.mPublishStreamAndPlayStreamLayoutModel.addStreamToViewInLayout(zegoStreamInfo.streamID);
+                            ZGPlayHelper.sharedInstance().startPlaying(zegoStreamInfo.streamID, playRenderView);
+                            ZGConfigHelper.sharedInstance().setPlayViewMode(ZegoVideoViewMode.ScaleAspectFill, zegoStreamInfo.streamID);
+
+                            playStreamids.add(zegoStreamInfo.streamID);
+
+                            AppLogger.getInstance().i(PublishStreamAndPlayStreamUI.class, "当前房间存在：" + zegoStreamInfo.streamID);
+                        }
+
+
+                    }else {
+
+                        Toast.makeText(PublishStreamAndPlayStreamUI.this, "房间已满人，目前demo只展示12人通讯", Toast.LENGTH_LONG).show();
+                        AppLogger.getInstance().i(PublishStreamAndPlayStreamUI.class, "房间已满人，目前demo只展示12人通讯");
+
+                        PublishStreamAndPlayStreamUI.this.onBackPressed();
                     }
+
+
 
                 }else{
                     AppLogger.getInstance().i(PublishStreamAndPlayStreamUI.class, "登录房间失败 errorcode：" + i);
@@ -165,12 +188,6 @@ public class PublishStreamAndPlayStreamUI extends BaseActivity {
 
             }
         });
-
-        // 这里在登录房间之后马上推流并做本地推流的渲染
-        TextureView localPreviewView = this.mPublishStreamAndPlayStreamLayoutModel.addStreamToViewInLayout(this.mPublishStreamid);
-        ZGPublishHelper.sharedInstance().startPreview(localPreviewView);
-        ZGConfigHelper.sharedInstance().setPreviewViewMode(ZegoVideoViewMode.ScaleAspectFill);
-        ZGPublishHelper.sharedInstance().startPublishing(mPublishStreamid, mPublishStreamid + "-title", ZegoConstants.PublishFlag.JoinPublish);
 
     }
 

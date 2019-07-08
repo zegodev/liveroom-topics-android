@@ -66,8 +66,6 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
         videoRenderer = new VideoRenderer();
 
         videoRenderer.init();
-        // 添加外部渲染视图
-        videoRenderer.addView (com.zego.zegoavkit2.ZegoConstants.ZegoVideoDataMainPublishingStream, mPreView);
 
         zegoExternalVideoRender = new ZegoExternalVideoRender();
         // 设置外部渲染回调监听
@@ -85,7 +83,13 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
                 // 登录成功后设置预览视图，开启预览并推流
                 if (errorcode == 0){
 
-                    ZGManager.sharedInstance().api().setPreviewView(mPreView);
+                    // 外部渲染采用码流渲染类型时，推流时由 SDK 进行渲染。
+                    if (chooseRenderType == VideoExternalRenderType.NOT_DECODE.value()) {
+                        ZGManager.sharedInstance().api().setPreviewView(mPreView);
+                    }else {
+                        // 添加外部渲染视图
+                        videoRenderer.addView (com.zego.zegoavkit2.ZegoConstants.ZegoVideoDataMainPublishingStream, mPreView);
+                    }
                     ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleToFill);
                     ZGManager.sharedInstance().api().enableCamera(true);
                     // 设置推流分辨率，540*960
@@ -125,6 +129,8 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
             ZGManager.sharedInstance().api().stopPreview();
             ZGManager.sharedInstance().api().setPreviewView(null);
             ZGManager.sharedInstance().api().stopPublishing();
+            //移除渲染视图
+            videoRenderer.removeView(mRoomID);
 
             runOnUiThread(()->{
                 mDealBtn.setText("StartPublish");
@@ -133,7 +139,14 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
         } else {
             // 界面button==开始推流
             // 开启预览再开始推流
-            ZGManager.sharedInstance().api().setPreviewView(mPreView);
+
+            // 外部渲染采用码流渲染类型时，推流时由 SDK 进行渲染。
+            if (chooseRenderType == VideoExternalRenderType.NOT_DECODE.value()) {
+                ZGManager.sharedInstance().api().setPreviewView(mPreView);
+            }else {
+                // 添加外部渲染视图
+                videoRenderer.addView (com.zego.zegoavkit2.ZegoConstants.ZegoVideoDataMainPublishingStream, mPreView);
+            }
             ZGManager.sharedInstance().api().startPreview();
             ZGManager.sharedInstance().api().startPublishing(mRoomID, mRoomName, ZegoConstants.PublishFlag.JoinPublish);
         }
@@ -168,6 +181,9 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
             if (!mPlayStreamID.equals("")){
                 //停止拉流
                 ZGManager.sharedInstance().api().stopPlayingStream(mPlayStreamID);
+                //移除外部渲染视图
+                videoRenderer.removeView(mPlayStreamID);
+
                 runOnUiThread(()->{
                     mDealPlayBtn.setText("StartPlay");
                 });
@@ -217,6 +233,11 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
     @Override
     public void onCaptureVideoFirstFrame() {
 
+    }
+
+    @Override
+    public void onCaptureAudioFirstFrame() {
+        // 当SDK音频采集设备捕获到第一帧时会回调该方法
     }
 
     // 拉流状态回调

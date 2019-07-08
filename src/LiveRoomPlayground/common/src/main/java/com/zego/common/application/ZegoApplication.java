@@ -9,6 +9,8 @@ import com.zego.common.widgets.log.FloatingView;
 import com.zego.common.util.DeviceInfoManager;
 import com.zego.zegoliveroom.ZegoLiveRoom;
 
+import java.util.Date;
+
 /**
  * Created by zego on 2018/10/16.
  */
@@ -22,8 +24,10 @@ public class ZegoApplication extends Application {
         super.onCreate();
         zegoApplication = this;
 
-        String userId = DeviceInfoManager.generateDeviceId(this);
-        String userName = DeviceInfoManager.getProductName();
+        String randomSuffix = "-" + new Date().getTime()%(new Date().getTime()/1000);
+
+        String userId = DeviceInfoManager.generateDeviceId(this) + randomSuffix;
+        String userName = DeviceInfoManager.getProductName() + randomSuffix;
 
         // 添加悬浮日志视图
         FloatingView.get().add();

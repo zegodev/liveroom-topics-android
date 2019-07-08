@@ -272,6 +272,11 @@ public class ZGAnchorUI extends AppCompatActivity implements IZegoLivePublisherC
     }
 
     @Override
+    public void onCaptureAudioFirstFrame() {
+        // 当SDK音频采集设备捕获到第一帧时会回调该方法
+    }
+
+    @Override
     public void onKickOut(int i, String s) {
 
     }

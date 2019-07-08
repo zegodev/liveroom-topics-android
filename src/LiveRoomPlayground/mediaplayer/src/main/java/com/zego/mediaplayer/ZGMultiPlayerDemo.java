@@ -177,4 +177,9 @@ public class ZGMultiPlayerDemo implements IZegoMediaPlayerWithIndexCallback {
     public void onLoadComplete(int i) {
 
     }
+
+    @Override
+    public void onProcessInterval(long l, int i) {
+
+    }
 }

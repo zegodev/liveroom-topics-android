@@ -1,0 +1,37 @@
+<resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
+    <string name="app_name">joinLive</string>
+    <string name="tx_join_live_title">直播连麦</string>
+    <string name="tx_refresh_hint">下拉完成刷新房间列表</string>
+    <string name="tx_create_room_title">创建房间</string>
+    <string name="tx_create_live">创建直播</string>
+    <string name="tx_room_list_is_empty">暂无直播房间</string>
+    <string name="tx_confirm_start_publish">确定推流</string>
+    <string name="tx_doc_link">《进阶功能-直播连麦》</string>
+    <string name="tx_anchor_title">主播</string>
+    <string name="tx_audience_title">观众</string>
+    <string name="tx_audience_list">观众列表</string>
+    <string name="tx_invite_joinLive">邀请连麦</string>
+    <string name="has_sended_invitation">已发送邀请</string>
+    <string name="this_audience_has_joined_live">该观众已连麦</string>
+    <string name="join_live_count_overflow">连麦已满人，此demo只展示三人连麦</string>
+    <string name="tx_apply_joinLive">申请连麦</string>
+    <string name="tx_end_join_live">结束连麦</string>
+    <string name="has_joined_live">你已连麦</string>
+    <string name="has_sended_applation">已发送申请</string>
+    <string name="request_join_live_success">申请成功，正在连麦</string>
+    <string name="room_no_publish">该房间没有推流，请刷新房间列表后重试!</string>
+    <string name="has_no_textureView">没有空闲的视图了</string>
+    <string name="audience_deny_join_live">观众拒绝连麦邀请</string>
+    <string name="txt_room_no_audience">该房间没有观众在拉流</string>
+    <string name="hint">提示</string>
+    <string name="request_has_been_denied">主播拒绝连麦</string>
+    <string name="someone_is_requesting_to_broadcast_allow"><xliff:g id="value">%1$s</xliff:g>&#160;申请连麦, 是否同意连麦?"</string>
+    <string name="someone_is_invitting_to_broadcast_allow"><xliff:g id="value">%1$s</xliff:g>主播&#160;邀请你连麦, 是否同意连麦?"</string>
+    <string name="Allow">同意</string>
+    <string name="Deny">拒绝</string>
+    <string name="got_it">知道了</string>
+    <string name="someone_is_requesting_to_broadcast"><xliff:g id="value">%1$s</xliff:g>:&#160;正在请求连麦</string>
+    <string name="request_of_broadcast_has_been_allowed"><xliff:g id="value">%1$s</xliff:g>:&#160;连麦请求被通过</string>
+    <string name="request_of_broadcast_has_been_denied"><xliff:g id="value">%1$s</xliff:g>:&#160;连麦请求被拒绝</string>
+
+</resources>

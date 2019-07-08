@@ -224,6 +224,11 @@ public class ZGVideoCaptureDemoUI extends BaseActivity implements IZegoLivePubli
 
     }
 
+    @Override
+    public void onCaptureAudioFirstFrame() {
+        // 当SDK音频采集设备捕获到第一帧时会回调该方法
+    }
+
     // 拉流状态回调
     @Override
     public void onPlayStateUpdate(int stateCode, String streamID) {

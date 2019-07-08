@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.zego.frequency_spectrum.ui.FrequencySpectrumAndSoundLevelMainActivity;
 import com.zego.interrupthandler.ui.InterruptHandlerMainActivityUI;
+import com.zego.joinlive.ui.JoinLiveMainActivityUI;
 import com.zego.liveroomplayground.R;
 import com.zego.liveroomplayground.databinding.ActivityMainBinding;
 import com.zego.liveroomplayground.demo.adapter.MainAdapter;
@@ -114,6 +115,9 @@ public class MainActivity extends BaseActivity {
                         intent = new Intent(MainActivity.this, VideoCommunicationMainUI.class);
                         MainActivity.this.startActivity(intent);
                         break;
+                    case "直播连麦":
+                        JoinLiveMainActivityUI.actionStart(MainActivity.this);
+                        break;
                 }
             }
         });
@@ -131,6 +135,8 @@ public class MainActivity extends BaseActivity {
                 .moduleName("推流"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("视频通话").titleName("常用功能"));
+        mainAdapter.addModuleInfo(new ModuleInfo()
+                .moduleName("直播连麦"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("变声/混响/立体声").titleName("进阶功能"));
         mainAdapter.addModuleInfo(new ModuleInfo()

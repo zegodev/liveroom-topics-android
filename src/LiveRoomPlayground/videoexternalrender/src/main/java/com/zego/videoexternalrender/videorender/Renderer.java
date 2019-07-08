@@ -201,10 +201,17 @@ public class Renderer implements TextureView.SurfaceTextureListener {
 
     // 将待展示的TextureView附着到EGL Surface上
     private void attachTextureView() {
+
+        // 判断是否切入后台后又切入前台，若有需要重新创建Surface
+        if (isTextureAvailable){
+            releaseSurface();
+            isTextureAvailable = false;
+        }
+
         if (eglSurface != EGL14.EGL_NO_SURFACE
                 && eglContext != EGL14.EGL_NO_CONTEXT
-                && eglDisplay != EGL14.EGL_NO_DISPLAY
-        ) {
+                && eglDisplay != EGL14.EGL_NO_DISPLAY)
+        {
             return;
         }
 
@@ -328,9 +335,11 @@ public class Renderer implements TextureView.SurfaceTextureListener {
         mRgbDrawer = null;
     }
 
+    private boolean isTextureAvailable = false;
+
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
-
+        isTextureAvailable = true;
     }
 
     @Override
@@ -341,7 +350,6 @@ public class Renderer implements TextureView.SurfaceTextureListener {
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
         Log.i(TAG, "onSurfaceTextureDestroyed");
-
         return false;
     }
 

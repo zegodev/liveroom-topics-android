@@ -359,4 +359,9 @@ public class ZGMultiPlayerDemoUI extends BaseActivity implements ZGMultiPlayerDe
     public void onCaptureVideoFirstFrame() {
 
     }
+
+    @Override
+    public void onCaptureAudioFirstFrame() {
+        // 当SDK音频采集设备捕获到第一帧时会回调该方法
+    }
 }

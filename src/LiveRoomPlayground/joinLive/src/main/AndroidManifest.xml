@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.zego.joinlive">
+
+    <application>
+        <activity android:name=".ui.JoinLiveMainActivityUI" />
+        <activity android:name=".ui.JoinLiveLoginPublishUI" />
+        <activity android:name=".ui.JoinLiveAnchorUI" />
+        <activity android:name=".ui.JoinLiveAudienceUI" />
+    </application>
+
+</manifest>

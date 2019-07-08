@@ -23,6 +23,25 @@ public class ZGConfigHelper {
     // 音频混响参数配置
     public ZegoAudioReverbParam zegoAudioReverbParam = new ZegoAudioReverbParam();
 
+    public Boolean getZgCameraState() {
+        return zgCameraState;
+    }
+
+    private void setZgCameraState(Boolean zgCameraState) {
+        this.zgCameraState = zgCameraState;
+    }
+
+    public Boolean getZgMicState() {
+        return zgMicState;
+    }
+
+    private void setZgMicState(Boolean zgMicState) {
+        this.zgMicState = zgMicState;
+    }
+
+    private static Boolean zgCameraState = true;
+    private static Boolean zgMicState = true;
+
 
     public static ZGConfigHelper sharedInstance() {
         if (zgConfigHelper == null) {
@@ -47,6 +66,7 @@ public class ZGConfigHelper {
             AppLogger.getInstance().i(ZGConfigHelper.class, enable ? "启用摄像头" : "关闭摄像头");
             ZegoLiveRoom zegoLiveRoom = ZGBaseHelper.sharedInstance().getZegoLiveRoom();
             zegoLiveRoom.enableCamera(enable);
+            this.setZgCameraState(enable);
         }
     }
 
@@ -62,6 +82,7 @@ public class ZGConfigHelper {
         if (isInitSDKSuccess()) {
             ZegoLiveRoom zegoLiveRoom = ZGBaseHelper.sharedInstance().getZegoLiveRoom();
             zegoLiveRoom.enableMic(enable);
+            this.setZgMicState(enable);
         }
     }
 

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="config"
+            type="com.zego.common.entity.SDKConfigInfo" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ebeef5"
+            android:keepScreenOn="true"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/audience_list_layout"
+                layout="@layout/activity_audience_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+            </include>
+
+            <com.zego.common.widgets.TitleLayout
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                app:name="@string/tx_anchor_title">
+
+            </com.zego.common.widgets.TitleLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextureView
+                    android:id="@+id/preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="10dp"
+                        android:layout_height="match_parent" />
+
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <TextureView
+                            android:id="@+id/audienceView1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <Button
+                            android:id="@+id/kickout1"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_alignParentRight="true"
+                            android:background="@drawable/kickout"
+                            android:visibility="invisible"/>
+
+                    </RelativeLayout>
+                    
+                    <TextView
+                        android:layout_width="10dp"
+                        android:layout_height="match_parent" />
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <TextureView
+                            android:id="@+id/audienceView2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <Button
+                            android:id="@+id/kickout2"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_alignParentRight="true"
+                            android:background="@drawable/kickout"
+                            android:visibility="invisible"/>
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="10dp"
+                        android:layout_height="match_parent" />
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <TextureView
+                            android:id="@+id/audienceView3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <Button
+                            android:id="@+id/kickout3"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_alignParentRight="true"
+                            android:background="@drawable/kickout"
+                            android:visibility="invisible"/>
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="10dp"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal">
+
+                    <Switch
+                        android:id="@+id/sw_mic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="@{config.enableMic}"
+                        android:text="@string/tx_mic_state"
+                        android:textColor="@color/white_color" />
+
+                    <Switch
+                        android:id="@+id/sw_camera"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:checked="@{config.enableCamera}"
+                        android:text="@string/tx_camera"
+                        android:textColor="@color/white_color" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_inviteJoinLive"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="onCLickGetAudienceList"
+                        android:text="@string/tx_invite_joinLive" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+</layout>

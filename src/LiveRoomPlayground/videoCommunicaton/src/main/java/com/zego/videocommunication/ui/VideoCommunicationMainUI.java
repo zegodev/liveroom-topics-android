@@ -20,6 +20,7 @@ import com.zego.zegoliveroom.callback.IZegoInitSDKCompletionCallback;
 import com.zego.zegoliveroom.callback.IZegoLivePlayerCallback;
 import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
 import com.zego.zegoliveroom.callback.IZegoRoomCallback;
+import com.zego.zegoliveroom.constants.ZegoAvConfig;
 import com.zego.zegoliveroom.entity.AuxData;
 import com.zego.zegoliveroom.entity.ZegoPlayStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
@@ -67,6 +68,8 @@ public class VideoCommunicationMainUI extends BaseActivity {
         // 在进入当前Activity之后马上初始化SDK
         initSDK();
 
+
+
     }
 
     /**
@@ -82,6 +85,11 @@ public class VideoCommunicationMainUI extends BaseActivity {
                     VideoCommunicationMainUI.this.setSDKCallback();
 
                     AppLogger.getInstance().i(VideoCommunicationMainUI.class, "初始化zegoSDK成功");
+                    // 由于多路实时视频需要的设备性能和带宽都比较高，这里里使用低分辨率来降低性能
+                    ZegoAvConfig mZegoAvConfig = new ZegoAvConfig(ZegoAvConfig.Level.VeryLow);
+                    mZegoAvConfig.setVideoEncodeResolution(90, 160);
+                    mZegoAvConfig.setVideoCaptureResolution(90, 160);
+                    ZGManager.sharedInstance().api().setAVConfig(mZegoAvConfig);
                 } else {
                     AppLogger.getInstance().i(VideoCommunicationMainUI.class, "初始化zegoSDK失败 errorCode : %d", errorCode);
                 }
@@ -192,6 +200,10 @@ public class VideoCommunicationMainUI extends BaseActivity {
             @Override
             public void onCaptureVideoFirstFrame() {
 
+            }
+            @Override
+            public void onCaptureAudioFirstFrame() {
+                // 当SDK音频采集设备捕获到第一帧时会回调该方法
             }
         });
 
