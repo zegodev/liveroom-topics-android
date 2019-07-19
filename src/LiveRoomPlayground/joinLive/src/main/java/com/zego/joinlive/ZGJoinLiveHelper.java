@@ -2,30 +2,24 @@ package com.zego.joinlive;
 
 import android.view.View;
 
-import com.zego.common.ZGBaseHelper;
-import com.zego.common.ZGPublishHelper;
-import com.zego.common.util.AppLogger;
 import com.zego.joinlive.constants.JoinLiveUserInfo;
 import com.zego.joinlive.constants.JoinLiveView;
-import com.zego.zegoliveroom.callback.IZegoEndJoinLiveCallback;
-import com.zego.zegoliveroom.callback.IZegoResponseCallback;
-import com.zego.zegoliveroom.constants.ZegoConstants;
+import com.zego.zegoliveroom.ZegoLiveRoom;
 
 import java.util.ArrayList;
 
 public class ZGJoinLiveHelper {
 
+    public static final String PREFIX = "JoinLiveRoom-";
+
     // 最大连麦数
     public static final int MaxJoinLiveNum = 3;
-    // 观众列表
-    private ArrayList<String> mAudienceList = new ArrayList<>();
     // 已连麦列表
     private ArrayList<JoinLiveUserInfo> mHasJoinedUsersList = new ArrayList<>();
     // 连麦展示视图列表
     private ArrayList<JoinLiveView> mJoinLiveViewList = null;
 
-    // 连麦回调
-    private JoinLiveCallback joinLiveCallback = null;
+    private ZegoLiveRoom zegoLiveRoom = null;
 
     private static ZGJoinLiveHelper zgJoinLiveHelper = null;
 
@@ -39,184 +33,21 @@ public class ZGJoinLiveHelper {
         return zgJoinLiveHelper;
     }
 
-    /**
-     * 是否已经成功 initSDK
-     *
-     * @return true 代表initSDK完成, false 代表initSDK失败
-     */
-    private boolean isInitSDKSuccess() {
-        if (ZGBaseHelper.sharedInstance().getZGBaseState() != ZGBaseHelper.ZGBaseState.InitSuccessState) {
-            AppLogger.getInstance().w(ZGJoinLiveHelper.class, "请求失败! SDK未初始化, 请先初始化SDK");
-            return false;
+    // 获取 ZegoLiveRoom 实例
+    public ZegoLiveRoom getZegoLiveRoom(){
+        if (null == zegoLiveRoom) {
+            zegoLiveRoom = new ZegoLiveRoom();
         }
-        return true;
+        return zegoLiveRoom;
     }
 
-    /**
-     * 观众请求与主播连麦
-     */
-    public void requestJoinLive() {
-
-        if (isInitSDKSuccess()) {
-            // 已经成功初始化 SDK 的情况下，请求连麦
-            ZGBaseHelper.sharedInstance().getZegoLiveRoom().requestJoinLive(new IZegoResponseCallback() {
-                @Override
-                public void onResponse(int result, String fromUserID, String fromUserName) {
-                    if (joinLiveCallback != null) {
-                        joinLiveCallback.requestJoinLiveResult((result == ZegoConstants.ResultCode.YES) ? true : false, fromUserID);
-                    }
-                }
-            });
+    // 销毁 ZegoLiveRoom 实例
+    public void releaseZegoLiveRoom(){
+        if (null != zegoLiveRoom){
+            // 释放 SDK 资源
+            zegoLiveRoom.unInitSDK();
+            zegoLiveRoom = null;
         }
-    }
-
-    /**
-     * 主播响应观众的连麦请求
-     *
-     * @param requestReq 请求序号
-     * @param isAgree    是否同意连麦
-     */
-    public void respondJoinLiveRequest(int requestReq, boolean isAgree) {
-        if (isInitSDKSuccess()) {
-            ZGBaseHelper.sharedInstance().getZegoLiveRoom().respondJoinLiveReq(requestReq, isAgree ? 0 : 1);
-        }
-    }
-
-
-    /**
-     * 主播邀请观众连麦
-     *
-     * @param audienceID 观众ID
-     */
-    public void inviteJoinLive(String audienceID) {
-        if (isInitSDKSuccess()) {
-            ZGBaseHelper.sharedInstance().getZegoLiveRoom().inviteJoinLive(audienceID, new IZegoResponseCallback() {
-                @Override
-                public void onResponse(int result, String fromUserID, String fromUserName) {
-                    if (joinLiveCallback != null) {
-                        joinLiveCallback.inviteJoinLiveResult((result == ZegoConstants.ResultCode.YES) ? true : false, fromUserID);
-                    }
-                }
-            });
-        }
-    }
-
-    /**
-     * 观众响应主播的连麦邀请
-     *
-     * @param requestReq
-     * @param isAgree
-     */
-    public void respondInvitedJoinLiveRequest(int requestReq, boolean isAgree) {
-        if (isInitSDKSuccess()) {
-            ZGBaseHelper.sharedInstance().getZegoLiveRoom().respondInviteJoinLiveReq(requestReq, isAgree ? 0 : 1);
-        }
-    }
-
-    /**
-     * 主播结束连麦
-     */
-    public void endJoinLive(String userID) {
-        if (isInitSDKSuccess()) {
-            for (final JoinLiveUserInfo userInfo : mHasJoinedUsersList) {
-                if (userInfo.userID.equals(userID)) {
-                    ZGBaseHelper.sharedInstance().getZegoLiveRoom().endJoinLive(userInfo.userID, new IZegoEndJoinLiveCallback() {
-                        @Override
-                        public void onEndJoinLive(int result, String roomID) {
-                            if (joinLiveCallback != null) {
-                                joinLiveCallback.endJoinLiveResult((0 == result) ? true : false, userInfo.userID, roomID);
-                            }
-                        }
-                    });
-
-                    break;
-                }
-            }
-        }
-    }
-
-    /**
-     * 观众响应结束连麦信令
-     */
-    public void handleEndJoinLiveCommand() {
-        // 停止推流
-        ZGPublishHelper.sharedInstance().stopPreviewView();
-        ZGPublishHelper.sharedInstance().stopPublishing();
-    }
-
-    /**
-     * 设置连麦相关的回调监听
-     *
-     * @param callback 连麦相关的回调
-     */
-    public void setJoinLiveCallback(JoinLiveCallback callback) {
-        this.joinLiveCallback = callback;
-    }
-
-    // 连麦相关的回调接口
-    public interface JoinLiveCallback {
-        /**
-         * 观众请求连麦的结果通知
-         *
-         * @param isSuccess  请求连麦是否成功，true表示主播同意连麦，false表示主播拒绝连麦
-         * @param fromUserID 请求与之连麦的主播ID
-         */
-        public void requestJoinLiveResult(boolean isSuccess, String fromUserID);
-
-        /**
-         * 主播邀请观众连麦的结果通知
-         *
-         * @param isSuccess  邀请连麦是否成功，true表示观众同意连麦，false表示观众拒绝连麦
-         * @param fromUserID 被邀请连麦的观众ID
-         */
-        public void inviteJoinLiveResult(boolean isSuccess, String fromUserID);
-
-        /**
-         * 主播结束连麦的结果通知
-         *
-         * @param isSuccess 结束连麦操作是否成功，true表示成功结束连麦，false表示结束连麦失败
-         * @param userID    用户ID
-         * @param roomID    连麦者所在的房间ID
-         */
-        public void endJoinLiveResult(boolean isSuccess, String userID, String roomID);
-
-    }
-
-
-
-    /**
-     * 向观众列表增加指定观众
-     *
-     * @param audienceID 观众ID
-     */
-    public void addAudience(String audienceID) {
-        if (mAudienceList.size() > 0) {
-            for (String item : mAudienceList) {
-                if (item.equals(audienceID)) {
-                    return;
-                }
-            }
-        }
-
-        mAudienceList.add(audienceID);
-    }
-
-    /**
-     * 从观众列表移除指定观众
-     *
-     * @param audienceID 观众ID
-     */
-    public void removeAudience(String audienceID) {
-        mAudienceList.remove(audienceID);
-    }
-
-    /**
-     * 获取观众列表
-     *
-     * @return 观众列表
-     */
-    public ArrayList<String> getAudienceList() {
-        return mAudienceList;
     }
 
     /**
@@ -293,10 +124,6 @@ public class ZGJoinLiveHelper {
             if (joinLiveView.isFree()) {
                 textureView = joinLiveView;
                 textureView.textureView.setVisibility(View.VISIBLE);
-                if (textureView.kickOutBtn != null){
-                    textureView.kickOutBtn.setVisibility(View.VISIBLE);
-                }
-
                 break;
             }
         }
@@ -314,11 +141,7 @@ public class ZGJoinLiveHelper {
             if (joinLiveView.streamID.equals(streamID)) {
                 joinLiveView.setFree();
                 joinLiveView.textureView.setVisibility(View.INVISIBLE);
-                if (joinLiveView.kickOutBtn != null){
-                    joinLiveView.kickOutBtn.setVisibility(View.INVISIBLE);
-                }
                 modifyTextureViewInfo(joinLiveView);
-
                 break;
             }
         }
@@ -332,9 +155,6 @@ public class ZGJoinLiveHelper {
             if (!joinLiveView.streamID.equals("")){
                 joinLiveView.setFree();
                 joinLiveView.textureView.setVisibility(View.INVISIBLE);
-                if (joinLiveView.kickOutBtn != null){
-                    joinLiveView.kickOutBtn.setVisibility(View.INVISIBLE);
-                }
                 modifyTextureViewInfo(joinLiveView);
             }
         }

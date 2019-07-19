@@ -1,21 +1,13 @@
 package com.zego.joinlive.ui;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
-import com.zego.common.ZGBaseHelper;
-import com.zego.common.ZGConfigHelper;
-import com.zego.common.ZGPlayHelper;
-import com.zego.common.ZGPublishHelper;
 import com.zego.common.entity.SDKConfigInfo;
 import com.zego.common.ui.BaseActivity;
 import com.zego.common.util.AppLogger;
@@ -23,10 +15,8 @@ import com.zego.common.util.ZegoUtil;
 import com.zego.common.widgets.CustomDialog;
 import com.zego.joinlive.R;
 import com.zego.joinlive.ZGJoinLiveHelper;
-import com.zego.joinlive.constants.JoinLiveUserInfo;
 import com.zego.joinlive.constants.JoinLiveView;
 import com.zego.joinlive.databinding.ActivityJoinLiveAudienceBinding;
-import com.zego.support.RoomInfo;
 import com.zego.zegoliveroom.callback.IZegoLivePlayerCallback;
 import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
 import com.zego.zegoliveroom.callback.IZegoLoginCompletionCallback;
@@ -41,6 +31,13 @@ import com.zego.zegoliveroom.entity.ZegoStreamInfo;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * 观众界面以及拉主播流/连麦者流、推流的一些操作
+ * 1. 此 demo 未展示观众向主播申请连麦的一个过程，观众点击"视频连麦"则和主播进行连麦，不用经过主播的同意
+ * 用户可根据自己的实际业务需求，增加观众向主播进行连麦申请的操作（发送信令实现），在收到主播同意连麦的信令后再推流。
+ * 2. 此 demo 未展示主播邀请观众连麦的过程，只能观众自行上麦即推流
+ * 用户可根据业务需求，增加主播邀请观众连麦信令的收发处理，比如主播向观众发送邀请连麦的信令后，观众在收到主播的邀请连麦信令同意之后才推流，实现观众与主播连麦。
+ */
 public class JoinLiveAudienceUI extends BaseActivity {
 
     private ActivityJoinLiveAudienceBinding binding;
@@ -74,23 +71,32 @@ public class JoinLiveAudienceUI extends BaseActivity {
         mRoomID = getIntent().getStringExtra("roomID");
         mAnchorID = getIntent().getStringExtra("anchorID");
 
-        // 监听摄像头与麦克风开关
+        // 设置当前 UI 界面左上角的点击事件，点击之后结束当前 Activity 并停止拉流/推流、退出房间
+        binding.goBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        // 监听摄像头开关
         binding.swCamera.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (buttonView.isPressed()) {
                     sdkConfigInfo.setEnableCamera(isChecked);
-                    ZGConfigHelper.sharedInstance().enableCamera(isChecked);
+                    ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().enableCamera(isChecked);
                 }
             }
         });
 
+        // 监听麦克风开关
         binding.swMic.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (buttonView.isPressed()) {
                     sdkConfigInfo.setEnableMic(isChecked);
-                    ZGConfigHelper.sharedInstance().enableMic(isChecked);
+                    ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().enableMic(isChecked);
                 }
 
             }
@@ -100,8 +106,6 @@ public class JoinLiveAudienceUI extends BaseActivity {
         initViewList();
         // 设置SDK相关的回调监听
         initSDKCallback();
-        // 设置连麦相关的回调监听
-        initJoinLiveCallback();
 
         // 登录房间并拉流
         startPlay();
@@ -109,49 +113,56 @@ public class JoinLiveAudienceUI extends BaseActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void finish(){
+        super.finish();
 
         // 停止正在拉的流
         if (mPlayStreamIDs.size() > 0) {
             for (String streamID : mPlayStreamIDs) {
-                ZGPlayHelper.sharedInstance().stopPlaying(streamID);
+                ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().stopPlayingStream(streamID);
             }
         }
 
         // 清空拉流列表
         mPlayStreamIDs.clear();
 
-        // 停止推流
+        // 退出页面时如果是连麦状态则停止推流
         if (isJoinedLive) {
-            ZGPublishHelper.sharedInstance().stopPublishing();
-            ZGPublishHelper.sharedInstance().stopPreviewView();
+            ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().stopPublishing();
+            ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().stopPreview();
+            isJoinedLive = false;
         }
         // 设置所有视图可用
         ZGJoinLiveHelper.sharedInstance().freeAllJoinLiveView();
 
         // 退出房间
-        ZGBaseHelper.sharedInstance().loginOutRoom();
+        ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().logoutRoom();
         // 去除SDK相关的回调监听
         releaseSDKCallback();
-        // 去除连麦相关的回调监听
-        releaseJoinLiveCallback();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     // 设置拉流的视图列表
     protected void initViewList(){
 
-        mBigView = new JoinLiveView(binding.playView, null, false, "");
-        mBigView.setZegoLiveRoom(ZGBaseHelper.sharedInstance().getZegoLiveRoom());
+        // 全屏视图用于展示主播流
+        mBigView = new JoinLiveView(binding.playView, false, "");
+        mBigView.setZegoLiveRoom(ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom());
 
-        // 添加可用的连麦者视图
+        // 添加可用的连麦者视图，共三个视图
         ArrayList<JoinLiveView> mJoinLiveView = new ArrayList<>();
-        final JoinLiveView view1 = new JoinLiveView(binding.audienceViewOne, null, false, "");
-        view1.setZegoLiveRoom(ZGBaseHelper.sharedInstance().getZegoLiveRoom());
-        final JoinLiveView view2 = new JoinLiveView(binding.audienceViewTwo, null, false, "");
-        view2.setZegoLiveRoom(ZGBaseHelper.sharedInstance().getZegoLiveRoom());
-        final JoinLiveView view3 = new JoinLiveView(binding.audienceViewThree, null, false, "");
-        view3.setZegoLiveRoom(ZGBaseHelper.sharedInstance().getZegoLiveRoom());
+        final JoinLiveView view1 = new JoinLiveView(binding.audienceViewOne, false, "");
+        view1.setZegoLiveRoom(ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom());
+
+        final JoinLiveView view2 = new JoinLiveView(binding.audienceViewTwo, false, "");
+        view2.setZegoLiveRoom(ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom());
+
+        final JoinLiveView view3 = new JoinLiveView(binding.audienceViewThree, false, "");
+        view3.setZegoLiveRoom(ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom());
 
         mJoinLiveView.add(mBigView);
         mJoinLiveView.add(view1);
@@ -159,7 +170,10 @@ public class JoinLiveAudienceUI extends BaseActivity {
         mJoinLiveView.add(view3);
         ZGJoinLiveHelper.sharedInstance().addTextureView(mJoinLiveView);
 
-        // 设置视图的点击事件
+        /**
+         * 设置视图的点击事件
+         * 点击小视图时，切换到大视图上展示画面，大视图的画面展示到小视图上
+         */
         view1.textureView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -181,45 +195,59 @@ public class JoinLiveAudienceUI extends BaseActivity {
         });
     }
 
-    // 申请连麦
+    /**
+     * 连麦/结束连麦
+     * 此 demo 中不展示观众向主播申请连麦的一个过程，观众点击连麦则和主播进行连麦，不用经过主播的同意
+     * 用户可根据自己的实际业务需求，增加观众向主播进行连麦申请的操作（发送信令实现），在收到主播同意连麦的信令后再推流
+     */
     public void onClickApplyJoinLive(View view){
 
-        if (binding.btnApplyJoinLive.getText().toString().equals(getString(R.string.tx_apply_joinLive))){
-            // 申请连麦
+        if (binding.btnApplyJoinLive.getText().toString().equals(getString(R.string.tx_joinLive))){
+            // button 说明为"视频连麦"时，执行推流的操作
 
-            // 当前已连麦者总数是否超过上限，此demo支持展示三人连麦
-            boolean isJoinedLiveUsersCountOverFlow = false;
-            // 达到连麦上限时的拉流总数 = 1条主播流 + 三条连麦者的流
-            if (mPlayStreamIDs.size() == ZGJoinLiveHelper.MaxJoinLiveNum+1){
-                isJoinedLiveUsersCountOverFlow = true;
-            }
-
-            if (isJoinedLive) {
-                // 判断是否已连麦
-                Toast.makeText(JoinLiveAudienceUI.this, getString(R.string.has_joined_live), Toast.LENGTH_SHORT).show();
-            } else if (isJoinedLiveUsersCountOverFlow){
-                // 判断连麦人数是否达到上限
+            if (mPlayStreamIDs.size() == ZGJoinLiveHelper.MaxJoinLiveNum + 1){
+                // 判断连麦人数是否达到上限，此demo只支持展示三人连麦；达到连麦上限时的拉流总数 = 1条主播流 + 三条连麦者的流
                 Toast.makeText(JoinLiveAudienceUI.this, getString(R.string.join_live_count_overflow), Toast.LENGTH_SHORT).show();
             } else {
-                // 不满足上述两种情况则申请连麦
-                ZGJoinLiveHelper.sharedInstance().requestJoinLive();
-                Toast.makeText(JoinLiveAudienceUI.this, getString(R.string.has_sended_applation), Toast.LENGTH_SHORT).show();
+                // 不满足上述情况则开始连麦，即推流
 
-                AppLogger.getInstance().i(JoinLiveAudienceUI.class, "观众发出连麦申请");
+                // 获取可用的视图
+                JoinLiveView freeView = ZGJoinLiveHelper.sharedInstance().getFreeTextureView();
+
+                if (freeView != null){
+                    // 设置预览视图模式，此处采用 SDK 默认值--等比缩放填充整View，可能有部分被裁减。
+                    ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().setPreviewViewMode(ZegoVideoViewMode.ScaleAspectFill);
+                    // 设置预览 view
+                    ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().setPreviewView(freeView.textureView);
+                    // 启动预览
+                    ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().startPreview();
+                    // 开始推流，flag 使用连麦场景
+                    ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().startPublishing(mPublishStreamID, "audienceJoinLive", ZegoConstants.PublishFlag.JoinPublish);
+
+                    // 修改视图信息
+                    freeView.streamID = mPublishStreamID;
+                    freeView.isPublishView = true;
+                    ZGJoinLiveHelper.sharedInstance().modifyTextureViewInfo(freeView);
+                } else {
+                    Toast.makeText(JoinLiveAudienceUI.this, getString(R.string.has_no_textureView), Toast.LENGTH_LONG).show();
+                }
+
             }
         } else {
-            // 结束连麦
-            if (isJoinedLive){
-                ZGPublishHelper.sharedInstance().stopPreviewView();
-                ZGPublishHelper.sharedInstance().stopPublishing();
-                isJoinedLive = false;
-                // 设置视图可用
-                ZGJoinLiveHelper.sharedInstance().setJoinLiveViewFree(mPublishStreamID);
-                // 修改button的标识为申请连麦
-                binding.btnApplyJoinLive.setText(getString(R.string.tx_apply_joinLive));
+            // button 说明为"结束连麦"时，停止推流
 
-                AppLogger.getInstance().i(JoinLiveAudienceUI.class, "观众结束连麦");
-            }
+            // 停止推流
+            ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().stopPublishing();
+            // 停止预览
+            ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().stopPreview();
+
+            isJoinedLive = false;
+            // 设置视图可用
+            ZGJoinLiveHelper.sharedInstance().setJoinLiveViewFree(mPublishStreamID);
+            // 修改 button 的说明为"视频连麦"
+            binding.btnApplyJoinLive.setText(getString(R.string.tx_joinLive));
+
+            AppLogger.getInstance().i(JoinLiveAudienceUI.class, "观众结束连麦");
         }
     }
 
@@ -228,40 +256,52 @@ public class JoinLiveAudienceUI extends BaseActivity {
         AppLogger.getInstance().i(JoinLiveAudienceUI.class, "登录房间 %s", mRoomID);
         // 防止用户点击，弹出加载对话框
         CustomDialog.createDialog("登录房间中...", this).show();
+
         // 开始拉流前需要先登录房间，此处是观众登录主播所在的房间
-        ZGBaseHelper.sharedInstance().loginRoom(mRoomID, ZegoConstants.RoomRole.Audience, new IZegoLoginCompletionCallback() {
+        ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().loginRoom(mRoomID, ZegoConstants.RoomRole.Audience, new IZegoLoginCompletionCallback() {
             @Override
             public void onLoginCompletion(int errorCode, ZegoStreamInfo[] zegoStreamInfos) {
                 CustomDialog.createDialog(JoinLiveAudienceUI.this).cancel();
                 if (errorCode == 0) {
                     AppLogger.getInstance().i(JoinLiveAudienceUI.class, "登录房间成功 roomId : %s", mRoomID);
 
-                    // 开始拉流
+                    // 筛选主播流，主播流采用全屏的视图
                     for (ZegoStreamInfo streamInfo:zegoStreamInfos){
 
-                        // 拉主播流
                         if (streamInfo.userID.equals(mAnchorID)){
-                            // 主播流采用全页面的视图
-                            ZGPlayHelper.sharedInstance().startPlaying(streamInfo.streamID, mBigView.textureView);
-                            ZGConfigHelper.sharedInstance().setPlayViewMode(ZegoVideoViewMode.ScaleAspectFill, streamInfo.streamID);
+                            // 主播流采用全屏的视图，开始拉流
+                            ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().startPlayingStream(streamInfo.streamID, mBigView.textureView);
+                            // 设置拉流视图模式，此处采用 SDK 默认值--等比缩放填充整View，可能有部分被裁减。
+                            ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().setViewMode(ZegoVideoViewMode.ScaleAspectFill, streamInfo.streamID);
 
+                            // 向拉流流名列表中添加流名
+                            mPlayStreamIDs.add(streamInfo.streamID);
+                            
                             // 修改视图信息
                             mBigView.streamID = streamInfo.streamID;
                             ZGJoinLiveHelper.sharedInstance().modifyTextureViewInfo(mBigView);
+
+                            // 将 "视频连麦" button 置为可见
+                            binding.btnApplyJoinLive.setVisibility(View.VISIBLE);
 
                             break;
                         }
                     }
 
+                    // 拉副主播流（即连麦者的流）
                     for (ZegoStreamInfo streamInfo:zegoStreamInfos) {
 
-                        // 拉其它连麦者的流
                         if (!streamInfo.userID.equals(mAnchorID)){
                             // 获取可用的视图
                             JoinLiveView freeView = ZGJoinLiveHelper.sharedInstance().getFreeTextureView();
                             if (freeView != null) {
-                                ZGPlayHelper.sharedInstance().startPlaying(streamInfo.streamID, freeView.textureView);
-                                ZGConfigHelper.sharedInstance().setPlayViewMode(ZegoVideoViewMode.ScaleAspectFill, streamInfo.streamID);
+                                // 开始拉流
+                                ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().startPlayingStream(streamInfo.streamID, freeView.textureView);
+                                // 设置拉流视图模式，此处采用 SDK 默认值--等比缩放填充整个 View，可能有部分被裁减。
+                                ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().setViewMode(ZegoVideoViewMode.ScaleAspectFill, streamInfo.streamID);
+
+                                // 向拉流流名列表中添加流名
+                                mPlayStreamIDs.add(streamInfo.streamID);
 
                                 // 修改视图信息
                                 freeView.streamID = streamInfo.streamID;
@@ -279,7 +319,7 @@ public class JoinLiveAudienceUI extends BaseActivity {
     }
 
     /**
-     * 供其他Activity调用，进入本专题的方法
+     * 供其他Activity调用，进入本专题模块的方法
      *
      * @param activity
      */
@@ -290,60 +330,10 @@ public class JoinLiveAudienceUI extends BaseActivity {
         activity.startActivity(intent);
     }
 
-    /**
-     * 响应主播邀请连麦请求
-     */
-    protected void handleInvitedJoinLiveRequest(final int seq, final String fromUserID) {
-        // 主播邀请连麦
-
-        AlertDialog mDialogHandleRequestPublish = new AlertDialog.Builder(JoinLiveAudienceUI.this).setTitle(getString(R.string.hint))
-                .setMessage(getString(R.string.someone_is_invitting_to_broadcast_allow, fromUserID))
-                .setPositiveButton(getString(R.string.Allow), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // 同意主播邀请连麦的请求
-
-                        ZGJoinLiveHelper.sharedInstance().respondInvitedJoinLiveRequest(seq, true);
-
-                        AppLogger.getInstance().i(JoinLiveAudienceUI.class, "接受主播连麦邀请，开始推流，流名：%s", mPublishStreamID);
-                        // 获取可用的视图
-                        JoinLiveView freeView = ZGJoinLiveHelper.sharedInstance().getFreeTextureView();
-
-                        if (freeView != null) {
-                            // 设置预览视图模式
-                            ZGBaseHelper.sharedInstance().getZegoLiveRoom().setPreviewViewMode(ZegoVideoViewMode.ScaleAspectFill);
-                            // 调用SDK开始预览接口 设置view 并启用预览
-                            ZGPublishHelper.sharedInstance().startPreview(freeView.textureView);
-                            // 开始推流
-                            ZGPublishHelper.sharedInstance().startPublishing(mPublishStreamID, "audienceJoinLive", ZegoConstants.PublishFlag.JoinPublish);
-
-                            // 修改视图信息
-                            freeView.streamID = mPublishStreamID;
-                            freeView.isPublishView = true;
-                            ZGJoinLiveHelper.sharedInstance().modifyTextureViewInfo(freeView);
-                        } else {
-                            Toast.makeText(JoinLiveAudienceUI.this, getString(R.string.has_no_textureView), Toast.LENGTH_SHORT).show();
-                        }
-
-                        dialog.dismiss();
-                    }
-                }).setNegativeButton(getString(R.string.Deny), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // 拒绝主播邀请连麦的请求
-                        ZGJoinLiveHelper.sharedInstance().respondInvitedJoinLiveRequest(seq, false);
-                        AppLogger.getInstance().i(JoinLiveAudienceUI.class, "拒绝主播连麦邀请");
-                        dialog.dismiss();
-                    }
-                }).create();
-        mDialogHandleRequestPublish.setCancelable(false);
-        mDialogHandleRequestPublish.show();
-    }
-
     // 设置 SDK 相关回调的监听
     public void initSDKCallback(){
         // 设置房间回调监听
-        ZGBaseHelper.sharedInstance().setZegoRoomCallback(new IZegoRoomCallback() {
+        ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().setZegoRoomCallback(new IZegoRoomCallback() {
             @Override
             public void onKickOut(int reason, String roomID) {
 
@@ -370,6 +360,7 @@ public class JoinLiveAudienceUI extends BaseActivity {
 
                 if (roomID.equals(mRoomID)){
                     // 当登录房间成功后，如果房间内中途有人推流或停止推流。房间内其他人就能通过该回调收到流更新通知。
+
                     for (ZegoStreamInfo streamInfo : zegoStreamInfos) {
                         // 当有流新增的时候，拉流
                         if (type == ZegoConstants.StreamUpdateType.Added) {
@@ -380,23 +371,30 @@ public class JoinLiveAudienceUI extends BaseActivity {
 
                             if (freeView != null) {
                                 if (!streamInfo.userID.equals(mAnchorID)) {
-                                    // 拉流
-                                    ZGPlayHelper.sharedInstance().startPlaying(streamInfo.streamID, freeView.textureView);
-                                    ZGConfigHelper.sharedInstance().setPlayViewMode(ZegoVideoViewMode.ScaleAspectFill, streamInfo.streamID);
+                                    // 开始拉流
+                                    ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().startPlayingStream(streamInfo.streamID, freeView.textureView);
+                                    // 设置拉流视图模式，此处采用 SDK 默认值--等比缩放填充整个View，可能有部分被裁减。
+                                    ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().setViewMode(ZegoVideoViewMode.ScaleAspectFill, streamInfo.streamID);
+
+                                    // 向拉流流名列表中添加流名
+                                    mPlayStreamIDs.add(streamInfo.streamID);
 
                                     // 修改视图信息
                                     freeView.streamID = streamInfo.streamID;
                                     ZGJoinLiveHelper.sharedInstance().modifyTextureViewInfo(freeView);
                                 } else {
-                                    // 拉流
-                                    ZGPlayHelper.sharedInstance().startPlaying(streamInfo.streamID, mBigView.textureView);
-                                    ZGConfigHelper.sharedInstance().setPlayViewMode(ZegoVideoViewMode.ScaleAspectFill, streamInfo.streamID);
+                                    // 开始拉流，此处处理主播中途断流后重新推流
+                                    ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().startPlayingStream(streamInfo.streamID, mBigView.textureView);
+                                    // 设置拉流视图模式，此处采用 SDK 默认值--等比缩放填充整个View，可能有部分被裁减。
+                                    ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().setViewMode(ZegoVideoViewMode.ScaleAspectFill, streamInfo.streamID);
+
+                                    // 向拉流流名列表中添加流名
+                                    mPlayStreamIDs.add(streamInfo.streamID);
 
                                     // 修改视图信息
                                     mBigView.streamID = streamInfo.streamID;
                                     ZGJoinLiveHelper.sharedInstance().modifyTextureViewInfo(mBigView);
                                 }
-
                             }
                         }
                         // 当有其他流关闭的时候，停止拉流
@@ -404,17 +402,31 @@ public class JoinLiveAudienceUI extends BaseActivity {
                             AppLogger.getInstance().i(JoinLiveAudienceUI.class, "房间内收到流删除通知. streamID : %s, userName : %s, extraInfo : %s", streamInfo.streamID, streamInfo.userName, streamInfo.extraInfo);
                             for (String playStreamID:mPlayStreamIDs){
                                 if (playStreamID.equals(streamInfo.streamID)){
+
                                     // 停止拉流
-                                    ZGPlayHelper.sharedInstance().stopPlaying(streamInfo.streamID);
+                                    ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().stopPlayingStream(streamInfo.streamID);
                                     mPlayStreamIDs.remove(streamInfo.streamID);
 
                                     // 修改视图信息
                                     ZGJoinLiveHelper.sharedInstance().setJoinLiveViewFree(streamInfo.streamID);
 
-                                    if (streamInfo.userID.equals(mAnchorID) && isJoinedLive){
+                                    // 判断该条关闭流是否为主播
+                                    if (streamInfo.userID.equals(mAnchorID)) {
+                                        // 界面提示主播已停止直播
+                                        Toast.makeText(JoinLiveAudienceUI.this, getString(R.string.tx_anchor_stoppublish), Toast.LENGTH_SHORT).show();
 
-                                        // 主播停止推流，结束连麦
-                                        ZGJoinLiveHelper.sharedInstance().handleEndJoinLiveCommand();
+                                        // 在已连麦的情况下，主播停止直播连麦观众也停止推流
+                                        if (isJoinedLive) {
+                                            ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().stopPublishing();
+                                            // 停止预览
+                                            ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().stopPreview();
+
+                                            isJoinedLive = false;
+                                            // 设置视图可用
+                                            ZGJoinLiveHelper.sharedInstance().setJoinLiveViewFree(mPublishStreamID);
+                                        }
+                                        // 将 "视频连麦" button 置为不可见
+                                        binding.btnApplyJoinLive.setVisibility(View.INVISIBLE);
                                     }
 
                                     break;
@@ -440,7 +452,7 @@ public class JoinLiveAudienceUI extends BaseActivity {
         });
 
         // 设置拉流回调监听
-        ZGPlayHelper.sharedInstance().setPlayerCallback(new IZegoLivePlayerCallback() {
+        ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().setZegoLivePlayerCallback(new IZegoLivePlayerCallback() {
             @Override
             public void onPlayStateUpdate(int stateCode, String streamID) {
                 // 拉流状态更新，errorCode 非0 则说明拉流失败
@@ -450,15 +462,15 @@ public class JoinLiveAudienceUI extends BaseActivity {
                     AppLogger.getInstance().i(JoinLiveAudienceUI.class, "拉流成功, streamID : %s", streamID);
                     Toast.makeText(JoinLiveAudienceUI.this, getString(com.zego.common.R.string.tx_play_success), Toast.LENGTH_SHORT).show();
 
-                    // 向拉流流名列表中添加流名
-                    mPlayStreamIDs.add(streamID);
-
                 } else {
                     AppLogger.getInstance().i(JoinLiveAudienceUI.class, "拉流失败, streamID : %s, errorCode : %d", streamID, stateCode);
                     Toast.makeText(JoinLiveAudienceUI.this, getString(com.zego.common.R.string.tx_play_fail), Toast.LENGTH_SHORT).show();
 
                     // 解除视图占用
                     ZGJoinLiveHelper.sharedInstance().setJoinLiveViewFree(streamID);
+
+                    // 从已拉流列表中移除该流名
+                    mPlayStreamIDs.remove(streamID);
                 }
             }
 
@@ -469,28 +481,12 @@ public class JoinLiveAudienceUI extends BaseActivity {
 
             @Override
             public void onInviteJoinLiveRequest(int seq, String fromUserID, String fromUserName, String roomID) {
-                // 收到主播邀请连麦的回调
-                AppLogger.getInstance().i(JoinLiveAudienceUI.class, "所在 %s 房间收到主播 %s 的连麦邀请", roomID, fromUserID);
-                // 处理主播的连麦邀请
-                handleInvitedJoinLiveRequest(seq, fromUserID);
+
             }
 
             @Override
             public void onRecvEndJoinLiveCommand(String fromUserID, String fromUserName, String roomID ) {
-                // 收到主播结束连麦的回调
-                AppLogger.getInstance().i(JoinLiveAudienceUI.class, "所在 %s 房间收到主播 %s 结束连麦的指令，停止推流", roomID, fromUserID);
 
-                if (fromUserID.equals(mAnchorID) && roomID.equals(mRoomID)) {
-
-                    // 停止推流
-                    ZGJoinLiveHelper.sharedInstance().handleEndJoinLiveCommand();
-
-                    isJoinedLive = false;
-                    // 解除视图占用
-                    ZGJoinLiveHelper.sharedInstance().setJoinLiveViewFree(mPublishStreamID);
-                    // 修改button的标识为申请连麦
-                    binding.btnApplyJoinLive.setText(getString(R.string.tx_apply_joinLive));
-                }
             }
 
             @Override
@@ -500,7 +496,7 @@ public class JoinLiveAudienceUI extends BaseActivity {
         });
 
         // 设置推流回调监听
-        ZGPublishHelper.sharedInstance().setPublisherCallback(new IZegoLivePublisherCallback() {
+        ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().setZegoLivePublisherCallback(new IZegoLivePublisherCallback() {
             @Override
             public void onPublishStateUpdate(int errorCode, String streamID, HashMap<String, Object> hashMap) {
                 // 推流状态更新，errorCode 非0 则说明推流失败
@@ -561,65 +557,8 @@ public class JoinLiveAudienceUI extends BaseActivity {
 
     // 去除SDK相关的回调监听
     public void releaseSDKCallback(){
-        ZGPublishHelper.sharedInstance().releasePublisherCallback();
-        ZGPlayHelper.sharedInstance().releasePlayerCallback();
-        ZGBaseHelper.sharedInstance().releaseZegoRoomCallback();
-    }
-
-    // 设置连麦相关的回调监听
-    public void initJoinLiveCallback(){
-        ZGJoinLiveHelper.sharedInstance().setJoinLiveCallback(new ZGJoinLiveHelper.JoinLiveCallback() {
-            @Override
-            public void requestJoinLiveResult(boolean isSuccess, String fromUserID) {
-                // 请求连麦者才会收到此回调
-
-                AppLogger.getInstance().i(JoinLiveAudienceUI.class, "主播 %s 同意连麦，开始推流", fromUserID);
-
-                if (isSuccess && fromUserID.equals(mAnchorID)){
-                    // 主播同意连麦，开始推流
-
-                    Toast.makeText(JoinLiveAudienceUI.this, getString(R.string.request_join_live_success), Toast.LENGTH_LONG).show();
-
-                    // 获取可用的视图
-                    JoinLiveView freeView = ZGJoinLiveHelper.sharedInstance().getFreeTextureView();
-
-                    if (freeView != null){
-                        // 设置预览视图模式
-                        ZGBaseHelper.sharedInstance().getZegoLiveRoom().setPreviewViewMode(ZegoVideoViewMode.ScaleAspectFill);
-                        // 调用sdk 开始预览接口 设置view 并启用预览
-                        ZGPublishHelper.sharedInstance().startPreview(freeView.textureView);
-                        // 开始推流
-                        ZGPublishHelper.sharedInstance().startPublishing(mPublishStreamID, "audienceJoinLive", ZegoConstants.PublishFlag.JoinPublish);
-
-                        // 修改视图信息
-                        freeView.streamID = mPublishStreamID;
-                        freeView.isPublishView = true;
-                        ZGJoinLiveHelper.sharedInstance().modifyTextureViewInfo(freeView);
-                    } else {
-                        Toast.makeText(JoinLiveAudienceUI.this, getString(R.string.has_no_textureView), Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    AppLogger.getInstance().i(JoinLiveAudienceUI.class, "主播 %s 拒绝连麦，开始推流", fromUserID);
-                    Toast.makeText(JoinLiveAudienceUI.this, getString(R.string.request_has_been_denied), Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void inviteJoinLiveResult(boolean isSuccess, String fromUserID) {
-                // 邀请连麦者才会收到此回调
-
-            }
-
-            @Override
-            public void endJoinLiveResult(boolean isSuccess, String userID, String roomID) {
-                // 主播端调用结束连麦才会收到此回调
-
-            }
-        });
-    }
-
-    // 去除连麦相关的回调监听
-    public void releaseJoinLiveCallback(){
-        ZGJoinLiveHelper.sharedInstance().setJoinLiveCallback(null);
+        ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().setZegoLivePublisherCallback(null);
+        ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().setZegoLivePlayerCallback(null);
+        ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().setZegoRoomCallback(null);
     }
 }

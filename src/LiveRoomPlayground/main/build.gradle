@@ -7,7 +7,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0"
+        versionName getDemoVersionName()
 
         ndk {
             //设置支持的SO库架构
@@ -51,6 +51,18 @@ android {
             dirs '../common/libs'   // aar目录
         }
     }
+}
+
+def getDemoVersionName(){
+    String versionName = releaseTime()
+
+    return versionName
+}
+
+def releaseTime() {
+
+    return new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("GMT+08:00"))
+
 }
 
 dependencies {

@@ -16,14 +16,11 @@ public class JoinLiveView {
     // 渲染视频的视图
     public TextureView textureView;
 
-    public Button kickOutBtn;
-
     private ZegoLiveRoom mZegoLiveRoom = null;
 
-    public JoinLiveView(TextureView textureView, Button kickOutBtn, boolean isPublishView, String streamID){
+    public JoinLiveView(TextureView textureView, boolean isPublishView, String streamID){
         this.isPublishView = isPublishView;
         this.textureView = textureView;
-        this.kickOutBtn = kickOutBtn;
         this.streamID = streamID;
     }
 
