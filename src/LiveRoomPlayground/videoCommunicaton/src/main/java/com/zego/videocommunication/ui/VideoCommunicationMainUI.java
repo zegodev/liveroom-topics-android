@@ -115,7 +115,8 @@ public class VideoCommunicationMainUI extends BaseActivity {
      */
     private void unInitSDK(){
         releaseSDKCallback();
-        ZGBaseHelper.sharedInstance().setZegoRoomCallback(null);
+        ZGBaseHelper.sharedInstance().unInitZegoSDK();
+
     }
 
     private void releaseSDKCallback(){
