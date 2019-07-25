@@ -7,6 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ebeef5"
+        android:keepScreenOn="true"
         android:orientation="vertical">
 
         <com.zego.common.widgets.TitleLayout
@@ -18,8 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
             android:layout_marginTop="40dp"
+            android:layout_marginRight="40dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -28,7 +29,16 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:gravity="center"
-                android:text="userID: MEIZU16th"
+                android:text="appID: "
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/app_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text=""
                 android:textSize="14sp" />
 
             <ImageView
@@ -45,17 +55,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="40dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="appID:"
+                android:text="userID:"
                 android:textSize="14sp" />
 
+            <TextView
+                android:id="@+id/user_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textSize="14sp" />
 
             <ImageView
                 android:id="@+id/appid_describe"
@@ -66,31 +82,27 @@
 
         </LinearLayout>
 
-        <com.zego.common.widgets.CustomEditText
-            android:id="@+id/ed_appid"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
-            android:background="@color/white_color"
-            android:hint="请输入appID"
-            android:padding="8dp"
-            android:textSize="14sp"
-            app:key="app_id" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="40dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="appSign:" />
+                android:text="userName:" />
+
+            <TextView
+                android:id="@+id/tx_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textSize="14sp" />
 
             <ImageView
                 android:id="@+id/app_sign_describe"
@@ -100,25 +112,15 @@
 
         </LinearLayout>
 
-        <com.zego.common.widgets.CustomEditText
-            android:id="@+id/ed_app_sign"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
-            android:background="@color/white_color"
-            android:hint="请输入appSign"
-            android:padding="8dp"
-            android:textSize="14sp"
-            app:key="app_sign" />
+
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
             android:layout_marginTop="15dp"
+            android:layout_marginRight="40dp"
 
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -136,8 +138,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="40dp"
             android:gravity="center_vertical|left"
             android:text="@string/tx_test_env"
             android:textColor="#c50f57"

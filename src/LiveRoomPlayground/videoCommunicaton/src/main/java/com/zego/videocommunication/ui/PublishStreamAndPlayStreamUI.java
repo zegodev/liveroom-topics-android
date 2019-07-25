@@ -5,25 +5,16 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
-import com.zego.common.ZGBaseHelper;
-import com.zego.common.ZGConfigHelper;
-import com.zego.common.ZGPlayHelper;
-import com.zego.common.ZGPublishHelper;
 import com.zego.common.ui.BaseActivity;
-import com.zego.common.util.AppLogger;
+import com.zego.videocommunication.ZGVideoCommunicationHelper;
 import com.zego.videocommunication.model.PublishStreamAndPlayStreamLayoutModel;
 import com.zego.videocommunicaton.R;
 import com.zego.videocommunicaton.databinding.PublishStreamAndPlayStreamBinding;
-import com.zego.zegoliveroom.callback.IZegoLoginCompletionCallback;
-import com.zego.zegoliveroom.callback.IZegoRoomCallback;
-import com.zego.zegoliveroom.constants.ZegoConstants;
-import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
 
 import java.util.ArrayList;
@@ -59,8 +50,8 @@ public class PublishStreamAndPlayStreamUI extends BaseActivity {
         // 使用DataBinding加载布局
         publishStreamAndPlayStreamBinding = DataBindingUtil.setContentView(this, R.layout.publish_stream_and_play_stream);
         // 在退出重进房间的时候UI上记录上一次摄像头开关和麦克风开关的状态
-        publishStreamAndPlayStreamBinding.MicrophoneState.setChecked(ZGConfigHelper.sharedInstance().getZgMicState());
-        publishStreamAndPlayStreamBinding.CameraState.setChecked(ZGConfigHelper.sharedInstance().getZgCameraState());
+        publishStreamAndPlayStreamBinding.MicrophoneState.setChecked(ZGVideoCommunicationHelper.sharedInstance().getZgMicState());
+        publishStreamAndPlayStreamBinding.CameraState.setChecked(ZGVideoCommunicationHelper.sharedInstance().getZgCameraState());
 
 
         // 设置麦克风和摄像头的点击事件
@@ -78,116 +69,51 @@ public class PublishStreamAndPlayStreamUI extends BaseActivity {
             }
         });
 
-        // 设置房间代理，本示例中主要用于监听onStreamUpdated流更新回调，以便当房间有新增推流或停推流的时候拉这条流或停拉这条流
-        ZGBaseHelper.sharedInstance().setZegoRoomCallback(new IZegoRoomCallback() {
-            @Override
-            public void onKickOut(int i, String s) {
+        ZGVideoCommunicationHelper.sharedInstance().setZGVideoCommunicationHelperCallback( new ZGVideoCommunicationHelper.ZGVideoCommunicationHelperCallback(){
 
+            @Override
+            public TextureView addRenderViewByStreamAdd(ZegoStreamInfo listStream) {
+                TextureView playRenderView = PublishStreamAndPlayStreamUI.this.mPublishStreamAndPlayStreamLayoutModel.addStreamToViewInLayout(listStream.streamID);
+                PublishStreamAndPlayStreamUI.this.playStreamids.add(listStream.streamID);
+                return playRenderView;
             }
 
             @Override
-            public void onDisconnect(int i, String s) {
+            public void onLoginRoomFailed(int errorcode){
 
-            }
-
-            @Override
-            public void onReconnect(int i, String s) {
-
-            }
-
-            @Override
-            public void onTempBroken(int i, String s) {
-
-            }
-
-            @Override
-            public void onStreamUpdated(int type, ZegoStreamInfo[] zegoStreamInfos, String roomID) {
-
-                // 当登陆房间成功后，如果房间内中途有人推流或停止推流。房间内其他人就能通过该回调收到流更新通知。
-                for (ZegoStreamInfo streamInfo : zegoStreamInfos) {
-                    // 当有流新增的时候，拉流
-                    if (type == ZegoConstants.StreamUpdateType.Added) {
-                        AppLogger.getInstance().i(ZGBaseHelper.class, "房间内收到流新增通知. streamID : %s, userName : %s, extraInfo : %s", streamInfo.streamID, streamInfo.userName, streamInfo.extraInfo);
-                        TextureView playRenderView = PublishStreamAndPlayStreamUI.this.mPublishStreamAndPlayStreamLayoutModel.addStreamToViewInLayout(streamInfo.streamID);
-                        ZGPlayHelper.sharedInstance().startPlaying(streamInfo.streamID, playRenderView);
-                        ZGConfigHelper.sharedInstance().setPlayViewMode(ZegoVideoViewMode.ScaleAspectFill, streamInfo.streamID);
-                        PublishStreamAndPlayStreamUI.this.playStreamids.add(streamInfo.streamID);
-
-                    }
-                    // 当有其他流关闭的时候，停拉
-                    else if (type == ZegoConstants.StreamUpdateType.Deleted) {
-                        AppLogger.getInstance().i(ZGBaseHelper.class, "房间内收到流删除通知. streamID : %s, userName : %s, extraInfo : %s", streamInfo.streamID, streamInfo.userName, streamInfo.extraInfo);
-                        ZGPlayHelper.sharedInstance().stopPlaying(streamInfo.streamID);
-                        PublishStreamAndPlayStreamUI.this.mPublishStreamAndPlayStreamLayoutModel.removeStreamToViewInLayout(streamInfo.streamID);
-                        PublishStreamAndPlayStreamUI.this.playStreamids.remove(streamInfo.streamID);
-                    }
-
+                if(ZGVideoCommunicationHelper.ZGVideoCommunicationHelperCallback.NUMBER_OF_PEOPLE_EXCEED_LIMIT == errorcode){
+                    Toast.makeText(PublishStreamAndPlayStreamUI.this, "房间已满人，目前demo只展示12人通讯", Toast.LENGTH_LONG).show();
+                }else {
+                    Toast.makeText(PublishStreamAndPlayStreamUI.this, "登录房间失败，请检查网络", Toast.LENGTH_LONG).show();
                 }
+                PublishStreamAndPlayStreamUI.this.onBackPressed();
 
             }
 
             @Override
-            public void onStreamExtraInfoUpdated(ZegoStreamInfo[] zegoStreamInfos, String s) {
+            public void onPublishStreamFailed(int errorcode){
+
+                Toast.makeText(PublishStreamAndPlayStreamUI.this, "开启视频通话失败，检查网络", Toast.LENGTH_LONG).show();
+                onBackPressed();
 
             }
 
             @Override
-            public void onRecvCustomCommand(String s, String s1, String s2, String s3) {
-
+            public void removeRenderViewByStreamDelete(ZegoStreamInfo streamInfo) {
+                PublishStreamAndPlayStreamUI.this.mPublishStreamAndPlayStreamLayoutModel.removeStreamToViewInLayout(streamInfo.streamID);
+                PublishStreamAndPlayStreamUI.this.playStreamids.remove(streamInfo.streamID);
             }
+
         });
 
         // 这里创建多人连麦的Model的实例
         this.mPublishStreamAndPlayStreamLayoutModel = new PublishStreamAndPlayStreamLayoutModel(this);
 
+        // 这里在登录房间之后马上推流并做本地推流的渲染
+        TextureView localPreviewView = PublishStreamAndPlayStreamUI.this.mPublishStreamAndPlayStreamLayoutModel.addStreamToViewInLayout(PublishStreamAndPlayStreamUI.this.mPublishStreamid);
+
         // 这里进入当前Activty之后马上登录房间，在登录房间的回调中，若房间已经有其他流在推，从登录回调中获取拉流信息并拉这些流
-        ZGBaseHelper.sharedInstance().loginRoom(roomid, ZegoConstants.RoomRole.Anchor, new IZegoLoginCompletionCallback() {
-            @Override
-            public void onLoginCompletion(int i, ZegoStreamInfo[] zegoStreamInfos) {
-
-                // 判断登录房间是否正常
-                if(i == 0){
-
-                    AppLogger.getInstance().i(PublishStreamAndPlayStreamUI.class, "登录房间成功");
-
-                    if(zegoStreamInfos.length < 12){
-
-                        // 这里在登录房间之后马上推流并做本地推流的渲染
-                        TextureView localPreviewView = PublishStreamAndPlayStreamUI.this.mPublishStreamAndPlayStreamLayoutModel.addStreamToViewInLayout(PublishStreamAndPlayStreamUI.this.mPublishStreamid);
-                        ZGPublishHelper.sharedInstance().startPreview(localPreviewView);
-                        ZGConfigHelper.sharedInstance().setPreviewViewMode(ZegoVideoViewMode.ScaleAspectFill);
-                        ZGPublishHelper.sharedInstance().startPublishing(mPublishStreamid, mPublishStreamid + "-title", ZegoConstants.PublishFlag.JoinPublish);
-
-                        //若该房间内有其他流在推，拉这些流并在推拉流的Model中渲染出来
-                        for(ZegoStreamInfo zegoStreamInfo : zegoStreamInfos){
-
-                            TextureView playRenderView = PublishStreamAndPlayStreamUI.this.mPublishStreamAndPlayStreamLayoutModel.addStreamToViewInLayout(zegoStreamInfo.streamID);
-                            ZGPlayHelper.sharedInstance().startPlaying(zegoStreamInfo.streamID, playRenderView);
-                            ZGConfigHelper.sharedInstance().setPlayViewMode(ZegoVideoViewMode.ScaleAspectFill, zegoStreamInfo.streamID);
-
-                            playStreamids.add(zegoStreamInfo.streamID);
-
-                            AppLogger.getInstance().i(PublishStreamAndPlayStreamUI.class, "当前房间存在：" + zegoStreamInfo.streamID);
-                        }
-
-
-                    }else {
-
-                        Toast.makeText(PublishStreamAndPlayStreamUI.this, "房间已满人，目前demo只展示12人通讯", Toast.LENGTH_LONG).show();
-                        AppLogger.getInstance().i(PublishStreamAndPlayStreamUI.class, "房间已满人，目前demo只展示12人通讯");
-
-                        PublishStreamAndPlayStreamUI.this.onBackPressed();
-                    }
-
-
-
-                }else{
-                    AppLogger.getInstance().i(PublishStreamAndPlayStreamUI.class, "登录房间失败 errorcode：" + i);
-
-                }
-
-            }
-        });
+        ZGVideoCommunicationHelper.sharedInstance().startVideoCommunication(roomid, localPreviewView, mPublishStreamid);
 
     }
 
@@ -203,9 +129,9 @@ public class PublishStreamAndPlayStreamUI extends BaseActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if(isChecked){
-                    ZGConfigHelper.sharedInstance().enableCamera(true);
+                    ZGVideoCommunicationHelper.sharedInstance().enableCamera(true);
                 }else {
-                    ZGConfigHelper.sharedInstance().enableCamera(false);
+                    ZGVideoCommunicationHelper.sharedInstance().enableCamera(false);
 
                 }
 
@@ -218,9 +144,9 @@ public class PublishStreamAndPlayStreamUI extends BaseActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if(isChecked){
-                    ZGConfigHelper.sharedInstance().enableMic(true);
+                    ZGVideoCommunicationHelper.sharedInstance().enableMic(true);
                 }else {
-                    ZGConfigHelper.sharedInstance().enableMic(false);
+                    ZGVideoCommunicationHelper.sharedInstance().enableMic(false);
                 }
 
             }
@@ -234,12 +160,8 @@ public class PublishStreamAndPlayStreamUI extends BaseActivity {
     @Override
     public void onBackPressed() {
 
-        ZGPublishHelper.sharedInstance().stopPublishing();
         this.mPublishStreamAndPlayStreamLayoutModel.removeAllStreamToViewInLayout();
-        for(String playStreamid : this.playStreamids){
-            ZGPlayHelper.sharedInstance().stopPlaying(playStreamid);
-        }
-        ZGBaseHelper.sharedInstance().loginOutRoom();
+        ZGVideoCommunicationHelper.sharedInstance().quitVideoCommunication(this.playStreamids);
 
         super.onBackPressed();
     }

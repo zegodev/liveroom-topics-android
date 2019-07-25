@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zego.common.GetAppIdConfig;
 import com.zego.common.util.ZegoUtil;
 import com.zego.common.widgets.CustomDialog;
 import com.zego.play.R;
@@ -33,11 +34,14 @@ public class InitSDKPlayActivityUI extends BaseActivity implements View.OnClickL
     protected void onCreate(@NonNull Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_play_init_sdk);
-
+        binding.appId.setText(String.valueOf(GetAppIdConfig.appId));
         binding.appidDescribe.setOnClickListener(this);
         binding.appSignDescribe.setOnClickListener(this);
         binding.useridDescribe.setOnClickListener(this);
+        binding.txUserName.setText(ZGBaseHelper.sharedInstance().userName);
+        binding.userId.setText(ZGBaseHelper.sharedInstance().userID);
         flag = getIntent().getStringExtra("flag");
+
     }
 
     /**
@@ -47,58 +51,38 @@ public class InitSDKPlayActivityUI extends BaseActivity implements View.OnClickL
      */
     public void onInitSDK(View view) {
         AppLogger.getInstance().i(InitSDKPlayActivityUI.class, "点击 初始化SDK按钮");
-        String appSignStr = binding.edAppSign.getText().toString();
-        String appIDStr = binding.edAppid.getText().toString();
         boolean testEnv = binding.testEnv.isChecked();
+        // 防止用户点击，弹出加载对话框
+        CustomDialog.createDialog("初始化SDK中...", InitSDKPlayActivityUI.this).show();
 
-        // 必须校验appid与appSign
-        if (!TextUtils.isEmpty(appIDStr) || !TextUtils.isEmpty(appSignStr)) {
+        // 调用sdk接口, 初始化sdk
+        boolean results = ZGBaseHelper.sharedInstance().initZegoSDK(GetAppIdConfig.appId, GetAppIdConfig.appSign, testEnv, new IZegoInitSDKCompletionCallback() {
+            @Override
+            public void onInitSDK(int errorCode) {
 
-            // appSign 是byte[]的类型, 所以需要解析字符串。
-            byte[] appSign = ZegoUtil.parseSignKeyFromString(appSignStr);
-            long appID = ZegoUtil.parseAppIDFromString(appIDStr);
-
-            // 有可能签名会解析失败，
-            if (appSign == null || appID == 0) {
-                Toast.makeText(this, appID == 0 ? "AppID格式非法" : "AppSign格式非法", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            // 防止用户点击，弹出加载对话框
-            CustomDialog.createDialog("初始化SDK中...", InitSDKPlayActivityUI.this).show();
-
-            // 调用sdk接口, 初始化sdk
-            boolean results = ZGBaseHelper.sharedInstance().initZegoSDK(appID, appSign, testEnv, new IZegoInitSDKCompletionCallback() {
-                @Override
-                public void onInitSDK(int errorCode) {
-
-                    // 关闭加载对话框
-                    CustomDialog.createDialog(InitSDKPlayActivityUI.this).cancel();
-
-                    // errorCode 非0 代表初始化sdk失败
-                    // 具体错误码说明请查看<a> https://doc.zego.im/CN/308.html </a>
-                    if (errorCode == 0) {
-                        AppLogger.getInstance().i(InitSDKPlayActivityUI.class, "初始化zegoSDK成功");
-                        Toast.makeText(InitSDKPlayActivityUI.this, getString(com.zego.common.R.string.tx_init_success), Toast.LENGTH_SHORT).show();
-                        // 初始化成功，跳转到登陆房间页面。
-                        jumpLoginRoom();
-                    } else {
-                        AppLogger.getInstance().i(InitSDKPlayActivityUI.class, "初始化sdk失败 错误码 : %d", errorCode);
-                        Toast.makeText(InitSDKPlayActivityUI.this, getString(com.zego.common.R.string.tx_init_failure), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-
-            // 如果接口调用失败，也需要关闭对话框
-            if (!results) {
                 // 关闭加载对话框
                 CustomDialog.createDialog(InitSDKPlayActivityUI.this).cancel();
-            }
 
-        } else {
-            AppLogger.getInstance().i(InitSDKPlayActivityUI.class, "AppId 或者 appSign 格式非法");
-            Toast.makeText(InitSDKPlayActivityUI.this, "AppId 或者 appSign 格式非法", Toast.LENGTH_SHORT).show();
+                // errorCode 非0 代表初始化sdk失败
+                // 具体错误码说明请查看<a> https://doc.zego.im/CN/308.html </a>
+                if (errorCode == 0) {
+                    AppLogger.getInstance().i(InitSDKPlayActivityUI.class, "初始化zegoSDK成功");
+                    Toast.makeText(InitSDKPlayActivityUI.this, getString(com.zego.common.R.string.tx_init_success), Toast.LENGTH_SHORT).show();
+                    // 初始化成功，跳转到登陆房间页面。
+                    jumpLoginRoom();
+                } else {
+                    AppLogger.getInstance().i(InitSDKPlayActivityUI.class, "初始化sdk失败 错误码 : %d", errorCode);
+                    Toast.makeText(InitSDKPlayActivityUI.this, getString(com.zego.common.R.string.tx_init_failure), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        // 如果接口调用失败，也需要关闭对话框
+        if (!results) {
+            // 关闭加载对话框
+            CustomDialog.createDialog(InitSDKPlayActivityUI.this).cancel();
         }
+
 
     }
 
@@ -120,7 +104,7 @@ public class InitSDKPlayActivityUI extends BaseActivity implements View.OnClickL
      * @param view
      */
     public void goGetAppID(View view) {
-        WebActivity.actionStart(this, "https://doc.zego.im/CN/621.html", getString(com.zego.common.R.string.tx_get_appid_guide));
+        WebActivity.actionStart(this, "https://doc.zego.im/API/HideDoc/GetAppIDGuide/GetAppIDGuideline.html", getString(com.zego.common.R.string.tx_get_appid_guide));
     }
 
     /**

@@ -14,8 +14,8 @@ import com.zego.zegoliveroom.constants.ZegoConstants;
  */
 public class ZGManager {
 
-    private boolean isTestEnv = false;
-    
+    private boolean isTestEnv = true;
+
     public static byte[] appSign = GetAppIdConfig.appSign;
     public static long appId = GetAppIdConfig.appId;
 

@@ -2,6 +2,7 @@ package com.zego.common;
 
 
 import android.app.Application;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.zego.common.util.AppLogger;
@@ -26,6 +27,9 @@ public class ZGBaseHelper {
     public static ZGBaseHelper zgBaseHelper;
 
     private ZGBaseState zgBaseState = ZGBaseState.WaitInitState;
+
+    public String userID = "";
+    public String userName = "";
 
     public enum ZGBaseState {
         WaitInitState, // 等待初始化状态
@@ -83,6 +87,8 @@ public class ZGBaseHelper {
      */
     public void setSDKContextEx(String userID, String userName, final String logPath, final String soFullPath, final long logFileSize, final Application application) {
 
+        this.userID = userID;
+        this.userName = userName;
         // 初始化之前必须先 setContext
         // 用于设置 SDK 上下文，如日志路径，Application Context 等，同时检查 so 库是否成功加载。
         ZegoLiveRoom.setSDKContext(new ZegoLiveRoom.SDKContextEx() {
@@ -108,6 +114,12 @@ public class ZGBaseHelper {
             public Application getAppContext() {
                 return application;
             }
+
+            @Override
+            @Nullable
+            public String getSubLogFolder(){
+                return null;
+            };
         });
 
 
