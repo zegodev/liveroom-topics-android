@@ -1,6 +1,7 @@
 package com.zego.common.application;
 
 import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.zego.common.ZGBaseHelper;
@@ -9,13 +10,14 @@ import com.zego.common.widgets.log.FloatingView;
 import com.zego.common.util.DeviceInfoManager;
 import com.zego.zegoliveroom.ZegoLiveRoom;
 
+import java.lang.reflect.Method;
 import java.util.Date;
 
 /**
  * Created by zego on 2018/10/16.
  */
 
-public class ZegoApplication extends Application {
+public class ZegoApplication extends MultiDexApplication {
 
     public static ZegoApplication zegoApplication;
 
@@ -41,6 +43,25 @@ public class ZegoApplication extends Application {
         // bugly初始化用户id
         CrashReport.initCrashReport(getApplicationContext(), "7ace07528f", false);
         CrashReport.setUserId(userId);
+
+        // 测试设置Alpha环境
+        Class clazz = null;
+        Method method = null;
+        try {
+            clazz = Class.forName("com.zego.zegoliveroom.ZegoLiveRoomJNI");
+
+            Method[] methods = clazz.getMethods();
+
+            for(Method method1 : methods){
+                if("setAlphaEnv" == method1.getName()){
+                    method = method1;
+                }
+            }
+            method.invoke(clazz, true);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 }

@@ -13,6 +13,8 @@ android {
             //设置支持的SO库架构
             abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86'
         }
+
+        multiDexEnabled true
     }
 
     signingConfigs {
@@ -86,7 +88,11 @@ dependencies {
     implementation project(path: ':videoCapture')
     implementation project(path: ':videoCommunicaton')
     implementation project(path: ':joinLive')
+    implementation project(path: ':videoFilter')
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.google.code.gson:gson:2.8.0'
+
+    implementation 'com.android.support:multidex:1.0.1'
+    
 }

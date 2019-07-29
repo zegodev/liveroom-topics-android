@@ -1,0 +1,142 @@
+<resources>
+    <string name="app_name">videoFilter</string>
+
+    <string name="tx_video_filter">自定义前处理</string>
+    <string name="tx_has_no_fu_authpack">faceunity的证书无效，请替换有效的authpack文件</string>
+    <string name="tx_login">登录房间</string>
+    <string name="tx_publishing">推流中</string>
+    <string name="tx_filter_type">请选择前处理传递数据类型:</string>
+    <string name="tx_sync_gl_texture_2d">BUFFER_TYPE_SYNC_GL_TEXTURE_2D</string>
+    <string name="tx_mem_gl_texture_2d">BUFFER_TYPE_HYBRID_MEM_GL_TEXTURE_2D</string>
+    <string name="tx_mem_rgba32">BUFFER_TYPE_MEM</string>
+    <string name="tx_asyn_i420_mem">BUFFER_TYPE_ASYNC_I420_MEM</string>
+    <string name="tx_surface_texture">BUFFER_TYPE_SURFACE_TEXTURE</string>
+
+    <string name="syncTexture2D_describe">同步传递纹理 ID，SDK 会调用此滤镜的 onProcessCallback 方法获取前处理后的纹理 ID </string>
+    <string name="memTexture2D_describe">异步传递纹理 ID，SDK 会抛出 RGBA32 的图像数据，可通过 onProcessCallback 方法传递前处理后的纹理 ID 给 SDK </string>
+    <string name="rgba32Mem_describe">异步传递 RGBA32 的图像数据</string>
+    <string name="i420Mem_describe">异步传递 I420 的图像数据</string>
+    <string name="surfaceTexture_describe">传递 SurfaceTexture，SDK 会调用此滤镜的 getSurfaceTexture 获取 SurfaceTexture 对象</string>
+
+
+    <!--faceunity 相关text-->
+    <string name="home_function_name_beauty">美颜</string>
+    <string name="home_function_name_normal">道具贴纸</string>
+
+    <string name="home_function_name_makeup">美妆</string>
+    <string name="sorry_no_permission">抱歉，你所使用的证书权限或SDK不包括该功能。</string>
+    <string name="camera_dialog_title">警告</string>
+    <string name="camera_dialog_message">相机权限被禁用或者相机被别的应用占用！</string>
+    <string name="camera_dialog_open">重试</string>
+    <string name="camera_dialog_back">退出</string>
+
+    <string name="fu_base_debug">Resolution:\n\t%dX%d\nFPS: %d\nRender time:\n\t%dms</string>
+    <string name="fu_base_is_tracking_text">未检测到人脸</string>
+
+    <string name="face_shape_4">自定义</string>
+    <string name="face_shape_3_default">默认</string>
+    <string name="face_shape_0_nvshen">女神</string>
+    <string name="face_shape_1_wanghong">网红</string>
+    <string name="face_shape_2_ziran">自然</string>
+    <string name="beauty_box_skin_detect">精准美肤</string>
+    <string name="beauty_box_skin_detect_close">精准美肤 关闭</string>
+    <string name="beauty_box_skin_detect_open">精准美肤 开启</string>
+    <string name="beauty_box_heavy_blur_double">朦胧磨皮</string>
+    <string name="beauty_box_heavy_blur_normal">清晰磨皮</string>
+    <string name="beauty_box_heavy_blur_normal_text">当前为 清晰磨皮 模式</string>
+    <string name="beauty_box_heavy_blur_double_text">当前为 朦胧磨皮 模式</string>
+    <string name="beauty_box_blur_level">磨皮</string>
+    <string name="beauty_box_color_level">美白</string>
+    <string name="beauty_box_red_level">红润</string>
+    <string name="beauty_box_eye_bright">亮眼</string>
+    <string name="beauty_box_tooth_whiten">美牙</string>
+    <string name="beauty_box_face_shape">脸型</string>
+    <string name="beauty_box_eye_enlarge">大眼</string>
+    <string name="beauty_box_cheek_thinning">瘦脸</string>
+    <string name="beauty_box_cheek_v">V脸</string>
+    <string name="beauty_box_cheek_narrow">窄脸</string>
+    <string name="beauty_box_cheek_small">小脸</string>
+    <string name="beauty_box_cheek_oval">鹅蛋脸</string>
+    <string name="beauty_box_intensity_chin">下巴</string>
+    <string name="beauty_box_intensity_forehead">额头</string>
+    <string name="beauty_box_intensity_nose">瘦鼻</string>
+    <string name="beauty_box_intensity_mouth">嘴型</string>
+    <string name="beauty_radio_skin_beauty">美肤</string>
+    <string name="beauty_radio_face_shape">美型</string>
+    <string name="beauty_radio_beauty_filter">美颜滤镜</string>
+    <string name="beauty_radio_filter">滤镜</string>
+    <string name="beauty_radio_beauty">美妆</string>
+    <string name="makeup_radio_lipstick">口红</string>
+    <string name="makeup_radio_blusher">腮红</string>
+    <string name="makeup_radio_eyebrow">眉毛</string>
+    <string name="makeup_radio_eye_shadow">眼影</string>
+    <string name="makeup_radio_eye_liner">眼线</string>
+    <string name="makeup_radio_eyelash">睫毛</string>
+    <string name="makeup_radio_contact_lens">美瞳</string>
+    <string name="makeup_radio_foundation">粉底</string>
+    <string name="makeup_radio_highlight">高光</string>
+    <string name="makeup_radio_shadow">阴影</string>
+    <string name="makeup_radio_remove">卸妆</string>
+    <string name="makeup_customize">自定义</string>
+    <string name="makeup_freckles">雀斑妆</string>
+    <string name="makeup_punk">朋克妆</string>
+    <string name="makeup_peach_blossom">桃花</string>
+    <string name="makeup_red_tea">赤茶妆</string>
+    <string name="makeup_winter">冬日妆</string>
+    <string name="makeup_boyfriend">男友</string>
+    <string name="makeup_cream">奶油妆</string>
+    <string name="makeup_clear">清透</string>
+    <string name="makeup_grapefruit">西柚</string>
+    <string name="beauty_radio_stickers">贴纸</string>
+
+    <string name="origin">原图</string>
+    <string name="delta">Delta</string>
+    <string name="electric">Electric</string>
+    <string name="slowlived">Slowlived</string>
+    <string name="tokyo">Tokyo</string>
+    <string name="warm">Warm</string>
+    <string name="ziran">自然</string>
+    <string name="bailiang">白亮</string>
+    <string name="danya">淡雅</string>
+    <string name="fennen">粉嫩</string>
+    <string name="qingxin">小清新</string>
+    <string name="lengsediao">冷色调</string>
+    <string name="nuansediao">暖色调</string>
+    <string name="hongrun">红润</string>
+
+    <string name="dialog_got">知道啦</string>
+
+    <string name="avatar_face_face">脸型</string>
+    <string name="avatar_face_eye">眼睛</string>
+    <string name="avatar_face_lip">嘴唇</string>
+    <string name="avatar_face_nose">鼻子</string>
+    <string name="avatar_face_eyebrow">眉毛</string>
+    <string name="avatar_face_eyelash">睫毛</string>
+
+    <string name="avatar_face_length">脸型长度</string>
+    <string name="avatar_face_width">脸颊宽度</string>
+    <string name="avatar_chin_width">下颚宽度</string>
+    <string name="avatar_chin_height">下巴高低</string>
+    <string name="avatar_eye_position">眼睛位置</string>
+    <string name="avatar_eye_corner_height">眼角高度</string>
+    <string name="avatar_eye_height">眼睛高低</string>
+    <string name="avatar_eye_width">眼睛宽窄</string>
+    <string name="avatar_nose_position">鼻子位置</string>
+    <string name="avatar_nose_width">鼻翼宽窄</string>
+    <string name="avatar_nose_height">鼻头高低</string>
+    <string name="avatar_mouth_position">嘴部位置</string>
+    <string name="avatar_up_lip_thickness">上唇厚度</string>
+    <string name="avatar_down_lip_thickness">下唇厚度</string>
+    <string name="avatar_lip_width">嘴唇宽度</string>
+
+    <string name="dialog_reset_avatar_model">是否将所有参数恢复到默认值?</string>
+    <string name="avatar_face_customize">自定义</string>
+
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
+    <string name="dialog_confirm_delete">确定删除所选中的道具？</string>
+    <string name="toast_delete_succeed">删除成功</string>
+    <string name="toast_delete_failed">删除失败</string>
+
+    <string name="recover">恢复</string>
+</resources>

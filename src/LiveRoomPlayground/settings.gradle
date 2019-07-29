@@ -1,4 +1,6 @@
-include ':main', ':joinLive',
+include ':main',
+        ':joinLive',
+        ':videoFilter',
         ':videoCommunicaton',
         ':frequencySpectrum',
         ':interruptHandler',

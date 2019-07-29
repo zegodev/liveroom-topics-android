@@ -29,6 +29,7 @@ import com.zego.publish.ui.InitSDKPublishActivityUI;
 import com.zego.videocapture.ui.ZGVideoCaptureOriginUI;
 import com.zego.videocommunication.ui.VideoCommunicationMainUI;
 import com.zego.videoexternalrender.ui.ZGVideoRenderTypeUI;
+import com.zego.videofilter.ui.VideoFilterMainUI;
 
 
 public class MainActivity extends BaseActivity {
@@ -118,6 +119,10 @@ public class MainActivity extends BaseActivity {
                     case "直播连麦":
                         JoinLiveMainActivityUI.actionStart(MainActivity.this);
                         break;
+                    case "视频外部滤镜":
+                        VideoFilterMainUI.actionStart(MainActivity.this);
+                        break;
+
                 }
             }
         });
@@ -141,6 +146,8 @@ public class MainActivity extends BaseActivity {
                 .moduleName("变声/混响/立体声").titleName("进阶功能"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("音频频谱"));
+        mainAdapter.addModuleInfo(new ModuleInfo()
+                .moduleName("视频外部滤镜"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("摄像头、音频打断事件处理"));
         mainAdapter.addModuleInfo(new ModuleInfo()
