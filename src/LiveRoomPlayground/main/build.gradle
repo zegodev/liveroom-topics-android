@@ -6,9 +6,11 @@ android {
         applicationId "com.zego.liveroomplayground"
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 1
-        versionName getDemoVersionName()
+        versionCode 5
 
+        versionName "1.0.4"
+
+        
         ndk {
             //设置支持的SO库架构
             abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86'
@@ -31,6 +33,18 @@ android {
             minifyEnabled false
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+
+//            //修改生成的apk名字
+//            applicationVariants.all { variant ->
+//                variant.outputs.all { output ->
+//                    def outputFile = output.outputFile
+//                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+//                        def fileName = "LiveRoomPlayground-release-v${defaultConfig.versionName}.apk"
+//                        outputFileName = fileName
+//                    }
+//                }
+//            }
         }
     }
 
@@ -55,25 +69,12 @@ android {
     }
 }
 
-def getDemoVersionName(){
-    String versionName = releaseTime()
-
-    return versionName
-}
-
-def releaseTime() {
-
-    return new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("GMT+08:00"))
-
-}
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation files('libs/zegoliveroom.jar')
     implementation project(path: ':common')
-    implementation project(path: ':interruptHandler')
     implementation project(path: ':soundProcessing')
     implementation project(path: ':play')
     implementation project(path: ':publish')

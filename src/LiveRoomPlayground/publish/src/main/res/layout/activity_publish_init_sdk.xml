@@ -42,7 +42,7 @@
                 android:textSize="14sp" />
 
             <ImageView
-                android:id="@+id/userid_describe"
+                android:id="@+id/app_id_describe"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_gravity="center_vertical"
@@ -74,7 +74,7 @@
                 android:textSize="14sp" />
 
             <ImageView
-                android:id="@+id/appid_describe"
+                android:id="@+id/user_id_describe"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:background="@mipmap/ic_mark" />
@@ -105,7 +105,7 @@
                 android:textSize="14sp" />
 
             <ImageView
-                android:id="@+id/app_sign_describe"
+                android:id="@+id/user_name_describe"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:background="@mipmap/ic_mark" />

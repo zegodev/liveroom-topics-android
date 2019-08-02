@@ -53,7 +53,8 @@ public class PublishActivityUI extends BaseActivity {
         // 方便快捷避免需要写一大堆 setText 等一大堆臃肿的代码。
         binding.setQuality(streamQuality);
         binding.setConfig(sdkConfigInfo);
-
+        binding.swMic.setChecked(true);
+        binding.swCamera.setChecked(true);
         layoutBinding = binding.layout;
         layoutBinding.startButton.setText(getString(R.string.tx_start_publish));
 
@@ -65,7 +66,6 @@ public class PublishActivityUI extends BaseActivity {
         ZGPublishHelper.sharedInstance().setPublisherCallback(new IZegoLivePublisherCallback() {
 
             // 推流回调文档说明: <a>https://doc.zego.im/API/ZegoLiveRoom/Android/html/index.html</a>
-
             @Override
             public void onPublishStateUpdate(int errorCode, String streamID, HashMap<String, Object> hashMap) {
                 // 推流状态更新，errorCode 非0 则说明推流失败
@@ -200,17 +200,21 @@ public class PublishActivityUI extends BaseActivity {
 
     }
 
-    //  某些华为手机上，应用在后台超过2分钟左右，华为系统会把摄像头资源给释放掉，并且可能会断开你应用的网络连接
-    //  关于后台会断开网络的问题可以通过在设置-应用-权限管理-菜单-特殊访问权限-电池优化，将设置成不允许使用电池优化，才能解决。
+
     @Override
     protected void onResume() {
+        //  某些华为手机上，应用在后台超过2分钟左右，华为系统会把摄像头资源给释放掉，并且可能会断开你应用的网络连接,
+        //  需要做前台服务来避免这种情况https://blog.csdn.net/Crazy9599/article/details/89842280
+        //  所以当前先关闭再重新启用摄像头来规避该问题
+        if (binding.swCamera.isChecked()) {
+            ZGConfigHelper.sharedInstance().enableCamera(false);
+            ZGConfigHelper.sharedInstance().enableCamera(true);
+        }
+        if (binding.swMic.isChecked()) {
+            ZGConfigHelper.sharedInstance().enableMic(false);
+            ZGConfigHelper.sharedInstance().enableMic(true);
+        }
         super.onResume();
-
-        // 华为某些机器会在应用退后台，或者锁屏的时候释放掉摄像头。达到省电的目的。
-        // 所以这里做了一个关开摄像头的操作，以便恢复摄像头。但是这种做法是不推荐的。
-        // 推荐使用interruptHandle 打断事件处理专题 中的方式去处理
-        ZGConfigHelper.sharedInstance().enableCamera(false);
-        ZGConfigHelper.sharedInstance().enableCamera(true);
     }
 
     public void goSetting(View view) {

@@ -20,6 +20,7 @@
     <string name="userid_describe">!!!必须保证userID的唯一性。可与app业务后台账号进行关联  userID还能便于ZEGO技术支持帮忙查找定位线上问题  建议定义一个有意义的userID</string>
     <string name="appid_describe">appID 和 appSign 由 ZEGO 分配给各 App。为了安全考虑，建议将 appSign 存储在 App 的业务后台，使用时从后台获取。</string>
     <string name="app_sign_describe">appID 和 appSign 由 ZEGO 分配给各 App。为了安全考虑，建议将 appSign 存储在 App 的业务后台，使用时从后台获取。</string>
+    <string name="user_name_describe">userName 只支持长度不超过 256 字节的任意格式字符串</string>
     <string name="room_id_describe">roomID代表一个房间的标识，需要保证房间ID信息的全局唯一，只支持长度不超过 128 byte 的数字，下划线，字母</string>
 
     <string name="tx_test_env">测试环境</string>
@@ -55,5 +56,6 @@
     <string name="front_facing_camera">前置摄像头</string>
     <string name="tx_set_play_view_mode_failure">设置失败, 请在拉流之后设置</string>
     <string name="tx_current_stream_delete">对方已停止推流</string>
+
 
 </resources>

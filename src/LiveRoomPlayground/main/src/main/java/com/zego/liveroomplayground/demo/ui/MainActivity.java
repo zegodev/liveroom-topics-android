@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.zego.frequency_spectrum.ui.FrequencySpectrumAndSoundLevelMainActivity;
-import com.zego.interrupthandler.ui.InterruptHandlerMainActivityUI;
 import com.zego.joinlive.ui.JoinLiveMainActivityUI;
 import com.zego.liveroomplayground.R;
 import com.zego.liveroomplayground.databinding.ActivityMainBinding;
@@ -59,6 +58,15 @@ public class MainActivity extends BaseActivity {
         setTitle("ZegoDemo");
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
+        binding.version.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                VersionActivity.actionStart(MainActivity.this);
+            }
+        });
+
+
         mainAdapter.setOnItemClickListener((view, position) -> {
             boolean orRequestPermission = checkOrRequestPermission(REQUEST_PERMISSION_CODE);
             ModuleInfo moduleInfo = (ModuleInfo) view.getTag();
@@ -76,9 +84,6 @@ public class MainActivity extends BaseActivity {
                         break;
                     case "音频频谱":
                         FrequencySpectrumAndSoundLevelMainActivity.actionStart(MainActivity.this);
-                        break;
-                    case "摄像头、音频打断事件处理":
-                        InterruptHandlerMainActivityUI.actionStart(MainActivity.this);
                         break;
                     case "ZegoSDK自带的媒体播放器":
                         intent = new Intent(MainActivity.this, ZGPlayerTypeUI.class);
@@ -149,8 +154,6 @@ public class MainActivity extends BaseActivity {
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("视频外部滤镜"));
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("摄像头、音频打断事件处理"));
-        mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("ZegoSDK自带的媒体播放器"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("媒体边信息/媒体次要信息"));
@@ -166,8 +169,6 @@ public class MainActivity extends BaseActivity {
                 .moduleName("视频外部渲染"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("视频外部采集"));
-
-
 
     }
 

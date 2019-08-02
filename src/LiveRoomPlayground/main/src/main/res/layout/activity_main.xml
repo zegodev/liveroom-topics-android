@@ -13,13 +13,26 @@
             android:layout_height="50dp"
             app:name="@string/app_name">
 
+            <TextView
+                android:id="@+id/version"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_gravity="end"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="@string/tx_version"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:clickable="true"
+                android:focusable="true"/>
+
         </com.zego.common.widgets.TitleLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal">
-
 
             <TextView
                 android:layout_width="match_parent"

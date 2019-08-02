@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">互动视频示例</string>
+    <string name="tx_version">版本</string>
 </resources>

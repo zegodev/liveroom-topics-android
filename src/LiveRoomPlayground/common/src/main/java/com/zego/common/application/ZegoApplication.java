@@ -43,25 +43,5 @@ public class ZegoApplication extends MultiDexApplication {
         // bugly初始化用户id
         CrashReport.initCrashReport(getApplicationContext(), "7ace07528f", false);
         CrashReport.setUserId(userId);
-
-        // 测试设置Alpha环境
-        Class clazz = null;
-        Method method = null;
-        try {
-            clazz = Class.forName("com.zego.zegoliveroom.ZegoLiveRoomJNI");
-
-            Method[] methods = clazz.getMethods();
-
-            for(Method method1 : methods){
-                if("setAlphaEnv" == method1.getName()){
-                    method = method1;
-                }
-            }
-            method.invoke(clazz, true);
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
     }
 }

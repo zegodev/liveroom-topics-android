@@ -35,9 +35,9 @@ public class InitSDKPublishActivityUI extends BaseActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_publish_init_sdk);
         binding.appId.setText(String.valueOf(GetAppIdConfig.appId));
-        binding.appidDescribe.setOnClickListener(this);
-        binding.appSignDescribe.setOnClickListener(this);
-        binding.useridDescribe.setOnClickListener(this);
+        binding.appIdDescribe.setOnClickListener(this);
+        binding.userNameDescribe.setOnClickListener(this);
+        binding.userIdDescribe.setOnClickListener(this);
         binding.txUserName.setText(ZGBaseHelper.sharedInstance().userName);
         binding.userId.setText(ZGBaseHelper.sharedInstance().userID);
         flag = getIntent().getStringExtra("flag");
@@ -120,12 +120,12 @@ public class InitSDKPublishActivityUI extends BaseActivity implements View.OnCli
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.userid_describe) {
-            showPopWindows(getString(com.zego.common.R.string.userid_describe), v);
-        } else if (id == R.id.appid_describe) {
+        if (id == R.id.app_id_describe) {
             showPopWindows(getString(com.zego.common.R.string.appid_describe), v);
-        } else if (id == R.id.app_sign_describe) {
-            showPopWindows(getString(com.zego.common.R.string.app_sign_describe), v);
+        } else if (id == R.id.user_id_describe) {
+            showPopWindows(getString(com.zego.common.R.string.userid_describe), v);
+        } else if (id == R.id.user_name_describe) {
+            showPopWindows(getString(com.zego.common.R.string.user_name_describe), v);
         }
     }
 
