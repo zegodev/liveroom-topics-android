@@ -6,9 +6,9 @@ android {
         applicationId "com.zego.liveroomplayground"
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 5
+        versionCode getAppVersionCode()
 
-        versionName "1.0.4"
+        versionName getAppVersionName()
 
         
         ndk {
@@ -67,6 +67,26 @@ android {
             dirs '../common/libs'   // aar目录
         }
     }
+}
+
+def static getAppVersionName() {
+
+    String versionName = "1.0.0."
+    if (System.getenv("BUILD_NUMBER") == null) {
+        versionName += "0"
+    } else {
+        versionName += System.getenv("BUILD_NUMBER")
+    }
+    return versionName
+}
+
+def static getAppVersionCode() {
+    int versionCode = 1
+    if (System.getenv("BUILD_NUMBER") != null) {
+        versionCode = Integer.parseInt(System.getenv("BUILD_NUMBER"))
+    }
+
+    return versionCode
 }
 
 dependencies {
