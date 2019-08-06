@@ -19,7 +19,8 @@
             app:name="推流中">
 
             <Button
-                android:id="@+id/go_back"
+                android:id="@+id/goBackToVideoCommunicationInputRoomidUI"
+                android:onClick="goBackToVideoCommunicationInputRoomidUI"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_centerVertical="true"

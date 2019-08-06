@@ -83,13 +83,13 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
                 // 登录成功后设置预览视图，开启预览并推流
                 if (errorcode == 0){
 
-                    // 外部渲染采用码流渲染类型时，推流时由 SDK 进行渲染。
-                    if (chooseRenderType == VideoExternalRenderType.NOT_DECODE.value()) {
-                        ZGManager.sharedInstance().api().setPreviewView(mPreView);
-                    }else {
+//                    // 外部渲染采用码流渲染类型时，推流时由 SDK 进行渲染。
+//                    if (chooseRenderType == VideoExternalRenderType.NOT_DECODE.value()) {
+//                        ZGManager.sharedInstance().api().setPreviewView(mPreView);
+//                    }else {
                         // 添加外部渲染视图
                         videoRenderer.addView (com.zego.zegoavkit2.ZegoConstants.ZegoVideoDataMainPublishingStream, mPreView);
-                    }
+//                    }
                     ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleToFill);
                     ZGManager.sharedInstance().api().enableCamera(true);
                     // 设置推流分辨率，540*960
@@ -132,21 +132,19 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
             //移除渲染视图
             videoRenderer.removeView(mRoomID);
 
-            runOnUiThread(()->{
-                mDealBtn.setText("StartPublish");
-            });
+            mDealBtn.setText("StartPublish");
 
         } else {
             // 界面button==开始推流
             // 开启预览再开始推流
 
-            // 外部渲染采用码流渲染类型时，推流时由 SDK 进行渲染。
-            if (chooseRenderType == VideoExternalRenderType.NOT_DECODE.value()) {
-                ZGManager.sharedInstance().api().setPreviewView(mPreView);
-            }else {
+//            // 外部渲染采用码流渲染类型时，推流时由 SDK 进行渲染。
+//            if (chooseRenderType == VideoExternalRenderType.NOT_DECODE.value()) {
+//                ZGManager.sharedInstance().api().setPreviewView(mPreView);
+//            }else {
                 // 添加外部渲染视图
                 videoRenderer.addView (com.zego.zegoavkit2.ZegoConstants.ZegoVideoDataMainPublishingStream, mPreView);
-            }
+//            }
             ZGManager.sharedInstance().api().startPreview();
             ZGManager.sharedInstance().api().startPublishing(mRoomID, mRoomName, ZegoConstants.PublishFlag.JoinPublish);
         }
@@ -158,22 +156,20 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
         // 界面button==开始拉流
         if (mDealPlayBtn.getText().toString().equals("StartPlay") && !mPlayStreamID.equals("")){
             // 设置拉流视图
-            if (chooseRenderType == VideoExternalRenderType.NOT_DECODE.value()) {
-                // 若选择的外部渲染类型是未解码型，设置添加解码类渲染视图
-                videoRenderer.addDecodView(mPlayView);
-            } else {
+//            if (chooseRenderType == VideoExternalRenderType.NOT_DECODE.value()) {
+//                // 若选择的外部渲染类型是未解码型，设置添加解码类渲染视图
+//                videoRenderer.addDecodView(mPlayView);
+//            } else {
                 // 选择的外部渲染类型不是未解码型，根据拉流流名设置渲染视图
                 videoRenderer.addView (mPlayStreamID, mPlayView);
-            }
+//            }
 
             // 开始拉流，不为 SDK 设置渲染视图，使用自渲染的视图
             boolean ret = ZGManager.sharedInstance().api().startPlayingStream(mPlayStreamID, null);
 
             mErrorTxt.setText("");
-            if (!ret){
-                runOnUiThread(()->{
-                    mErrorTxt.setText("拉流失败");
-                });
+            if (!ret) {
+                mErrorTxt.setText("拉流失败");
             }
 
         } else {
@@ -184,9 +180,7 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
                 //移除外部渲染视图
                 videoRenderer.removeView(mPlayStreamID);
 
-                runOnUiThread(()->{
-                    mDealPlayBtn.setText("StartPlay");
-                });
+                mDealPlayBtn.setText("StartPlay");
             }
         }
     }
@@ -195,10 +189,8 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
     @Override
     public void onPublishStateUpdate(int stateCode, String streamID, HashMap<String, Object> hashMap) {
         if (stateCode != 0) {
-            runOnUiThread(()->{
-                mErrorTxt.setText("publish fail, err:"+stateCode);
-                mDealBtn.setText("StartPublish");
-            });
+            mErrorTxt.setText("publish fail, err:" + stateCode);
+            mDealBtn.setText("StartPublish");
         } else {
             mDealBtn.setText("StopPublish");
             mPlayStreamID = streamID;
@@ -244,14 +236,10 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
     @Override
     public void onPlayStateUpdate(int stateCode, String streamID) {
 
-        if (stateCode != 0){
-            runOnUiThread(()->{
-                mErrorTxt.setText("拉流失败，err："+stateCode);
-            });
+        if (stateCode != 0) {
+            mErrorTxt.setText("拉流失败，err：" + stateCode);
         } else {
-            runOnUiThread(() -> {
-                mDealPlayBtn.setText("StopPlay");
-            });
+            mDealPlayBtn.setText("StopPlay");
         }
     }
 

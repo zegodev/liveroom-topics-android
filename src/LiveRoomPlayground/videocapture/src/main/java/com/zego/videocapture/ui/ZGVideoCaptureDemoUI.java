@@ -15,7 +15,6 @@ import com.zego.videocapture.R;
 import com.zego.zegoliveroom.callback.IZegoLivePlayerCallback;
 import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
 import com.zego.zegoliveroom.callback.IZegoLoginCompletionCallback;
-import com.zego.zegoliveroom.constants.ZegoAvConfig;
 import com.zego.zegoliveroom.constants.ZegoConstants;
 import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
 import com.zego.zegoliveroom.entity.AuxData;
@@ -114,9 +113,9 @@ public class ZGVideoCaptureDemoUI extends BaseActivity implements IZegoLivePubli
     public void doPublish(){
         // 设置预览视图及视图展示模式
         ZGManager.sharedInstance().api().setPreviewView(mPreView);
-        ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleToFill);
+        ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleAspectFill);
         // 设置推流分辨率
-        ZGManager.sharedInstance().api().setAVConfig(new ZegoAvConfig(ZegoAvConfig.Level.High));
+        ZGManager.sharedInstance().setZegoAvConfig(480,640);
         // 启动预览
         ZGManager.sharedInstance().api().startPreview();
         // 开始推流
@@ -134,7 +133,7 @@ public class ZGVideoCaptureDemoUI extends BaseActivity implements IZegoLivePubli
 
 
     // 处理推流操作
-    public void DealPublishing(View view){
+    public void dealPublishing(View view){
         // 界面button==停止推流
         if (mDealBtn.getText().toString().equals("StopPublish")){
 
@@ -143,9 +142,7 @@ public class ZGVideoCaptureDemoUI extends BaseActivity implements IZegoLivePubli
             ZGManager.sharedInstance().api().setPreviewView(null);
             ZGManager.sharedInstance().api().stopPublishing();
 
-            runOnUiThread(()->{
-                mDealBtn.setText("StartPublish");
-            });
+            mDealBtn.setText("StartPublish");
 
         } else {
             // 界面button==开始推流
@@ -154,28 +151,24 @@ public class ZGVideoCaptureDemoUI extends BaseActivity implements IZegoLivePubli
     }
 
     // 处理拉流操作
-    public void DealPlay(View view){
+    public void dealPlay(View view){
         // 界面button==开始拉流
         if (mDealPlayBtn.getText().toString().equals("StartPlay") && !mPlayStreamID.equals("")) {
 
             // 开始拉流
             boolean ret = ZGManager.sharedInstance().api().startPlayingStream(mPlayStreamID, mPlayView);
             // 设置拉流视图模式，填充整个view
-            ZGManager.sharedInstance().api().setViewMode(ZegoVideoViewMode.ScaleToFill, mPlayStreamID);
+            ZGManager.sharedInstance().api().setViewMode(ZegoVideoViewMode.ScaleAspectFill, mPlayStreamID);
             mErrorTxt.setText("");
-            if (!ret){
-                runOnUiThread(()->{
-                    mErrorTxt.setText("拉流失败");
-                });
+            if (!ret) {
+                mErrorTxt.setText("拉流失败");
             }
         } else {
             // 界面button==停止拉流
             if (!mPlayStreamID.equals("")){
                 //停止拉流
                 ZGManager.sharedInstance().api().stopPlayingStream(mPlayStreamID);
-                runOnUiThread(()->{
-                    mDealPlayBtn.setText("StartPlay");
-                });
+                mDealPlayBtn.setText("StartPlay");
             }
         }
     }
@@ -184,10 +177,8 @@ public class ZGVideoCaptureDemoUI extends BaseActivity implements IZegoLivePubli
     @Override
     public void onPublishStateUpdate(int stateCode, String streamID, HashMap<String, Object> hashMap) {
         if (stateCode != 0) {
-            runOnUiThread(()->{
-                mErrorTxt.setText("publish fail, err:"+stateCode);
-                mDealBtn.setText("StartPublish");
-            });
+            mErrorTxt.setText("publish fail, err:" + stateCode);
+            mDealBtn.setText("StartPublish");
         } else {
             mDealBtn.setText("StopPublish");
             mPlayStreamID = streamID;
@@ -232,14 +223,10 @@ public class ZGVideoCaptureDemoUI extends BaseActivity implements IZegoLivePubli
     // 拉流状态回调
     @Override
     public void onPlayStateUpdate(int stateCode, String streamID) {
-        if (stateCode != 0){
-            runOnUiThread(()->{
-                mErrorTxt.setText("拉流失败，err："+stateCode);
-            });
+        if (stateCode != 0) {
+            mErrorTxt.setText("拉流失败，err：" + stateCode);
         } else {
-            runOnUiThread(() -> {
-                mDealPlayBtn.setText("StopPlay");
-            });
+            mDealPlayBtn.setText("StopPlay");
         }
     }
 

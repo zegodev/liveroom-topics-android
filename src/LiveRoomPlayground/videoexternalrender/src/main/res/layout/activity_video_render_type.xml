@@ -39,11 +39,11 @@
                 android:layout_height="wrap_content"
                 android:text="decode" />
 
-            <RadioButton
-                android:id="@+id/RadioNotDecode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="notDecode"/>
+            <!--<RadioButton-->
+                <!--android:id="@+id/RadioNotDecode"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="notDecode"/>-->
 
         </RadioGroup>
     </LinearLayout>

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -62,7 +63,7 @@ public class PublishStreamAndPlayStreamUI extends BaseActivity {
         String roomid = it.getStringExtra("roomID");
 
         // 设置当前UI界面左上角的点击事件，点击之后结束当前Activity，退出房间，SDK内部在退出房间的时候会自动停止推拉流
-        publishStreamAndPlayStreamBinding.goBack.setOnClickListener(new View.OnClickListener() {
+        publishStreamAndPlayStreamBinding.goBackToVideoCommunicationInputRoomidUI.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
@@ -162,7 +163,6 @@ public class PublishStreamAndPlayStreamUI extends BaseActivity {
 
         this.mPublishStreamAndPlayStreamLayoutModel.removeAllStreamToViewInLayout();
         ZGVideoCommunicationHelper.sharedInstance().quitVideoCommunication(this.playStreamids);
-
         super.onBackPressed();
     }
 
@@ -176,6 +176,15 @@ public class PublishStreamAndPlayStreamUI extends BaseActivity {
         intent.putExtra("roomID", roomID);
 
         activity.startActivity(intent);
+    }
+
+    /**
+     * 返回到输入房间id的UI界面
+     *
+     * @param v 点击返回的按钮
+     */
+    public void goBackToVideoCommunicationInputRoomidUI(View v){
+        this.onBackPressed();
     }
 
 

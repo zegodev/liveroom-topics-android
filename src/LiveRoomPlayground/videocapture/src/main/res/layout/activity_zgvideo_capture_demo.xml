@@ -57,7 +57,7 @@
                         android:layout_marginRight="5dp"
                         android:text="StartPublish"
                         android:textAllCaps="false"
-                        android:onClick="DealPublishing"/>
+                        android:onClick="dealPublishing"/>
 
                     <Button
                         android:id="@+id/play_btn"
@@ -68,7 +68,7 @@
                         android:layout_marginRight="5dp"
                         android:text="StartPlay"
                         android:textAllCaps="false"
-                        android:onClick="DealPlay"/>
+                        android:onClick="dealPlay"/>
                 </LinearLayout>
             </RelativeLayout>
 

@@ -48,7 +48,7 @@ public class ZGVideoCaptureOriginUI extends BaseActivity {
 
         mCaptureTypeGroup = (RadioGroup)findViewById(R.id.CaptureTypeGroup);
         // 获取采集源button id
-        final int[] radioCaptureTypeBtns = {R.id.RadioImage, R.id.RadioScreen, R.id.RadioCamera, R.id.RadioCameraYUV, R.id.RadioCameraBitStream};
+        final int[] radioCaptureTypeBtns = {R.id.RadioImage, R.id.RadioScreen, R.id.RadioCamera, R.id.RadioCameraYUV/*, R.id.RadioCameraBitStream*/};
 
         videoCapture = new ZegoExternalVideoCapture();
 
@@ -80,10 +80,10 @@ public class ZGVideoCaptureOriginUI extends BaseActivity {
                 } else if (radioCaptureTypeBtns[3] == radioGroup.getCheckedRadioButtonId()){
                     // camera作为采集源，采用的数据传递类型是YUV格式（内存拷贝）
                     captureOrigin = VideoCaptureFactoryDemo.CaptureOrigin.CaptureOrigin_Camera; //摄像头 yuv数据
-                } else {
+                } /*else {
                     // camera作为采集源，采用的数据传递类型是ENCODED_FRAME（码流）
                     captureOrigin = VideoCaptureFactoryDemo.CaptureOrigin.CaptureOrigin_CameraV3; //摄像头 码流数据
-                }
+                }*/
 
                 if (captureOrigin != VideoCaptureFactoryDemo.CaptureOrigin.CaptureOrigin_Screen){
                     // 创建外部采集工厂

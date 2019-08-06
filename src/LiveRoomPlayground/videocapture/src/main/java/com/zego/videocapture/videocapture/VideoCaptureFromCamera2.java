@@ -797,6 +797,7 @@ public class VideoCaptureFromCamera2 extends ZegoVideoCaptureDevice implements
             // 作用是使图像正立显示
             int scaleWidth = mViewWidth;
             int scaleHeight = mViewHeight;
+
             System.arraycopy(texMatrix, 0, mPreviewMatrix, 0, 16);
             if (mViewMode == 0) {
                 if (mViewHeight * width <= mViewWidth * height) {
@@ -810,8 +811,8 @@ public class VideoCaptureFromCamera2 extends ZegoVideoCaptureDevice implements
                 } else {
                     scaleWidth = mViewHeight * width / height;
                 }
-                float fWidthScale = (float)mViewWidth / (float)scaleWidth;
-                float fHeightScale = (float)mViewHeight / (float)scaleHeight;
+                float fWidthScale = (float)mViewWidth / scaleWidth;
+                float fHeightScale = (float)mViewHeight / scaleHeight;
                 Matrix.scaleM(mPreviewMatrix, 0, fWidthScale, fHeightScale, 1.0f);
                 Matrix.translateM(mPreviewMatrix, 0, (1.0f - fWidthScale) / 2.0f, (1.0f - fHeightScale) / 2.0f, 1.0f);
 
@@ -822,10 +823,10 @@ public class VideoCaptureFromCamera2 extends ZegoVideoCaptureDevice implements
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
             // 绘制rgb格式图像
-            previewDrawer.drawRgb(textureId, mPreviewMatrix, (int)width, (int)height,
+            previewDrawer.drawRgb(textureId, mPreviewMatrix, width, height,
                         (mViewWidth - scaleWidth) / 2,
                         (mViewHeight - scaleHeight) / 2,
-                                  scaleWidth, scaleHeight);
+                    scaleWidth, scaleHeight);
             // 交换渲染好的buffer 去显示
             previewEglBase.swapBuffers();
             // 分离当前eglContext
@@ -866,25 +867,38 @@ public class VideoCaptureFromCamera2 extends ZegoVideoCaptureDevice implements
             // 绑定eglContext、eglDisplay、eglSurface
             captureEglBase.makeCurrent();
 
-            // 作用是使图像正立显示
             int scaleWidth = mCaptureWidth;
             int scaleHeight = mCaptureHeight;
             System.arraycopy(texMatrix, 0, mCaptureMatrix, 0, 16);
-            if (mCaptureHeight * width <= mCaptureWidth * height) {
-                scaleHeight = mCaptureWidth * height / width;
-            } else {
-                scaleWidth = mCaptureHeight * width / height;
+            if (mViewMode == 0) {
+                if (mCaptureHeight * width <= mCaptureWidth * height) {
+                    scaleWidth = mCaptureHeight * width / height;
+                } else {
+                    scaleHeight = mCaptureWidth * height / width;
+                }
+            } else if (mViewMode == 1) {
+                if (mCaptureHeight * width <= mCaptureWidth * height) {
+                    scaleHeight = mCaptureWidth * height / width;
+                } else {
+                    scaleWidth = mCaptureHeight * width / height;
+                }
+                float fWidthScale = (float)mCaptureWidth / scaleWidth;
+                float fHeightScale = (float)mCaptureHeight / scaleHeight;
+                Matrix.scaleM(mCaptureMatrix, 0, fWidthScale, fHeightScale, 1.0f);
+                Matrix.translateM(mCaptureMatrix, 0, (1.0f - fWidthScale) / 2.0f, (1.0f - fHeightScale) / 2.0f, 1.0f);
+
+                scaleWidth = mCaptureWidth;
+                scaleHeight = mCaptureHeight;
             }
-            float fWidthScale = (float)mCaptureWidth / (float)scaleWidth;
-            float fHeightScale = (float)mCaptureHeight / (float)scaleHeight;
-            Matrix.scaleM(mCaptureMatrix, 0, fWidthScale, fHeightScale, 1.0f);
-            Matrix.translateM(mCaptureMatrix, 0, (1.0f - fWidthScale) / 2.0f, (1.0f - fHeightScale) / 2.0f, 1.0f);
 
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+
             // 绘制rgb格式图像
             captureDrawer.drawRgb(textureId, mCaptureMatrix, width, height,
-                                  0, 0,
-                                  mCaptureWidth, mCaptureHeight);
+                    0,
+                    0,
+                    scaleWidth, scaleHeight);
+//
             // 交换渲染好的buffer 去显示
             if (mIsEgl14) {
                 ((EglBase14) captureEglBase).swapBuffers(timestamp_ns);

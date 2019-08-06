@@ -34,9 +34,7 @@ public class ZGVideoRenderTypeUI extends AppCompatActivity {
         setContentView(R.layout.activity_video_render_type);
 
         mRenderTypeGroup = (RadioGroup)findViewById(R.id.RenderTypeGroup);
-        final int[] radioRenderTypeBtns = {R.id.RadioDecodeRGB, R.id.RadioDecode, R.id.RadioNotDecode};
-
-//        ZegoExternalVideoRender videoRender = new ZegoExternalVideoRender();
+        final int[] radioRenderTypeBtns = {R.id.RadioDecodeRGB, R.id.RadioDecode/*, R.id.RadioNotDecode*/};
 
         // 设置RadioGroup组件的事件监听
         mRenderTypeGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -52,10 +50,10 @@ public class ZGVideoRenderTypeUI extends AppCompatActivity {
                      * Android推流时返回PIXEL_FORMAT_RGBA32，拉流时返回PIXEL_FORMAT_I420
                      */
                     renderType = VideoExternalRenderType.DECODE;
-                } else {
+                } /*else {
                     // 外部渲染时抛出未解码的视频数据--PIXEL_FORMAT_AVC_ANNEXB
                     renderType = VideoExternalRenderType.NOT_DECODE;
-                }
+                }*/
                 // 推流处开启外部采集功能
             }
         });

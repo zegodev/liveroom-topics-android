@@ -3,7 +3,6 @@ package com.zego.mediarecorder;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
@@ -21,22 +20,15 @@ import com.zego.zegoavkit2.mediarecorder.ZegoMediaRecordFormat;
 import com.zego.zegoavkit2.mediarecorder.ZegoMediaRecordType;
 import com.zego.zegoavkit2.ZegoMediaPlayer;
 import com.zego.zegoavkit2.mediarecorder.ZegoMediaRecorder;
-import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
 import com.zego.zegoliveroom.callback.IZegoLoginCompletionCallback;
 import com.zego.zegoliveroom.constants.ZegoConstants;
 import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
-import com.zego.zegoliveroom.entity.AuxData;
-import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
 
-import java.util.HashMap;
-
-
-public class ZGMediaRecorderDemoUI extends BaseActivity implements IZegoMediaRecordCallback, IZegoLivePublisherCallback, IZegoMediaPlayerCallback {
+public class ZGMediaRecorderDemoUI extends BaseActivity implements IZegoMediaRecordCallback, IZegoMediaPlayerCallback {
 
     private TextureView mPreView;
     private Button mReordBtn;
-    private Button mPublishBtn;
     private Button mPlayBtn;
     private ToggleButton mCameraToggle;
     private TextView mFrontCameraTxt;
@@ -64,7 +56,6 @@ public class ZGMediaRecorderDemoUI extends BaseActivity implements IZegoMediaRec
 
         mPreView = (TextureView) findViewById(R.id.pre_view);
         mReordBtn = (Button) findViewById(R.id.record_btn);
-        mPublishBtn = (Button) findViewById(R.id.publish_btn);
         mPlayBtn = (Button) findViewById(R.id.play_btn);
         mPlayBtn.setEnabled(false);
         mCameraToggle = (ToggleButton) findViewById(R.id.tb_enable_front_cam);
@@ -96,17 +87,13 @@ public class ZGMediaRecorderDemoUI extends BaseActivity implements IZegoMediaRec
 
                     isLoginRoomSuccess = true;
 
-                    // 设置推流回调监听
-                    ZGManager.sharedInstance().api().setZegoLivePublisherCallback(ZGMediaRecorderDemoUI.this);
-
                     // 设置媒体录制回调监听
                     zegoMediaRecorder.setZegoMediaRecordCallback(ZGMediaRecorderDemoUI.this);
-
                     // 设置播放回调监听
                     zegoMediaPlayer.setCallback(ZGMediaRecorderDemoUI.this);
 
                     ZGManager.sharedInstance().api().setPreviewView(mPreView);
-                    ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleToFill);
+                    ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleAspectFill);
                     ZGManager.sharedInstance().api().enableCamera(true);
                     ZGManager.sharedInstance().api().startPreview();
 
@@ -150,7 +137,7 @@ public class ZGMediaRecorderDemoUI extends BaseActivity implements IZegoMediaRec
 
             // 启动麦克风、摄像头
             ZGManager.sharedInstance().api().setPreviewView(mPreView);
-            ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleToFill);
+            ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleAspectFill);
             ZGManager.sharedInstance().api().enableCamera(true);
             ZGManager.sharedInstance().api().startPreview();
 
@@ -194,9 +181,9 @@ public class ZGMediaRecorderDemoUI extends BaseActivity implements IZegoMediaRec
     }
 
 
-    public void DealRecording(View view) {
+    public void dealRecording(View view) {
 
-        if (mReordBtn.getText().toString().equals("StartRecord")) {
+        if (mReordBtn.getText().toString().equals(getString(R.string.tx_start_record))) {
 
             // 开始录制
             recording();
@@ -208,7 +195,7 @@ public class ZGMediaRecorderDemoUI extends BaseActivity implements IZegoMediaRec
 
             boolean ret = zegoMediaRecorder.stopRecord(ZegoMediaRecordChannelIndex.MAIN);
             if (ret) {
-                mReordBtn.setText("StartRecord");
+                mReordBtn.setText(R.string.tx_start_record);
                 mPlayBtn.setEnabled(true);
 
                 mSavePathTxt.setText("storagePath: " + mSavePath);
@@ -218,42 +205,14 @@ public class ZGMediaRecorderDemoUI extends BaseActivity implements IZegoMediaRec
         }
     }
 
-    public void DealPublishing(View view) {
-        if (isLoginRoomSuccess) {
-            if (mPublishBtn.getText().toString().equals("StartPublish")) {
-
-                ZGManager.sharedInstance().api().setPreviewView(mPreView);
-                ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleToFill);
-                ZGManager.sharedInstance().api().enableCamera(true);
-                ZGManager.sharedInstance().api().startPreview();
-                // 推流
-                boolean ret = ZGManager.sharedInstance().api().startPublishing(mRoomID, "ZegoAVRecording", ZegoConstants.PublishFlag.JoinPublish);
-
-                if (!ret) {
-                    mErrorTxt.setText("publish fail sync");
-                }
-
-            } else {
-
-                ZGManager.sharedInstance().api().stopPreview();
-                ZGManager.sharedInstance().api().setPreviewView(null);
-                boolean ret_stop = ZGManager.sharedInstance().api().stopPublishing();
-                if (ret_stop) {
-                    mPublishBtn.setText("StartPublish");
-                } else {
-                    mErrorTxt.setText("stop publish fail sync");
-                }
-            }
-        }
-    }
-
-    public void DealPlay(View view) {
-        if (mPlayBtn.getText().toString().equals("StartPlay")) {
+    public void dealPlay(View view) {
+        if (mPlayBtn.getText().toString().equals(getString(R.string.tx_start_play))) {
             if (zegoMediaPlayer != null) {
                 zegoMediaPlayer.setView(mPreView);
             }
 
             if (!mSavePath.equals("")) {
+                zegoMediaPlayer.setVolume(100);
                 zegoMediaPlayer.start(mSavePath, false);
             }
         } else {
@@ -269,67 +228,15 @@ public class ZGMediaRecorderDemoUI extends BaseActivity implements IZegoMediaRec
     protected void onDestroy() {
         super.onDestroy();
 
-        ZGManager.sharedInstance().api().logoutRoom();
+        // 删除媒体录制回调监听
+        zegoMediaRecorder.setZegoMediaRecordCallback(null);
         zegoMediaRecorder = null;
+        zegoMediaPlayer.setCallback(null);
         zegoMediaPlayer.uninit();
         zegoMediaPlayer = null;
+        ZGManager.sharedInstance().api().logoutRoom();
         ZGManager.sharedInstance().unInitSDK();
     }
-
-    // 推流回调
-    @Override
-    public void onPublishStateUpdate(int stateCode, String streamID, HashMap<String, Object> hashMap) {
-        if (stateCode == 0) {
-            runOnUiThread(() -> {
-                mPublishBtn.setText("StopPublish");
-            });
-        } else {
-            runOnUiThread(() -> {
-                mErrorTxt.setText("publish fail, err: " + stateCode);
-            });
-        }
-    }
-
-    @Override
-    public void onJoinLiveRequest(int i, String s, String s1, String s2) {
-
-    }
-
-    @Override
-    public void onPublishQualityUpdate(String s, ZegoPublishStreamQuality zegoPublishStreamQuality) {
-        Log.e("Zego", "onPublishQualityUpdate ,streamID: " + s + ",fps: " + zegoPublishStreamQuality.vcapFps);
-    }
-
-//    @Override
-//    public void onPublishQualityUpdate(String s, ZegoStreamQuality zegoStreamQuality) {
-//        Log.e("Zego", "onPublishQualityUpdate ,streamID: " + s + ",fps: " + zegoStreamQuality.videoFPS);
-//    }
-
-    @Override
-    public AuxData onAuxCallback(int i) {
-        return null;
-    }
-
-    @Override
-    public void onCaptureVideoSizeChangedTo(int i, int i1) {
-
-    }
-
-    @Override
-    public void onMixStreamConfigUpdate(int i, String s, HashMap<String, Object> hashMap) {
-
-    }
-
-    @Override
-    public void onCaptureVideoFirstFrame() {
-
-    }
-
-    @Override
-    public void onCaptureAudioFirstFrame() {
-
-    }
-
 
     public String generateAVFileName() {
         String fileName;
@@ -349,15 +256,10 @@ public class ZGMediaRecorderDemoUI extends BaseActivity implements IZegoMediaRec
 
         if (errCode == 0) {
             mSavePath = storagePath;
-            runOnUiThread(() -> {
-                //更新界面
-                mReordBtn.setText("StopRecord");
-            });
-
+            //更新界面按钮标识
+            mReordBtn.setText(getString(R.string.tx_stop_record));
         } else {
-            runOnUiThread(() -> {
-                mErrorTxt.setText("onMediaRecord err:" + errCode);
-            });
+            mErrorTxt.setText("onMediaRecord err:" + errCode);
         }
     }
 
@@ -369,39 +271,31 @@ public class ZGMediaRecorderDemoUI extends BaseActivity implements IZegoMediaRec
     // 媒体播放器回调
     @Override
     public void onPlayStart() {
-
-        runOnUiThread(() -> {
-            //更新界面
-            mPlayBtn.setText("StopPlay");
-        });
+        //更新界面
+        mPlayBtn.setText(getString(R.string.tx_stop_play));
+        mErrorTxt.setText("");
     }
 
     @Override
     public void onPlayStop() {
 
         zegoMediaPlayer.setView(null);
-        runOnUiThread(() -> {
-            //更新界面
-            mPlayBtn.setText("StartPlay");
-        });
+        //更新界面
+        mPlayBtn.setText(getString(R.string.tx_start_play));
     }
 
     @Override
     public void onPlayEnd() {
 
         zegoMediaPlayer.setView(null);
-        runOnUiThread(() -> {
-            //更新界面
-            mPlayBtn.setText("StartPlay");
-        });
+        //更新界面
+        mPlayBtn.setText(getString(R.string.tx_start_play));
     }
 
     @Override
     public void onPlayError(int errorcode) {
-        runOnUiThread(() -> {
-            //更新界面
-            mErrorTxt.setText("play err: "+errorcode);
-        });
+        //更新界面
+        mErrorTxt.setText("play err: " + errorcode);
     }
 
     @Override

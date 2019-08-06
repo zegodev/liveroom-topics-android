@@ -19,11 +19,12 @@
             app:name="登录房间">
 
             <Button
-                android:id="@+id/go_back"
+                android:id="@+id/goBackToMainUIFromVideoCommunication"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
+                android:onClick="goBackToMainUIFromVideoCommunication"
                 android:background="@mipmap/ic_round_left" />
 
         </com.zego.common.widgets.TitleLayout>

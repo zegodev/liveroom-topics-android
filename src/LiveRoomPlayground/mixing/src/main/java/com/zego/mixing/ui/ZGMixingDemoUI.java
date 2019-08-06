@@ -28,43 +28,53 @@ import java.util.HashMap;
 public class ZGMixingDemoUI extends BaseActivity implements IZegoLivePublisherCallback {
 
     private CheckBox mAuxCheckBox;
+    private TextView mAuxTxt;
     private TextView mErrorTxt;
+    private TextView mHintTxt;
     private Button mPublishBtn;
     private TextureView mPreview;
 
-    private String mChannelID = "ZEGO_TOPIC_MIXING";
+    private String mRoomID = "ZEGO_TOPIC_MIXING";
     private boolean isLoginRoomSuccess = false;
 
     private String mMP3FilePath = "";
     private String mPCMFilePath = "";
     private Thread convertThread = null;
 
+    private String hintStr = "! 推流后请用另一个设备进入“拉流”功能，登录“ZEGO_TOPIC_MIXING”房间，填写“ZEGO_TOPIC_MIXING”流名来查看该流";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zgmixing);
 
+        mAuxTxt = (TextView)findViewById(R.id.aux_txt);
         mAuxCheckBox = (CheckBox)findViewById(R.id.CheckboxAux);
         mPreview = (TextureView) findViewById(R.id.pre_view);
         mErrorTxt = (TextView) findViewById(R.id.error_txt);
+        mHintTxt = (TextView)findViewById(R.id.hint);
         mPublishBtn = (Button)findViewById(R.id.publish_btn);
 
         String dirPath = this.getExternalCacheDir().getPath();
         mPCMFilePath = dirPath + "/mixdemo.pcm";
         mMP3FilePath = ZGMediaPlayerDemoHelper.sharedInstance().getPath(this, "road.mp3");
 
+        // 设置如何查看混音效果的说明
+        mHintTxt.setText(hintStr);
         // 获取mp3文件采样率，声道
         ZGMixingDemo.sharedInstance().getMP3FileInfo(mMP3FilePath);
 
         // 生成pcm数据文件
         File file = new File(mPCMFilePath);
         if (!file.exists()) {
+            mAuxTxt.setVisibility(View.INVISIBLE);
             mAuxCheckBox.setVisibility(View.INVISIBLE);
             convertThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     ZGMixingDemo.sharedInstance().MP3ToPCM(mMP3FilePath, mPCMFilePath);
                     runOnUiThread(()->{
+                        mAuxTxt.setVisibility(View.VISIBLE);
                         mAuxCheckBox.setVisibility(View.VISIBLE);
                     });
                 }
@@ -85,7 +95,7 @@ public class ZGMixingDemoUI extends BaseActivity implements IZegoLivePublisherCa
         });
 
         // join room
-        boolean ret = ZGManager.sharedInstance().api().loginRoom(mChannelID, "ZegoMixing", ZegoConstants.RoomRole.Anchor, new IZegoLoginCompletionCallback() {
+        boolean ret = ZGManager.sharedInstance().api().loginRoom(mRoomID, ZegoConstants.RoomRole.Anchor, new IZegoLoginCompletionCallback() {
             @Override
             public void onLoginCompletion(int errorcode, ZegoStreamInfo[] zegoStreamInfos) {
 
@@ -98,7 +108,7 @@ public class ZGMixingDemoUI extends BaseActivity implements IZegoLivePublisherCa
                     // 设置预览
                     ZGManager.sharedInstance().api().setPreviewView(mPreview);
                     ZGManager.sharedInstance().api().setAVConfig(new ZegoAvConfig(ZegoAvConfig.Level.High));
-                    ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleToFill);
+                    ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleAspectFill);
                     ZGManager.sharedInstance().api().startPreview();
 
                 } else {
@@ -117,28 +127,30 @@ public class ZGMixingDemoUI extends BaseActivity implements IZegoLivePublisherCa
         convertThread = null;
 
         if (isLoginRoomSuccess) {
-            ZGManager.sharedInstance().api().logoutRoom();
             ZGManager.sharedInstance().api().setZegoLivePublisherCallback(null);
+            ZGManager.sharedInstance().api().logoutRoom();
         }
 
         ZGManager.sharedInstance().unInitSDK();
     }
 
-    public void DealPublish(View view) {
+    public void dealPublish(View view) {
         if (isLoginRoomSuccess) {
-            if (mPublishBtn.getText().toString().equals("StartPublish")) {
+            if (mPublishBtn.getText().toString().equals(getString(R.string.tx_startpublish))) {
 
                 // 设置预览
                 ZGManager.sharedInstance().api().setPreviewView(mPreview);
                 ZGManager.sharedInstance().api().setAVConfig(new ZegoAvConfig(ZegoAvConfig.Level.High));
-                ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleToFill);
+                ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleAspectFill);
                 ZGManager.sharedInstance().api().startPreview();
 
                 // 推流
-                boolean ret = ZGManager.sharedInstance().api().startPublishing(mChannelID, "ZegoMultiPlayer", ZegoConstants.PublishFlag.JoinPublish);
+                boolean ret = ZGManager.sharedInstance().api().startPublishing(mRoomID, "ZegoMultiPlayer", ZegoConstants.PublishFlag.JoinPublish);
 
                 if (!ret) {
                     mErrorTxt.setText("start publish fail(sync)");
+                } else {
+                    mErrorTxt.setText("");
                 }
             } else {
 
@@ -147,7 +159,7 @@ public class ZGMixingDemoUI extends BaseActivity implements IZegoLivePublisherCa
                 ZGManager.sharedInstance().api().setPreviewView(null);
                 boolean ret_pub = ZGManager.sharedInstance().api().stopPublishing();
                 if (ret_pub) {
-                    mPublishBtn.setText("StartPublish");
+                    mPublishBtn.setText(getString(R.string.tx_startpublish));
                 }
             }
         }
@@ -157,13 +169,9 @@ public class ZGMixingDemoUI extends BaseActivity implements IZegoLivePublisherCa
     @Override
     public void onPublishStateUpdate(int stateCode, String streamID, HashMap<String, Object> hashMap) {
         if (stateCode == 0) {
-            runOnUiThread(()->{
-                mPublishBtn.setText("StopPublish");
-            });
+            mPublishBtn.setText(getString(R.string.tx_stoppublish));
         } else {
-            runOnUiThread(()->{
-                mErrorTxt.setText("publish fail err: " + stateCode);
-            });
+            mErrorTxt.setText("publish fail err: " + stateCode);
         }
     }
 
@@ -176,11 +184,6 @@ public class ZGMixingDemoUI extends BaseActivity implements IZegoLivePublisherCa
     public void onPublishQualityUpdate(String s, ZegoPublishStreamQuality zegoPublishStreamQuality) {
 
     }
-
-//    @Override
-//    public void onPublishQualityUpdate(String s, ZegoStreamQuality zegoStreamQuality) {
-//
-//    }
 
     // 混音回调
     @Override

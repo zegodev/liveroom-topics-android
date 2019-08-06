@@ -1,3 +1,6 @@
 <resources>
+    <string name="tx_enable_aux">开启混音:</string>
+    <string name="tx_startpublish">开始推流</string>
+    <string name="tx_stoppublish">停止推流</string>
 
 </resources>

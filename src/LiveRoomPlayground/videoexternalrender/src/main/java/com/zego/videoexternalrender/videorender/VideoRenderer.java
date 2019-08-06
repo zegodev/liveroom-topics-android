@@ -1,7 +1,6 @@
 package com.zego.videoexternalrender.videorender;
 
 import android.annotation.TargetApi;
-import android.graphics.SurfaceTexture;
 import android.opengl.EGL14;
 import android.opengl.EGLConfig;
 import android.opengl.EGLContext;
@@ -17,7 +16,7 @@ import android.view.TextureView;
 
 import com.zego.zegoavkit2.entities.VideoFrame;
 import com.zego.zegoavkit2.enums.VideoPixelFormat;
-import com.zego.zegoavkit2.videorender.IZegoExternalRenderCallback2;
+import com.zego.zegoavkit2.videorender.IZegoExternalRenderCallback3;
 
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
@@ -25,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +34,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternalRenderCallback2 {
+public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternalRenderCallback3 {
     private static final String TAG = "VideoRenderer";
 
     public static final Object lock = new Object();
@@ -55,7 +53,6 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
     private EGLConfig eglConfig;
     private EGLDisplay eglDisplay;
     private boolean mIsRunning = false;
-    private int bufferQueueSizeMax = 4;
 
     //  AVCANNEXB 模式解码器
     private AVCDecoder mAVCDecoder = null;
@@ -66,6 +63,15 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
     private HandlerThread mThread = null;
     private Handler mHandler = null;
 
+    public static class VideoFrameBuffer {
+        public int[] byteBufferLens = {0, 0, 0, 0};
+        // 给到ZEGO的视频帧数据，避免重复创建在这只创建1次
+        private VideoFrame zgVideoFrame = new VideoFrame();
+        private ArrayList<ByteBuffer[]> mProduceQueue = new ArrayList<>();
+        private int mWriteIndex = 0;
+        private int mWriteRemain = 0;
+        public byte[] data;
+    }
 
     /** 单帧视频数据
      *  包含视频画面的宽、高、数据、strides
@@ -77,18 +83,13 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
         public int[] strides;
     }
 
-    // 生产队列
-    private ArrayList<PixelBuffer> mProduceQueue = null;
-    private int mWriteIndex = 0;
-    private int mWriteRemain = 0;
+    private ConcurrentHashMap<String, VideoFrameBuffer> getFrameMap() {
+        return frameMap;
+    }
+    private ConcurrentHashMap<String, VideoFrameBuffer> frameMap = new ConcurrentHashMap<>();
+
     // 流名、渲染对象的键值map
     private ConcurrentHashMap<String, Renderer> rendererMap = null;
-
-    // 消费队列
-    private Map<String, ConcurrentLinkedQueue<PixelBuffer>> mMapConsumeQueue = null;
-
-    // 视频数据buffer的最大size
-    private int[] mMaxBufferSize = {0,0,0,0};
 
     // 初始化，包含线程启动，视频帧回调监听，opengl相关参数的设置等
     public final int init() {
@@ -116,10 +117,16 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
             e.printStackTrace();
         }
         rendererMap = new ConcurrentHashMap<>();
-        mProduceQueue = new ArrayList<>();
-        mMapConsumeQueue = new ConcurrentHashMap<>();
 
         return 0;
+    }
+
+    private void checkNotNull() {
+        synchronized (lock) {
+            if (rendererMap == null) {
+                rendererMap = new ConcurrentHashMap<>();
+            }
+        }
     }
 
     // 添加解码 AVCANNEXB 格式视频帧的渲染视图
@@ -142,6 +149,7 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                checkNotNull();
                 if (rendererMap.get(streamID) == null) {
                     Log.i(TAG, String.format("new Renderer streamId : %s", streamID));
                     // 创建渲染类对象
@@ -163,6 +171,7 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                checkNotNull();
                 if (rendererMap.get(streamID) != null) {
                     Log.i(TAG, String.format("removeView Renderer streamId : %s", streamID));
                     // 释放 EGL Surface
@@ -170,6 +179,10 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
                     // 释放 Render
                     rendererMap.get(streamID).uninit();
                     rendererMap.remove(streamID);
+                }
+                if (getFrameMap().get(streamID) != null) {
+                    Log.i(TAG, String.format("removeView frameMap streamId : %s", streamID));
+                    getFrameMap().remove(streamID);
                 }
             }
         });
@@ -180,6 +193,7 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                checkNotNull();
                 Log.i(TAG, "removeAllView");
                 for (Map.Entry<String, Renderer> entry : rendererMap.entrySet()) {
                     Renderer renderer = entry.getValue();
@@ -188,11 +202,12 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
                     // 释放 Render
                     renderer.uninit();
                     rendererMap.remove(entry.getKey());
-                    mMapConsumeQueue.remove(entry.getKey());
                 }
-                // 重置缓冲区
-                mWriteRemain = bufferQueueSizeMax;
 
+
+                for (Map.Entry<String, VideoFrameBuffer> entry : getFrameMap().entrySet()) {
+                    getFrameMap().remove(entry.getKey());
+                }
             }
         });
     }
@@ -250,18 +265,10 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
         }
 
         rendererMap = null;
+        frameMap = null;
 
         // 移除视频帧回调监听
         Choreographer.getInstance().removeFrameCallback(VideoRenderer.this);
-
-        for (Map.Entry<String, ConcurrentLinkedQueue<PixelBuffer>> entry : mMapConsumeQueue.entrySet()) {
-            ConcurrentLinkedQueue<PixelBuffer> concurrentLinkedQueue = entry.getValue();
-            if (concurrentLinkedQueue != null) {
-                concurrentLinkedQueue.clear();
-            }
-        }
-
-        mProduceQueue.clear();
 
         // 释放MediaCodec
         if (mAVCDecoder != null) {
@@ -346,50 +353,43 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
     // 使用渲染类型进行绘制
     private void draw() {
 
-        for (Map.Entry<String, ConcurrentLinkedQueue<PixelBuffer>> entry : mMapConsumeQueue.entrySet()) {
-            ConcurrentLinkedQueue<PixelBuffer> concurrentLinkedQueue = entry.getValue();
-            if (concurrentLinkedQueue != null) {
+        for (Map.Entry<String, VideoFrameBuffer> entry : frameMap.entrySet()) {
+            // 获取视频帧数据
+            VideoFrameBuffer frameBuffer = entry.getValue();
+            if (frameBuffer != null) {
                 String streamID = entry.getKey();
-                // 从消费队列获取视频帧数据
-                PixelBuffer pixelBuffer = concurrentLinkedQueue.poll();
-                if (pixelBuffer == null) {
-                    continue;
-                }
 
                 // 获取流名对应的渲染类对象
                 Renderer renderer = rendererMap.get(streamID);
+                PixelBuffer pixelBuffer = new PixelBuffer();
+                pixelBuffer.buffer = frameBuffer.zgVideoFrame.byteBuffers;
+                pixelBuffer.strides = frameBuffer.zgVideoFrame.strides;
+                pixelBuffer.height = frameBuffer.zgVideoFrame.height;
+                pixelBuffer.width = frameBuffer.zgVideoFrame.width;
+
                 if (renderer != null) {
                     // 渲染类根据视频帧数据进行绘制
                     renderer.draw(pixelBuffer);
                 }
 
                 // 修改生产者队列的待写buffer index
-                returnProducerPixelBuffer(pixelBuffer);
+                returnProducerPixelBuffer(frameBuffer);
             }
         }
     }
 
     // 创建count个视频帧buffer
-    private void createPixelBufferPool(int[] size, int count) {
+    private void createPixelBufferPool(VideoFrameBuffer frameBuffer, int[] size, int count) {
         for (int i = 0; i < count; i++){
-            PixelBuffer pixelBuffer = new PixelBuffer();
-            pixelBuffer.buffer = new ByteBuffer[3];
-            pixelBuffer.buffer[0] = ByteBuffer.allocateDirect(size[0]);
-            pixelBuffer.buffer[1] = ByteBuffer.allocateDirect(size[1]);
-            pixelBuffer.buffer[2] = ByteBuffer.allocateDirect(size[2]);
-
-            mProduceQueue.add(pixelBuffer);
+            ByteBuffer[] buffer = new ByteBuffer[3];
+            buffer[0] = ByteBuffer.allocateDirect((int) (size[0] * 1.1));
+            buffer[1] = ByteBuffer.allocateDirect((int) (size[1] * 1.1));
+            buffer[2] = ByteBuffer.allocateDirect((int) (size[2] * 1.1));
+            frameBuffer.mProduceQueue.add(buffer);
         }
 
-        mWriteRemain = count;
-        mWriteIndex = -1;
-    }
-
-    private int height, width;
-    private int strides[];
-
-    private synchronized void returnProducerPixelBuffer(PixelBuffer pixelBuffer) {
-        mWriteRemain++;
+        frameBuffer.mWriteRemain = count;
+        frameBuffer.mWriteIndex = -1;
     }
 
     /** SDK 向 App 获取 Buffer 索引
@@ -401,21 +401,28 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
      * @return Buffer 索引
      */
     @Override
-    public int dequeueInputBuffer(int width, int height, int[] strides, int[] byteBufferLens) {
+    public int dequeueInputBuffer(int width, int height, int[] strides, int[] byteBufferLens, String streamID) {
         boolean isBufferLensChange = false;
-        for (int i=0; i<byteBufferLens.length;i++){
-            if (byteBufferLens[i]>mMaxBufferSize[i]) {
-                mMaxBufferSize[i] = byteBufferLens[i];
+        VideoFrameBuffer videoFrameBuffer = getFrameMap().get(streamID);
+        if (videoFrameBuffer == null) {
+            videoFrameBuffer = new VideoFrameBuffer();
+            getFrameMap().put(streamID, videoFrameBuffer);
+        }
+
+        for (int i = 0; i < byteBufferLens.length; i++) {
+            if (byteBufferLens[i] > videoFrameBuffer.byteBufferLens[i]) {
+                videoFrameBuffer.byteBufferLens[i] = byteBufferLens[i];
                 isBufferLensChange = true;
             }
         }
+
+        videoFrameBuffer.zgVideoFrame.height = height;
+        videoFrameBuffer.zgVideoFrame.width = width;
+        videoFrameBuffer.zgVideoFrame.strides = strides;
+
         // buffer长度较原buffer长度有增长时，重新创建提供给SDK的视频帧buffer
         if (isBufferLensChange) {
-            if (mMaxBufferSize[0]>0){
-                mProduceQueue.clear();
-            }
-            // 创建一个视频帧buffer供SDK写视频数据
-            createPixelBufferPool(mMaxBufferSize, 1);
+            createPixelBufferPool(videoFrameBuffer, byteBufferLens, 1);
         }
 
         // 为解码 AVCANNEXB 格式视频帧数据，提供分辨率
@@ -424,49 +431,40 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
             mViewWidth = width;
         }
 
-        this.height = height;
-        this.width = width;
-        this.strides = strides;
-
-        if (mWriteRemain == 0) {
+        if (videoFrameBuffer.mWriteRemain == 0) {
             return -1;
         }
 
-        if (mProduceQueue.size() == 0) {
+        if (videoFrameBuffer.mProduceQueue != null && videoFrameBuffer.mProduceQueue.size() == 0) {
             return -1;
         }
 
-        mWriteRemain--;
-        return (mWriteIndex + 1) % mProduceQueue.size();
+        videoFrameBuffer.mWriteRemain--;
+        return (videoFrameBuffer.mWriteIndex + 1) % videoFrameBuffer.mProduceQueue.size();
     }
 
     /**
      * SDK 向 App 申请 VideoFrame 内存用于将采集的数据返回给 App 渲染。
-     * @param index VideoFrame 索引，SDK 通过 {@link #dequeueInputBuffer(int, int, int[], int[])} 获得的索引值
+     * @param index VideoFrame 索引，SDK 通过 {@link #dequeueInputBuffer(int, int, int[], int[], String)} 获得的索引值
      * @return App 给 SDK 分配的 VideoFrame 内存，SDK 拿到这块内存后，会将 index 对应的实际数据填充到这块内存中。
      */
     @Override
-    public VideoFrame getInputBuffer(int index) {
+    public VideoFrame getInputBuffer(int index, String streamID) {
 
-        if (mProduceQueue.isEmpty()) {
+        if (getFrameMap().isEmpty()) {
             return null;
         }
+        VideoFrameBuffer videoFrameBuffer = getFrameMap().get(streamID);
 
-        VideoFrame videoFrame = new VideoFrame();
-        ByteBuffer[] buffers;
-
-        buffers = new ByteBuffer[3];
-        buffers[0] = mProduceQueue.get(index).buffer[0];
-        buffers[1] = mProduceQueue.get(index).buffer[1];
-        buffers[2] = mProduceQueue.get(index).buffer[2];
-
-        // 为videoFrame分配内存，指定其所需参数
-        videoFrame.byteBuffers = buffers;
-        videoFrame.height = this.height;
-        videoFrame.width = this.width;
-        videoFrame.strides = this.strides;
-
-        return videoFrame;
+        if (videoFrameBuffer != null) {
+            if (videoFrameBuffer.mProduceQueue.isEmpty()) {
+                return null;
+            }
+            ByteBuffer[] byteBuffers = videoFrameBuffer.mProduceQueue.get(index);
+            videoFrameBuffer.zgVideoFrame.byteBuffers = byteBuffers;
+            return videoFrameBuffer.zgVideoFrame;
+        }
+        return null;
     }
 
     private int printCount = 0;
@@ -476,7 +474,7 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
      * SDK 通知 App 拷贝数据，并返回流 ID 等数据信息。
      * SDK 通过此方法通知 App，对应索引的 VideoFrame 数据拷贝已完毕，并将流 ID 等信息返回。
      *
-     * @param bufferIndex VideoFrame 索引，SDK 通过 {@link #dequeueInputBuffer(int, int, int[], int[])} 获得的索引值
+     * @param bufferIndex VideoFrame 索引，SDK 通过 {@link #dequeueInputBuffer(int, int, int[], int[], String)} 获得的索引值
      * @param streamID 流名 当外部渲染拉流数据时，streamID 为拉流流名；
      *                 当外部渲染推流数据，streamID 为 com.zego.zegoavkit2.ZegoConstants.ZegoVideoDataMainPublishingStream 常量时表示第一路推流数据，此常量值为空字符串；
      *                 streamID 为com.zego.zegoavkit2.ZegoConstants.ZegoVideoDataAuxPublishingStream 常量时表示第二路推流数据，此常量值为空格
@@ -492,18 +490,20 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
             Log.d("Zego","encode data transfer time: "+simpleDateFormat.format(date));
             printCount++;
         }
-        if (mProduceQueue.size() > bufferIndex) {
-            // 根据 buffer 索引取出 SDK 填充的视频数据
-            VideoRenderer.PixelBuffer pixelBuffer = mProduceQueue.get(bufferIndex);
-            pixelBuffer.width = this.width;
-            pixelBuffer.height = this.height;
-            pixelBuffer.strides = this.strides;
+        VideoFrameBuffer videoFrameBuffer = getFrameMap().get(streamID);
+        if (videoFrameBuffer != null && videoFrameBuffer.mProduceQueue.size() > bufferIndex) {
+            ByteBuffer[] buffers = videoFrameBuffer.mProduceQueue.get(bufferIndex);
+
+            //增加 width 与 strides 的判断
+            if (videoFrameBuffer.zgVideoFrame.width > videoFrameBuffer.zgVideoFrame.strides[0]) {
+                videoFrameBuffer.zgVideoFrame.width = videoFrameBuffer.zgVideoFrame.strides[0];
+            }
 
             // 处理 AVCANNEXB 格式视频帧数据，进行解码
-            if ((pixelBuffer.strides[0] == 0) && (pixelBuffer.buffer[0].capacity() > 0)) {
-                byte[] tmpData = new byte[pixelBuffer.buffer[0].capacity()];
-                pixelBuffer.buffer[0].position(0); // 缺少此行，解码后的渲染画面会卡住
-                pixelBuffer.buffer[0].get(tmpData);
+            if ((videoFrameBuffer.zgVideoFrame.strides[0] == 0) && (buffers[0].capacity() > 0)) {
+                byte[] tmpData = new byte[buffers[0].capacity()];
+                buffers[0].position(0); // 缺少此行，解码后的渲染画面会卡住
+                buffers[0].get(tmpData);
 
                 // 系统启动到现在的纳秒数，包含休眠时间
                 long now = 0;
@@ -518,17 +518,13 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoExternal
                 }
             }
 
-            ConcurrentLinkedQueue<PixelBuffer> concurrentLinkedQueue = mMapConsumeQueue.get(streamID);
-            if (concurrentLinkedQueue == null) {
-                concurrentLinkedQueue = new ConcurrentLinkedQueue<>();
-                concurrentLinkedQueue.add(pixelBuffer);
-                mMapConsumeQueue.put(streamID, concurrentLinkedQueue);
-            } else {
-                concurrentLinkedQueue.add(pixelBuffer);
-            }
+            videoFrameBuffer.mWriteIndex = (videoFrameBuffer.mWriteIndex + 1) % videoFrameBuffer.mProduceQueue.size();
 
-            // 修改生产者队列的待写buffer index
-            mWriteIndex = (mWriteIndex + 1) % mProduceQueue.size();
+            returnProducerPixelBuffer(videoFrameBuffer);
         }
+    }
+
+    private synchronized void returnProducerPixelBuffer(VideoFrameBuffer videoFrameBuffer) {
+        videoFrameBuffer.mWriteRemain++;
     }
 }

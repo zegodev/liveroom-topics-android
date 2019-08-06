@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -45,10 +46,10 @@ public class VideoCommunicationMainUI extends BaseActivity {
         // 这里使用Google官方的MVVM框架来实现UI的控制逻辑，开发者可以根据情况选择使用此框架
         videoCommunicationMainBinding = DataBindingUtil.setContentView(this, R.layout.video_communication_main);
         // 点击左上方的返回控件之后销毁当前Activity
-        videoCommunicationMainBinding.goBack.setOnClickListener(new View.OnClickListener() {
+        videoCommunicationMainBinding.goBackToMainUIFromVideoCommunication.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                VideoCommunicationMainUI.this.finish();
+                VideoCommunicationMainUI.this.goBackToMainUIFromVideoCommunication();
             }
         });
         // 点击"登录房间"的按钮进入房间并进行推拉流
@@ -91,4 +92,14 @@ public class VideoCommunicationMainUI extends BaseActivity {
         Intent intent = new Intent(activity, VideoCommunicationMainUI.class);
         activity.startActivity(intent);
     }
+
+    /**
+     * 返回到应用主界面
+     *
+     */
+    public void goBackToMainUIFromVideoCommunication(){
+
+        this.onBackPressed();
+    }
+
 }
