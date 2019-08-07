@@ -25,6 +25,7 @@ import com.zego.zegoliveroom.ZegoLiveRoom;
 import com.zego.zegoliveroom.callback.IZegoInitSDKCompletionCallback;
 import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
 import com.zego.zegoliveroom.callback.IZegoLoginCompletionCallback;
+import com.zego.zegoliveroom.constants.ZegoAvConfig;
 import com.zego.zegoliveroom.constants.ZegoConstants;
 import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
 import com.zego.zegoliveroom.entity.AuxData;
@@ -196,6 +197,9 @@ public class FUBeautyActivity extends AppCompatActivity implements FURenderer.On
                 if (errorCode == 0) {
                     AppLogger.getInstance().i(FUBeautyActivity.class, "登录房间成功 roomId : %s", mRoomID);
 
+                    ZegoAvConfig config = new ZegoAvConfig(ZegoAvConfig.Level.High);
+                    config.setVideoFPS(30);
+                    ZGFilterHelper.sharedInstance().getZegoLiveRoom().setAVConfig(config);
                     // 设置预览视图模式，此处采用 SDK 默认值--等比缩放填充整View，可能有部分被裁减。
                     ZGFilterHelper.sharedInstance().getZegoLiveRoom().setPreviewViewMode(ZegoVideoViewMode.ScaleAspectFill);
                     // 设置预览 view，主播自己推流采用全屏视图
@@ -277,7 +281,7 @@ public class FUBeautyActivity extends AppCompatActivity implements FURenderer.On
             public void run() {
 
                 // faceunity 是否检测到人脸的通知
-                binding.fuBaseIsTrackingText.setVisibility(status > 0 ? View.INVISIBLE : View.VISIBLE);
+//                binding.fuBaseIsTrackingText.setVisibility(status > 0 ? View.INVISIBLE : View.VISIBLE);
             }
         });
     }
