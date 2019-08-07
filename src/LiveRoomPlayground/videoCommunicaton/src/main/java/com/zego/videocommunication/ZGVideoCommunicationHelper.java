@@ -549,7 +549,9 @@ public class ZGVideoCommunicationHelper {
      * @param streamID 不能为null。
      */
     private void stopPlaying(@NonNull String streamID) {
-        if (getZgsdkInitState() != ZGVideoCommunicationHelper.ZGSDKInitState.InitSuccessState) {
+        if (getZgsdkInitState() == ZGVideoCommunicationHelper.ZGSDKInitState.InitSuccessState) {
+            AppLogger.getInstance().i(ZGVideoCommunicationHelper.class, "停止拉流:"+streamID);
+
             ZGVideoCommunicationHelper.sharedInstance().getZegoLiveRoom().stopPlayingStream(streamID);
         }
     }

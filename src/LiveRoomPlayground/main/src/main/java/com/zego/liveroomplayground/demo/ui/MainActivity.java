@@ -85,7 +85,7 @@ public class MainActivity extends BaseActivity {
                     case "音频频谱":
                         FrequencySpectrumAndSoundLevelMainActivity.actionStart(MainActivity.this);
                         break;
-                    case "ZegoSDK自带的媒体播放器":
+                    case "媒体播放器":
                         intent = new Intent(MainActivity.this, ZGPlayerTypeUI.class);
                         MainActivity.this.startActivity(intent);
                         break;
@@ -124,7 +124,7 @@ public class MainActivity extends BaseActivity {
                     case "直播连麦":
                         JoinLiveMainActivityUI.actionStart(MainActivity.this);
                         break;
-                    case "视频外部滤镜":
+                    case "视频外部滤镜(FaceUnity)":
                         VideoFilterMainUI.actionStart(MainActivity.this);
                         break;
 
@@ -152,9 +152,9 @@ public class MainActivity extends BaseActivity {
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("音频频谱"));
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("视频外部滤镜"));
+                .moduleName("视频外部滤镜(FaceUnity)"));
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("ZegoSDK自带的媒体播放器"));
+                .moduleName("媒体播放器"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("媒体边信息/媒体次要信息"));
         mainAdapter.addModuleInfo(new ModuleInfo()

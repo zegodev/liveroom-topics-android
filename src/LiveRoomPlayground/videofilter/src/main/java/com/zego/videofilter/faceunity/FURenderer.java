@@ -95,8 +95,8 @@ public class FURenderer implements OnFUControlListener {
     private volatile static float mIntensityMouth = 0.4f;//嘴形
     private volatile static float mIntensityNose = 0.5f;//瘦鼻
     private volatile static float mChangeFrames = 0f;//渐变帧数
-    // 默认滤镜，粉嫩效果
-    private volatile static String sFilterName = new Filter(Filter.Key.FENNEN_1).filterName();
+    // 默认滤镜，原图效果
+    private volatile static String sFilterName = new Filter(Filter.Key.ORIGIN).filterName();
 
     private int mFrameId = 0;
 
@@ -823,14 +823,14 @@ public class FURenderer implements OnFUControlListener {
                 MakeupItem makeupItem = makeupItems.get(i);
                 onLightMakeupSelected(makeupItem, makeupItem.getLevel());
             }
-        } else {
+        } /*else {
             queueEvent(new Runnable() {
                 @Override
                 public void run() {
                     faceunity.fuItemSetParam(mItemsArray[ITEM_ARRAYS_LIGHT_MAKEUP_INDEX], "is_makeup_on", 0);
                 }
             });
-        }
+        }*/
     }
 
     private void onLightMakeupSelected(final MakeupItem makeupItem, final float level) {
@@ -838,10 +838,10 @@ public class FURenderer implements OnFUControlListener {
         MakeupItem mp = mLightMakeupItemMap.get(type);
         if (mp != null) {
             mp.setLevel(level);
-        } else {
+        } /*else {
             // 复制一份
             mLightMakeupItemMap.put(type, makeupItem.cloneSelf());
-        }
+        }*/
         if (mFuItemHandler == null) {
             queueEvent(new Runnable() {
                 @Override

@@ -17,7 +17,7 @@ public abstract class BeautyParameterModel {
 
     public static final String STR_FILTER_LEVEL = "FilterLevel_";
     public static Map<String, Float> sFilterLevel = new HashMap<>(16);
-    public static Filter sFilter = FilterEnum.fennen.filter();
+    public static Filter sFilter = FilterEnum.nature.filter();
     /**
      * key: name，value: level
      */

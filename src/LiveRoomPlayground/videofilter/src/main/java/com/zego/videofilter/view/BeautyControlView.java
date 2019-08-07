@@ -101,8 +101,8 @@ public class BeautyControlView extends FrameLayout {
         this(context, attrs, 0);
     }
 
-    // 默认选中第三个粉嫩
-    private int mFilterPositionSelect = 2;
+    // 默认选中原图
+    private int mFilterPositionSelect = 0;
 
     public BeautyControlView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -654,7 +654,7 @@ public class BeautyControlView extends FrameLayout {
                 // 卸妆
                 mBeautySeekBar.setVisibility(View.INVISIBLE);
                 int old = mFilterPositionSelect;
-                mFilterPositionSelect = -1;
+                mFilterPositionSelect = 0;
                 mFilterRecyclerAdapter.notifyItemChanged(old);
                 mOnFUControlListener.onLightMakeupBatchSelected(faceMakeup.getMakeupItems());
             } else {
