@@ -187,6 +187,7 @@ public class VideoFilterHybridDemo extends ZegoVideoFilter {
         return buffer;
     }
 
+    private byte[] mModiBuffer = new byte[0];
     /**
      * SDK 抛出图像数据，外部滤镜进行处理
      *
@@ -236,8 +237,16 @@ public class VideoFilterHybridDemo extends ZegoVideoFilter {
                 // 上传贴图
                 GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, pixelBuffer.width, pixelBuffer.height, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, pixelBuffer.buffer);
 
+                if (pixelBuffer.buffer.limit() > mModiBuffer.length) {
+                    mModiBuffer = null;
+                    mModiBuffer = new byte[pixelBuffer.buffer.limit()];
+                }
+
+                pixelBuffer.buffer.position(0);
+                pixelBuffer.buffer.get(mModiBuffer);
                 // 调用 faceunity 进行美颜
-                int textureID = mFURenderer.onDrawFrame(mTextureId, pixelBuffer.width, pixelBuffer.height);
+//                int textureID = mFURenderer.onDrawFrame(mTextureId, pixelBuffer.width, pixelBuffer.height);
+                int textureID = mFURenderer.onDrawFrame(mModiBuffer, mTextureId, pixelBuffer.width, pixelBuffer.height);
 
                 // 此步骤会使用此 textureID 用做本地预览的视图渲染，并将美颜后的 textureID 传给 SDK（拉该条流时是美颜后的视频）
                 mClient.onProcessCallback(textureID, pixelBuffer.width, pixelBuffer.height, pixelBuffer.timestamp_100n);

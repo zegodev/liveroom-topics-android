@@ -42,6 +42,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.faceunity.wrapper.faceunity.FU_ADM_FLAG_FLIP_X;
+import static com.faceunity.wrapper.faceunity.FU_FORMAT_RGBA_BUFFER;
 
 /**
  * 一个基于Faceunity Nama SDK的简单封装，方便简单集成，理论上简单需求的步骤：
@@ -337,7 +338,7 @@ public class FURenderer implements OnFUControlListener {
     /**
      * 双输入接口(fuDualInputToTexture)(处理后的画面数据并不会回写到数组)，由于省去相应的数据拷贝性能相对最优，推荐使用。
      *
-     * @param img NV21数据
+     * @param img RGBA32数据
      * @param tex 纹理ID
      * @param w
      * @param h
@@ -350,7 +351,7 @@ public class FURenderer implements OnFUControlListener {
         }
         prepareDrawFrame();
 
-        int flags = mInputTextureType | mInputImageFormat;
+        int flags = mInputTextureType | faceunity.FU_ADM_FLAG_RGBA_BUFFER;
         if (mCurrentCameraType != Camera.CameraInfo.CAMERA_FACING_FRONT)
             flags |= FU_ADM_FLAG_FLIP_X;
 

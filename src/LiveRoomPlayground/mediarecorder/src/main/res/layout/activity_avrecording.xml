@@ -75,7 +75,7 @@
                         android:layout_height="50dp"
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
-                        android:text="@string/tx_start_play"
+                        android:text="@string/tx_begin_play"
                         android:textAllCaps="false"
                         android:onClick="dealPlay"/>
                 </LinearLayout>

@@ -206,7 +206,7 @@ public class ZGMediaRecorderDemoUI extends BaseActivity implements IZegoMediaRec
     }
 
     public void dealPlay(View view) {
-        if (mPlayBtn.getText().toString().equals(getString(R.string.tx_start_play))) {
+        if (mPlayBtn.getText().toString().equals(getString(R.string.tx_begin_play))) {
             if (zegoMediaPlayer != null) {
                 zegoMediaPlayer.setView(mPreView);
             }
@@ -272,7 +272,7 @@ public class ZGMediaRecorderDemoUI extends BaseActivity implements IZegoMediaRec
     @Override
     public void onPlayStart() {
         //更新界面
-        mPlayBtn.setText(getString(R.string.tx_stop_play));
+        mPlayBtn.setText(getString(R.string.tx_end_play));
         mErrorTxt.setText("");
     }
 
@@ -281,7 +281,7 @@ public class ZGMediaRecorderDemoUI extends BaseActivity implements IZegoMediaRec
 
         zegoMediaPlayer.setView(null);
         //更新界面
-        mPlayBtn.setText(getString(R.string.tx_start_play));
+        mPlayBtn.setText(getString(R.string.tx_begin_play));
     }
 
     @Override
@@ -289,7 +289,7 @@ public class ZGMediaRecorderDemoUI extends BaseActivity implements IZegoMediaRec
 
         zegoMediaPlayer.setView(null);
         //更新界面
-        mPlayBtn.setText(getString(R.string.tx_start_play));
+        mPlayBtn.setText(getString(R.string.tx_begin_play));
     }
 
     @Override

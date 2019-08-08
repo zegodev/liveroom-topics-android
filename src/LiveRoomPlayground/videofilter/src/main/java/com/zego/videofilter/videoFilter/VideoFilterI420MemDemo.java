@@ -196,6 +196,8 @@ public class VideoFilterI420MemDemo extends ZegoVideoFilter {
         return buffer;
     }
 
+    private byte[] mModiBuffer = new byte[0];
+
     /**
      * SDK 抛出图像数据，外部滤镜进行处理
      *
@@ -240,18 +242,21 @@ public class VideoFilterI420MemDemo extends ZegoVideoFilter {
                     //faceunity 的接口调用需要在相同的 openGL 环境中，此处 openGL 相关的调用是为了构建同一 openGL 环境
                     captureEglBase.makeCurrent();
 
-                    byte[] modiBuffer = new byte[pixelBuffer.buffer.limit()];
+                    if (pixelBuffer.buffer.limit() > mModiBuffer.length) {
+                        mModiBuffer = null;
+                        mModiBuffer = new byte[pixelBuffer.buffer.limit()];
+                    }
 
                     pixelBuffer.buffer.position(0);
-                    pixelBuffer.buffer.get(modiBuffer);
+                    pixelBuffer.buffer.get(mModiBuffer);
 
                     // 调用 faceunity 进行美颜，美颜后会将数据回写到 modiBuffer
-                    int res = mFURenderer.onDrawI420Frame(modiBuffer, pixelBuffer.width, pixelBuffer.height);
+                    int res = mFURenderer.onDrawI420Frame(mModiBuffer, pixelBuffer.width, pixelBuffer.height);
 
                     // 根据获取到的buffer下标写数据到相应的内存中，将美颜后的数据传给 SDK
                     ByteBuffer dst = mClient.getInputBuffer(index);
                     dst.position(0);
-                    dst.put(modiBuffer);
+                    dst.put(mModiBuffer);
 
                     // 通知 SDK 取美颜数据
                     mClient.queueInputBuffer(index, pixelBuffer.width, pixelBuffer.height, pixelBuffer.stride, pixelBuffer.timestamp_100n);

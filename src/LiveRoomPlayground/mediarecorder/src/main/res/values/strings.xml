@@ -2,7 +2,7 @@
     <string name="tx_front_camera">前置摄像头</string>
     <string name="tx_start_record">开始录制</string>
     <string name="tx_stop_record">停止录制</string>
-    <string name="tx_start_play">录制回放</string>
-    <string name="tx_stop_play">停止回放</string>
+    <string name="tx_begin_play">录制回放</string>
+    <string name="tx_end_play">停止回放</string>
 
 </resources>
