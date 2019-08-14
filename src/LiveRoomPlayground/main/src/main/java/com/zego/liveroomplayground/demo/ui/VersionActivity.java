@@ -1,6 +1,7 @@
 package com.zego.liveroomplayground.demo.ui;
 
 import android.app.Activity;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -11,9 +12,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.zego.common.widgets.CustomPopWindow;
 import com.zego.liveroomplayground.R;
 import com.zego.liveroomplayground.databinding.ActivityVersionBinding;
-import com.zego.videocommunication.ui.PublishStreamAndPlayStreamUI;
 import com.zego.zegoliveroom.ZegoLiveRoom;
 
 public class VersionActivity extends AppCompatActivity {
@@ -38,6 +39,37 @@ public class VersionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        // 以下实现长按复制功能
+        binding.txVeVersion.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                ClipboardManager cmb = (ClipboardManager)VersionActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
+                cmb.setText(binding.txVeVersion.getText());
+                showPopWindows(getString(R.string.tx_copyed), v);
+                return false;
+            }
+        });
+
+        binding.txSdkVersion.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                ClipboardManager cmb = (ClipboardManager)VersionActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
+                cmb.setText(binding.txSdkVersion.getText());
+                showPopWindows(getString(R.string.tx_copyed), v);
+                return false;
+            }
+        });
+
+        binding.txDemoVersion.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                ClipboardManager cmb = (ClipboardManager)VersionActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
+                cmb.setText(binding.txDemoVersion.getText());
+                showPopWindows(getString(R.string.tx_copyed), v);
+                return false;
             }
         });
     }
@@ -77,5 +109,21 @@ public class VersionActivity extends AppCompatActivity {
         }
 
         return localVersion;
+    }
+
+    /**
+     * 显示长按复制结构窗口
+     *
+     * @param msg  显示内容
+     * @param view
+     */
+    private void showPopWindows(String msg, View view) {
+        //创建并显示popWindow
+        new CustomPopWindow.PopupWindowBuilder(this)
+                .enableBackgroundDark(true) //弹出popWindow时，背景是否变暗
+                .setBgDarkAlpha(0.7f) // 控制亮度
+                .create()
+                .setMsg(msg)
+                .showAsDropDown(view, 0, 20);
     }
 }
