@@ -108,7 +108,7 @@ public class ZGAnchorUI extends AppCompatActivity implements IZegoLivePublisherC
                     ZGManager.sharedInstance().api().setFrontCam(useFrontCamera);
 
                     ZGManager.sharedInstance().api().setPreviewView(mPreview);
-                    ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleToFill);
+                    ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleAspectFill);
                     ZGManager.sharedInstance().api().enableCamera(true);
                     ZGManager.sharedInstance().api().startPreview();
 

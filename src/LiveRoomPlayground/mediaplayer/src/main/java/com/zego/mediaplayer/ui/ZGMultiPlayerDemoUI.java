@@ -92,7 +92,7 @@ public class ZGMultiPlayerDemoUI extends BaseActivity implements ZGMultiPlayerDe
                     // 设置预览
                     ZGManager.sharedInstance().api().setPreviewView(mPreview);
                     ZGManager.sharedInstance().api().setAVConfig(new ZegoAvConfig(ZegoAvConfig.Level.High));
-                    ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleToFill);
+                    ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleAspectFill);
                     ZGManager.sharedInstance().api().startPreview();
 
                 } else {

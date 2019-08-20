@@ -48,7 +48,7 @@ public class ZGMixStreamPublisher implements IZegoLivePublisherCallback, IZegoLi
     public void startPublish(String publishID, int flag, TextureView view){
 
         ZGManager.sharedInstance().api().setPreviewView(view);
-        ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleToFill);
+        ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleAspectFill);
         ZGManager.sharedInstance().api().enableCamera(true);
         // 设置推流分辨率
         setZegoAvConfig(new ZegoAvConfig(ZegoAvConfig.Level.High));

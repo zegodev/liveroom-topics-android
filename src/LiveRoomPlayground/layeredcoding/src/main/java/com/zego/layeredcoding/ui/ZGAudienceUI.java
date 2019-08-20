@@ -196,7 +196,7 @@ public class ZGAudienceUI extends AppCompatActivity implements IZegoLivePlayerCa
                      // 开始推流
                      ZGManager.sharedInstance().api().setFrontCam(useFrontCamera);
                      ZGManager.sharedInstance().api().setPreviewView(mPreview);
-                     ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleToFill);
+                     ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleAspectFill);
                      ZGManager.sharedInstance().api().enableCamera(true);
                      ZGManager.sharedInstance().api().startPreview();
                      // 设置延迟模式

@@ -90,7 +90,7 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
                         // 添加外部渲染视图
                         videoRenderer.addView (com.zego.zegoavkit2.ZegoConstants.ZegoVideoDataMainPublishingStream, mPreView);
 //                    }
-                    ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleToFill);
+                    ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleAspectFill);
                     ZGManager.sharedInstance().api().enableCamera(true);
                     // 设置推流分辨率，540*960
                     ZGManager.sharedInstance().api().setAVConfig (new ZegoAvConfig(ZegoAvConfig.Level.High));

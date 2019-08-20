@@ -34,7 +34,7 @@ public class SettingActivity extends AppCompatActivity {
     private String sdkVersion = "SDK版本：";
     private String demoVersion = "Demo版本：";
 
-    private int envSelection = 0;
+//    private int envSelection = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,27 +53,6 @@ public class SettingActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        binding.spEnv.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                envSelection = position;
-                Log.e("test","*** env selection: " + envSelection);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-//        // 保存设置
-//        binding.saveSetting.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                saveSetting();
-//            }
-//        });
 
         // 以下实现长按复制功能
         binding.txVeVersion.setOnLongClickListener(new View.OnLongClickListener() {
@@ -113,8 +92,8 @@ public class SettingActivity extends AppCompatActivity {
         binding.txSdkVersion.setText(getSdkVersion());
         binding.txDemoVersion.setText(demoVersion +getLocalVersionName(this));
 
-        binding.edAppId.setText(PreferenceUtil.getInstance().getStringValue(KEY_APP_ID, String.valueOf(GetAppIdConfig.appId)));
-        binding.edAppSign.setText(PreferenceUtil.getInstance().getStringValue(KEY_APP_SIGN, ZegoUtil.parseSignKeyFromByte(GetAppIdConfig.appSign)));
+        binding.edAppId.setText(PreferenceUtil.getInstance().getStringValue(KEY_APP_ID, ""));
+        binding.edAppSign.setText(PreferenceUtil.getInstance().getStringValue(KEY_APP_SIGN, ""));
         binding.spEnv.setSelection(PreferenceUtil.getInstance().getBooleanValue(KEY_TEST_ENVIRONMENT, true) ? 0 : 1);
     }
 
@@ -125,7 +104,7 @@ public class SettingActivity extends AppCompatActivity {
         // AppSign
         PreferenceUtil.getInstance().setStringValue(KEY_APP_SIGN, binding.edAppSign.getText().toString().trim());
         // env
-        PreferenceUtil.getInstance().setBooleanValue(KEY_TEST_ENVIRONMENT, (envSelection == 0) ? true : false);
+        PreferenceUtil.getInstance().setBooleanValue(KEY_TEST_ENVIRONMENT, (binding.spEnv.getSelectedItemPosition() == 0) ? true : false);
     }
 
     // 获取 VE 版本

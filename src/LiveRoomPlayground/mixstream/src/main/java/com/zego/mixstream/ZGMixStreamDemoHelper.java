@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import com.zego.common.GetAppIdConfig;
 import com.zego.common.util.DeviceInfoManager;
 import com.zego.common.ZGManager;
+import com.zego.common.util.ZegoUtil;
 import com.zego.mixstream.entity.RoomInfo;
 import com.zego.mixstream.entity.RoomInfoEx;
 
@@ -46,11 +47,11 @@ public class ZGMixStreamDemoHelper {
         String url = "";
         if (isTestEnv) {
             //测试环境请求地址
-            url = "https://test2-liveroom-api.zego.im/demo/roomlist?appid=" + String.valueOf(GetAppIdConfig.appId);
+            url = "https://test2-liveroom-api.zego.im/demo/roomlist?appid=" + String.valueOf(ZegoUtil.getAppID());
 
         } else {
             //正式环境请求地址
-            url = String.format("https://liveroom%d-api.zego.im/demo/roomlist?appid=%s", GetAppIdConfig.appId, GetAppIdConfig.appId);
+            url = String.format("https://liveroom%d-api.zego.im/demo/roomlist?appid=%s", ZegoUtil.getAppID(), ZegoUtil.getAppID());
         }
 
         RequestQueue requestQueue = Volley.newRequestQueue(context);

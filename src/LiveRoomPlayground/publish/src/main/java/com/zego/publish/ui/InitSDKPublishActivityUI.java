@@ -34,7 +34,7 @@ public class InitSDKPublishActivityUI extends BaseActivity implements View.OnCli
     protected void onCreate(@NonNull Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_publish_init_sdk);
-        binding.appId.setText(String.valueOf(GetAppIdConfig.appId));
+        binding.appId.setText(String.valueOf(ZegoUtil.getAppID()));
         binding.appIdDescribe.setOnClickListener(this);
         binding.userNameDescribe.setOnClickListener(this);
         binding.userIdDescribe.setOnClickListener(this);
