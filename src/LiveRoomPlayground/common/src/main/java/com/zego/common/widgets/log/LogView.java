@@ -1,6 +1,7 @@
 package com.zego.common.widgets.log;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.zego.common.R;
 import com.zego.common.adapter.LogAdapter;
+import com.zego.common.ui.ZegoLogShareActivity;
 import com.zego.common.util.AppLogger;
 import com.zego.common.util.CpuUtil;
 
@@ -48,6 +50,18 @@ public class LogView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 AppLogger.getInstance().clearLog();
+            }
+        });
+        Button shareBtn = findViewById(R.id.share_log);
+        shareBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(getContext(), ZegoLogShareActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().startActivity(intent);
+//                ZegoLogShareActivity.actionStart(getContext());
+
             }
         });
         // initial CPU header text
@@ -127,4 +141,6 @@ public class LogView extends FrameLayout {
     public boolean onTouchEvent(MotionEvent event) {
         return true;
     }
+
+
 }

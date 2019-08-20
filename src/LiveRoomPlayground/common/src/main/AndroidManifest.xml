@@ -12,9 +12,20 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:supportsRtl="true">
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.zego.common.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <activity android:name=".ui.WebActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             />
+        <activity android:name=".ui.ZegoLogShareActivity"/>
 
     </application>
 </manifest>

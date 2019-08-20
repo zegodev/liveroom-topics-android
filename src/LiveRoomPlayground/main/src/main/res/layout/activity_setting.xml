@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".demo.ui.SettingActivity">
+
+        <com.zego.common.widgets.TitleLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:name="@string/tx_setting">
+
+            <Button
+                android:id="@+id/go_back"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:background="@mipmap/ic_round_left" />
+
+            <!--<TextView-->
+                <!--android:id="@+id/save_setting"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:layout_gravity="end"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:layout_marginEnd="10dp"-->
+                <!--android:textSize="16sp"-->
+                <!--android:textColor="@color/blue"-->
+                <!--android:text="@string/tx_save"-->
+                <!--android:clickable="true"-->
+                <!--android:focusable="true"/>-->
+
+        </com.zego.common.widgets.TitleLayout>
+
+        <RelativeLayout
+            android:id="@+id/appid"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:textColor="#333333"
+                android:text="@string/tx_appid"/>
+
+            <com.zego.common.widgets.CustomEditText
+                android:id="@+id/ed_app_id"
+                app:key="app_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="90dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/edit_shape"
+                android:hint="请输入 AppID"
+                android:padding="8dp"
+                android:textSize="14sp"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="2px"
+                android:layout_alignParentBottom="true"
+                android:background="#9b9b9b" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/appsign"
+            android:layout_width="match_parent"
+            android:layout_height="90dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:textColor="#333333"
+                android:text="@string/tx_appsign"/>
+
+            <com.zego.common.widgets.CustomEditText
+                android:id="@+id/ed_app_sign"
+                app:key="app_sign"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="90dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/edit_shape"
+                android:hint="请输入 AppSign"
+                android:padding="8dp"
+                android:textSize="14sp"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="2px"
+                android:layout_alignParentBottom="true"
+                android:background="#9b9b9b" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/env"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:textColor="#333333"
+                android:text="@string/tx_env"/>
+
+            <Spinner
+                android:id="@+id/sp_env"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingRight="30dp"
+                android:background="@drawable/spinner_border"
+                android:entries="@array/environment_types">
+            </Spinner>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="2px"
+                android:layout_alignParentBottom="true"
+                android:background="#9b9b9b" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/VE"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                android:id="@+id/tx_ve_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:textColor="#333333"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="2px"
+                android:layout_alignParentBottom="true"
+                android:background="#9b9b9b" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/SDK"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                android:id="@+id/tx_sdk_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:textColor="#333333"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="2px"
+                android:layout_alignParentBottom="true"
+                android:background="#9b9b9b" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/Demo"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <TextView
+                android:id="@+id/tx_demo_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:textColor="#333333"/>
+
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="2px"
+                android:layout_alignParentBottom="true"
+                android:background="#9b9b9b" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</layout>

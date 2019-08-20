@@ -115,35 +115,35 @@
 
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginRight="40dp"
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="40dp"-->
+            <!--android:layout_marginTop="15dp"-->
+            <!--android:layout_marginRight="40dp"-->
 
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            <!--android:gravity="center_vertical"-->
+            <!--android:orientation="horizontal">-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="环境 (请选择与appID对应的环境) :"
-                android:textSize="14sp" />
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="环境 (请选择与appID对应的环境) :"-->
+                <!--android:textSize="14sp" />-->
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
 
-        <com.zego.common.widgets.CustomSwitch
-            android:id="@+id/test_env"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="40dp"
-            android:gravity="center_vertical|left"
-            android:text="@string/tx_test_env"
-            android:textColor="#c50f57"
-            app:key="test_env" />
+        <!--<com.zego.common.widgets.CustomSwitch-->
+            <!--android:id="@+id/test_env"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="40dp"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:layout_marginRight="40dp"-->
+            <!--android:gravity="center_vertical|left"-->
+            <!--android:text="@string/tx_test_env"-->
+            <!--android:textColor="#c50f57"-->
+            <!--app:key="test_env" />-->
 
         <Button
             android:layout_width="200dp"

@@ -57,5 +57,10 @@
     <string name="tx_set_play_view_mode_failure">设置失败, 请在拉流之后设置</string>
     <string name="tx_current_stream_delete">对方已停止推流</string>
 
+    <string name="share_log">分享日志</string>
+    <string name="log">log</string>
+    <string name="back">返回</string>
+    <string name="share">分享</string>
+
 
 </resources>

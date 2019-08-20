@@ -1,6 +1,7 @@
 package com.zego.common;
 
 import com.zego.common.util.AppLogger;
+import com.zego.common.util.ZegoUtil;
 import com.zego.zegoavkit2.ZegoExternalVideoCapture;
 import com.zego.zegoavkit2.ZegoVideoCaptureFactory;
 import com.zego.zegoliveroom.ZegoLiveRoom;
@@ -14,16 +15,13 @@ import com.zego.zegoliveroom.constants.ZegoConstants;
  */
 public class ZGManager {
 
-    private boolean isTestEnv = true;
-
-    public static byte[] appSign = GetAppIdConfig.appSign;
-    public static long appId = GetAppIdConfig.appId;
+    private boolean isTestEnv = ZegoUtil.getIsTestEnv();
 
     public ZegoLiveRoom api() {
         // 判断是否创建了ZegoLiveRoom实例 避免重复初始化sdk
         if (ZGBaseHelper.sharedInstance().getZegoLiveRoom() == null) {
             // 初始化zegoSDK
-            ZGBaseHelper.sharedInstance().initZegoSDK(appId, appSign, isTestEnv, new IZegoInitSDKCompletionCallback() {
+            ZGBaseHelper.sharedInstance().initZegoSDK(ZegoUtil.getAppID(), ZegoUtil.getAppSign(), ZegoUtil.getIsTestEnv(), new IZegoInitSDKCompletionCallback() {
                 @Override
                 public void onInitSDK(int errorCode) {
                     if (errorCode == 0) {

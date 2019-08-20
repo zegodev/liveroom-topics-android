@@ -14,6 +14,7 @@ import com.zego.common.ZGBaseHelper;
 import com.zego.common.ZGManager;
 import com.zego.common.ui.BaseActivity;
 import com.zego.common.util.AppLogger;
+import com.zego.common.util.ZegoUtil;
 import com.zego.sound.processing.R;
 import com.zego.sound.processing.adapter.RoomListAdapter;
 import com.zego.sound.processing.databinding.ActivityMainSoundProcessBinding;
@@ -54,7 +55,7 @@ public class SoundProcessMainActivityUI extends BaseActivity {
         binding.refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                zgAppSupportHelper.api().updateRoomList(ZGManager.appId);
+                zgAppSupportHelper.api().updateRoomList(ZegoUtil.getAppID());
             }
         });
 
@@ -92,13 +93,13 @@ public class SoundProcessMainActivityUI extends BaseActivity {
         AppLogger.getInstance().i(ZGBaseHelper.class, "初始化zegoSDK");
 
         // 初始化SDK
-        ZGBaseHelper.sharedInstance().initZegoSDK(ZGManager.appId, ZGManager.appSign, true, new IZegoInitSDKCompletionCallback() {
+        ZGBaseHelper.sharedInstance().initZegoSDK(ZegoUtil.getAppID(), ZegoUtil.getAppSign(), ZegoUtil.getIsTestEnv(), new IZegoInitSDKCompletionCallback() {
             @Override
             public void onInitSDK(int errorCode) {
                 // 初始化完成后, 请求房间列表
                 if (errorCode == 0) {
                     // 初始化完成后需要刷新房间列表
-                    zgAppSupportHelper.api().updateRoomList(ZGManager.appId);
+                    zgAppSupportHelper.api().updateRoomList(ZegoUtil.getAppID());
 
                     AppLogger.getInstance().i(SoundProcessMainActivityUI.class, "初始化zegoSDK成功");
                 } else {

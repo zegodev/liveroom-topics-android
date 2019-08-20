@@ -11,42 +11,75 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 
+import com.zego.common.GetAppIdConfig;
+import com.zego.common.util.PreferenceUtil;
+import com.zego.common.util.ZegoUtil;
 import com.zego.common.widgets.CustomPopWindow;
 import com.zego.liveroomplayground.R;
-import com.zego.liveroomplayground.databinding.ActivityVersionBinding;
+import com.zego.liveroomplayground.databinding.ActivitySettingBinding;
 import com.zego.zegoliveroom.ZegoLiveRoom;
 
-public class VersionActivity extends AppCompatActivity {
+import static com.zego.common.util.PreferenceUtil.KEY_APP_ID;
+import static com.zego.common.util.PreferenceUtil.KEY_APP_SIGN;
+import static com.zego.common.util.PreferenceUtil.KEY_TEST_ENVIRONMENT;
 
-    private ActivityVersionBinding binding;
 
-    private String veVersion = "VE 版本：";
-    private String sdkVersion = "SDK 版本：";
-    private String demoVersion = "Demo 版本：";
+public class SettingActivity extends AppCompatActivity {
+
+    private ActivitySettingBinding binding;
+
+    private String veVersion = "VE版本：";
+    private String sdkVersion = "SDK版本：";
+    private String demoVersion = "Demo版本：";
+
+    private int envSelection = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_version);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_setting);
 
-        binding.txVeVersion.setText(getVeVersion());
-        binding.txSdkVersion.setText(getSdkVersion());
-        binding.txDemoVersion.setText(demoVersion +getLocalVersionName(this));
+        // 设置界面参数，原始设置值
+        initViewValue();
 
         binding.goBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // 保存页面设置
+                saveSetting();
                 finish();
             }
         });
+
+        binding.spEnv.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                envSelection = position;
+                Log.e("test","*** env selection: " + envSelection);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+//        // 保存设置
+//        binding.saveSetting.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                saveSetting();
+//            }
+//        });
 
         // 以下实现长按复制功能
         binding.txVeVersion.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                ClipboardManager cmb = (ClipboardManager)VersionActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipboardManager cmb = (ClipboardManager)SettingActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
                 cmb.setText(binding.txVeVersion.getText());
                 showPopWindows(getString(R.string.tx_copyed), v);
                 return false;
@@ -56,7 +89,7 @@ public class VersionActivity extends AppCompatActivity {
         binding.txSdkVersion.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                ClipboardManager cmb = (ClipboardManager)VersionActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipboardManager cmb = (ClipboardManager)SettingActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
                 cmb.setText(binding.txSdkVersion.getText());
                 showPopWindows(getString(R.string.tx_copyed), v);
                 return false;
@@ -66,12 +99,33 @@ public class VersionActivity extends AppCompatActivity {
         binding.txDemoVersion.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                ClipboardManager cmb = (ClipboardManager)VersionActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipboardManager cmb = (ClipboardManager)SettingActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
                 cmb.setText(binding.txDemoVersion.getText());
                 showPopWindows(getString(R.string.tx_copyed), v);
                 return false;
             }
         });
+    }
+
+    // 还原原设置参数
+    private void initViewValue() {
+        binding.txVeVersion.setText(getVeVersion());
+        binding.txSdkVersion.setText(getSdkVersion());
+        binding.txDemoVersion.setText(demoVersion +getLocalVersionName(this));
+
+        binding.edAppId.setText(PreferenceUtil.getInstance().getStringValue(KEY_APP_ID, String.valueOf(GetAppIdConfig.appId)));
+        binding.edAppSign.setText(PreferenceUtil.getInstance().getStringValue(KEY_APP_SIGN, ZegoUtil.parseSignKeyFromByte(GetAppIdConfig.appSign)));
+        binding.spEnv.setSelection(PreferenceUtil.getInstance().getBooleanValue(KEY_TEST_ENVIRONMENT, true) ? 0 : 1);
+    }
+
+    // 保存界面上的设置参数
+    private void saveSetting() {
+        // AppID
+        PreferenceUtil.getInstance().setStringValue(KEY_APP_ID, binding.edAppId.getText().toString().trim());
+        // AppSign
+        PreferenceUtil.getInstance().setStringValue(KEY_APP_SIGN, binding.edAppSign.getText().toString().trim());
+        // env
+        PreferenceUtil.getInstance().setBooleanValue(KEY_TEST_ENVIRONMENT, (envSelection == 0) ? true : false);
     }
 
     // 获取 VE 版本
@@ -91,7 +145,7 @@ public class VersionActivity extends AppCompatActivity {
      * @param activity
      */
     public static void actionStart(Activity activity) {
-        Intent intent = new Intent(activity, VersionActivity.class);
+        Intent intent = new Intent(activity, SettingActivity.class);
 
         activity.startActivity(intent);
     }

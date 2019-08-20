@@ -7,6 +7,7 @@ import android.util.Base64;
 import android.util.Log;
 
 
+import com.zego.common.GetAppIdConfig;
 import com.zego.common.application.ZegoApplication;
 
 
@@ -23,6 +24,10 @@ public class PreferenceUtil {
     public static PreferenceUtil sInstance;
 
     public static final String SHARE_PREFERENCE_NAME = "ZEGO_DEMO_PLAYGROUND";
+
+    public static final String KEY_APP_ID = "PLAYGROUND_APP_ID";
+    public static final String KEY_APP_SIGN = "PLAYGROUND_APP_SIGN";
+    public static final String KEY_TEST_ENVIRONMENT = "PLAYGROUND_ENV";
 
     private SharedPreferences mSharedPreferences;
 

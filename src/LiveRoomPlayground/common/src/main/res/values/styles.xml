@@ -43,4 +43,10 @@
         <attr name="arc_shadow_radius" format="dimension|reference" />
     </declare-styleable>
 
+    <!-- 水平分割线 -->
+    <style name="HorizontalDivider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1.5px</item>
+        <item name="android:background">@color/bg_gray</item>
+    </style>
 </resources>

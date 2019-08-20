@@ -1,7 +1,14 @@
 package com.zego.common.util;
 
 import android.text.TextUtils;
+
+import com.zego.common.GetAppIdConfig;
+
 import java.util.regex.Pattern;
+
+import static com.zego.common.util.PreferenceUtil.KEY_APP_ID;
+import static com.zego.common.util.PreferenceUtil.KEY_APP_SIGN;
+import static com.zego.common.util.PreferenceUtil.KEY_TEST_ENVIRONMENT;
 
 /**
  * Created by zego on 2019/4/16.
@@ -31,6 +38,32 @@ public class ZegoUtil {
         return byteSignKey;
     }
 
+    /**
+     * byte数组转16进制字符串
+     * @param signKey
+     * @return
+     */
+    public static String parseSignKeyFromByte(byte[] signKey) {
+
+        StringBuilder stringBuilder = new StringBuilder("");
+
+        for (int i = 0; i < signKey.length; i++){
+            int v = GetAppIdConfig.appSign[i] & 0xFF;
+
+            String hv = Integer.toHexString(v);
+
+            if (hv.length() < 2) {
+                stringBuilder.append(0);
+            }
+            stringBuilder.append("0x");
+            stringBuilder.append(hv);
+            if (i < signKey.length - 1) {
+                stringBuilder.append(",");
+            }
+        }
+        return stringBuilder.toString();
+    }
+
 
     public static long parseAppIDFromString(String strAppID) throws NumberFormatException {
 
@@ -54,5 +87,27 @@ public class ZegoUtil {
         return "s" + System.currentTimeMillis();
     }
 
+    /**
+     * 获取当前设置的 AppID
+     */
+    public static long getAppID() {
+        String strAppID = PreferenceUtil.getInstance().getStringValue(KEY_APP_ID, String.valueOf(GetAppIdConfig.appId));
+        return parseAppIDFromString(strAppID);
+    }
+
+    /**
+     * 获取当前设置的 AppSign
+     */
+    public static byte[] getAppSign() {
+        String strAppSign = PreferenceUtil.getInstance().getStringValue(KEY_APP_SIGN, ZegoUtil.parseSignKeyFromByte(GetAppIdConfig.appSign));
+        return parseSignKeyFromString(strAppSign);
+    }
+
+    /**
+     * 获取当前设置的环境
+     */
+    public static boolean getIsTestEnv() {
+        return PreferenceUtil.getInstance().getBooleanValue(KEY_TEST_ENVIRONMENT, true);
+    }
 
 }

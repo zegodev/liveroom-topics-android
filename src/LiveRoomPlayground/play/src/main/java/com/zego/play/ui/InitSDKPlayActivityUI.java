@@ -34,7 +34,7 @@ public class InitSDKPlayActivityUI extends BaseActivity implements View.OnClickL
     protected void onCreate(@NonNull Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_play_init_sdk);
-        binding.appId.setText(String.valueOf(GetAppIdConfig.appId));
+        binding.appId.setText(String.valueOf(ZegoUtil.getAppID()));
         binding.appIdDescribe.setOnClickListener(this);
         binding.userNameDescribe.setOnClickListener(this);
         binding.userIdDescribe.setOnClickListener(this);
@@ -51,12 +51,12 @@ public class InitSDKPlayActivityUI extends BaseActivity implements View.OnClickL
      */
     public void onInitSDK(View view) {
         AppLogger.getInstance().i(InitSDKPlayActivityUI.class, "点击 初始化SDK按钮");
-        boolean testEnv = binding.testEnv.isChecked();
+//        boolean testEnv = binding.testEnv.isChecked();
         // 防止用户点击，弹出加载对话框
         CustomDialog.createDialog("初始化SDK中...", InitSDKPlayActivityUI.this).show();
 
         // 调用sdk接口, 初始化sdk
-        boolean results = ZGBaseHelper.sharedInstance().initZegoSDK(GetAppIdConfig.appId, GetAppIdConfig.appSign, testEnv, new IZegoInitSDKCompletionCallback() {
+        boolean results = ZGBaseHelper.sharedInstance().initZegoSDK(ZegoUtil.getAppID(), ZegoUtil.getAppSign(), ZegoUtil.getIsTestEnv(), new IZegoInitSDKCompletionCallback() {
             @Override
             public void onInitSDK(int errorCode) {
 

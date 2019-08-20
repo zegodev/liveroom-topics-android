@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="config"
             type="com.zego.common.entity.SDKConfigInfo" />
@@ -12,128 +13,123 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#ebeef5"
+        android:keepScreenOn="true"
         android:orientation="vertical">
 
-        <LinearLayout
+        <com.zego.common.widgets.TitleLayout
+            android:id="@+id/title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#ebeef5"
-            android:keepScreenOn="true"
-            android:orientation="vertical">
+            android:layout_height="45dp"
+            app:name="@string/tx_audience_title">
 
-            <com.zego.common.widgets.TitleLayout
-                android:id="@+id/title"
-                app:name="@string/tx_audience_title"
+            <Button
+                android:id="@+id/go_back"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:background="@mipmap/ic_round_left" />
+
+        </com.zego.common.widgets.TitleLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextureView
+                android:id="@+id/playView"
                 android:layout_width="match_parent"
-                android:layout_height="45dp">
+                android:layout_height="match_parent" />
 
-                <Button
-                    android:id="@+id/go_back"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:background="@mipmap/ic_round_left" />
-
-            </com.zego.common.widgets.TitleLayout>
-
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="160dp"
+                android:orientation="horizontal">
 
-                <TextureView
-                    android:id="@+id/playView"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="10dp"
                     android:layout_height="match_parent" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="160dp"
-                    android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="10dp"
-                        android:layout_height="match_parent" />
+                <TextureView
+                    android:id="@+id/audienceViewOne"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
 
 
-                    <TextureView
-                        android:id="@+id/audienceViewOne"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                <TextView
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent" />
 
 
-                    <TextView
-                        android:layout_width="10dp"
-                        android:layout_height="match_parent" />
+                <TextureView
+                    android:id="@+id/audienceViewTwo"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
 
 
-                    <TextureView
-                        android:id="@+id/audienceViewTwo"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                <TextView
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent" />
 
 
-                    <TextView
-                        android:layout_width="10dp"
-                        android:layout_height="match_parent" />
+                <TextureView
+                    android:id="@+id/audienceViewThree"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
 
 
-                    <TextureView
-                        android:id="@+id/audienceViewThree"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+            </LinearLayout>
 
 
-                </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal">
 
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:orientation="horizontal">
-
-                    <Switch
-                        android:id="@+id/sw_mic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="@{config.enableMic}"
-                        android:text="@string/tx_mic_state"
-                        android:textColor="@color/white_color" />
-
-                    <Switch
-                        android:id="@+id/sw_camera"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
-                        android:checked="@{config.enableCamera}"
-                        android:text="@string/tx_camera"
-                        android:textColor="@color/white_color" />
-
-                </LinearLayout>
-
-                <LinearLayout
+                <Switch
+                    android:id="@+id/sw_mic"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentBottom="true"
-                    android:orientation="horizontal">
+                    android:checked="@{config.enableMic}"
+                    android:text="@string/tx_mic_state"
+                    android:textColor="@color/white_color" />
 
-                    <Button
-                        android:id="@+id/btn_applyJoinLive"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:onClick="onClickApplyJoinLive"
-                        android:text="@string/tx_joinLive"
-                        android:visibility="invisible"/>
+                <Switch
+                    android:id="@+id/sw_camera"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
 
-                </LinearLayout>
+                    android:checked="@{config.enableCamera}"
+                    android:text="@string/tx_camera"
+                    android:textColor="@color/white_color" />
 
-            </RelativeLayout>
+            </LinearLayout>
 
-        </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_applyJoinLive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClickApplyJoinLive"
+                    android:text="@string/tx_joinLive"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
     </LinearLayout>
+
 </layout>

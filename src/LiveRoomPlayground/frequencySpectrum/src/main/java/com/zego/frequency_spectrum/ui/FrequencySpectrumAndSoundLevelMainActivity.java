@@ -13,6 +13,7 @@ import com.zego.common.ZGManager;
 import com.zego.common.ui.BaseActivity;
 import com.zego.common.ui.WebActivity;
 import com.zego.common.util.AppLogger;
+import com.zego.common.util.ZegoUtil;
 import com.zego.frequency_spectrum.R;
 import com.zego.zegoliveroom.callback.IZegoInitSDKCompletionCallback;
 
@@ -41,7 +42,7 @@ public class FrequencySpectrumAndSoundLevelMainActivity extends BaseActivity{
      */
     private void initSDK() {
         // 初始化SDK
-        ZGBaseHelper.sharedInstance().initZegoSDK(ZGManager.appId, ZGManager.appSign, true, new IZegoInitSDKCompletionCallback() {
+        ZGBaseHelper.sharedInstance().initZegoSDK(ZegoUtil.getAppID(), ZegoUtil.getAppSign(), ZegoUtil.getIsTestEnv(), new IZegoInitSDKCompletionCallback() {
             @Override
             public void onInitSDK(int errorCode) {
                 // 初始化完成后, 请求房间列表

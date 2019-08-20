@@ -51,13 +51,13 @@ public class InitSDKPublishActivityUI extends BaseActivity implements View.OnCli
     public void onInitSDK(View view) {
         AppLogger.getInstance().i(InitSDKPublishActivityUI.class, "点击 初始化SDK按钮");
 
-        boolean testEnv = binding.testEnv.isChecked();
+//        boolean testEnv = binding.testEnv.isChecked();
 
         // 防止用户点击，弹出加载对话框
         CustomDialog.createDialog("初始化SDK中...", InitSDKPublishActivityUI.this).show();
 
         // 调用sdk接口, 初始化sdk
-        boolean results = ZGBaseHelper.sharedInstance().initZegoSDK(GetAppIdConfig.appId, GetAppIdConfig.appSign, testEnv, new IZegoInitSDKCompletionCallback() {
+        boolean results = ZGBaseHelper.sharedInstance().initZegoSDK(ZegoUtil.getAppID(), ZegoUtil.getAppSign(), ZegoUtil.getIsTestEnv(), new IZegoInitSDKCompletionCallback() {
             @Override
             public void onInitSDK(int errorCode) {
 

@@ -14,6 +14,7 @@ import com.zego.common.ZGManager;
 import com.zego.common.ui.BaseActivity;
 import com.zego.common.ui.WebActivity;
 import com.zego.common.util.AppLogger;
+import com.zego.common.util.ZegoUtil;
 import com.zego.joinlive.R;
 import com.zego.joinlive.ZGJoinLiveHelper;
 import com.zego.joinlive.adapter.RoomListAdapter;
@@ -55,7 +56,7 @@ public class JoinLiveMainActivityUI extends BaseActivity {
         binding.refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                zgAppSupportHelper.api().updateRoomList(ZGManager.appId);
+                zgAppSupportHelper.api().updateRoomList(ZegoUtil.getAppID());
             }
         });
 
@@ -111,10 +112,11 @@ public class JoinLiveMainActivityUI extends BaseActivity {
          * 从官网申请的 AppID 默认是测试环境，而 SDK 初始化默认是正式环境，所以需要在初始化 SDK 前设置测试环境，否则 SDK 会初始化失败；
          * 当 App 集成完成后，再向 ZEGO 申请开启正式环境，改为正式环境再初始化。
          */
-        ZegoLiveRoom.setTestEnv(true);
+        ZegoLiveRoom.setTestEnv(ZegoUtil.getIsTestEnv());
+        AppLogger.getInstance().i(JoinLiveMainActivityUI.class, "test env: " +ZegoUtil.getIsTestEnv());
 
         // 初始化SDK
-        ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().initSDK(ZGManager.appId, ZGManager.appSign, new IZegoInitSDKCompletionCallback() {
+        ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().initSDK(ZegoUtil.getAppID(), ZegoUtil.getAppSign(), new IZegoInitSDKCompletionCallback() {
             @Override
             public void onInitSDK(int errorCode) {
 
@@ -122,7 +124,7 @@ public class JoinLiveMainActivityUI extends BaseActivity {
                     // 初始化成功
                     isInitSuccess = true;
                     // 初始化完成后需要刷新房间列表
-                    zgAppSupportHelper.api().updateRoomList(ZGManager.appId);
+                    zgAppSupportHelper.api().updateRoomList(ZegoUtil.getAppID());
 
                     AppLogger.getInstance().i(JoinLiveMainActivityUI.class, "初始化ZEGO SDK成功");
                 } else {

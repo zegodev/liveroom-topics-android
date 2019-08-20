@@ -2,8 +2,8 @@
     package="com.zego.mediarecorder" >
 
     <application>
-        <activity android:name="com.zego.mediarecorder.ZGMediaRecorderSettingUI" />
-        <activity android:name="com.zego.mediarecorder.ZGMediaRecorderDemoUI" />
+        <activity android:name="com.zego.mediarecorder.ZGMediaRecorderReplayUI" />
+        <activity android:name="com.zego.mediarecorder.ZGMediaRecorderRecordUI" />
     </application>
 
 </manifest>

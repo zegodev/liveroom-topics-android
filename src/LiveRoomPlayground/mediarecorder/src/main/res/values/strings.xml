@@ -1,8 +1,11 @@
 <resources>
-    <string name="tx_front_camera">前置摄像头</string>
+    <string name="tx_recorder_title">本地媒体录制</string>
+    <string name="tx_record_format">录制格式</string>
+    <string name="tx_record_type">录制类型</string>
     <string name="tx_start_record">开始录制</string>
-    <string name="tx_stop_record">停止录制</string>
-    <string name="tx_begin_play">录制回放</string>
-    <string name="tx_end_play">停止回放</string>
+    <string name="tx_stop_record">结束录制并播放</string>
+    <string name="tx_begin_play">开始播放</string>
+    <string name="tx_end_play">停止播放</string>
+
 
 </resources>

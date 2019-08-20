@@ -14,12 +14,12 @@ import com.zego.liveroomplayground.R;
 import com.zego.liveroomplayground.databinding.ActivityMainBinding;
 import com.zego.liveroomplayground.demo.adapter.MainAdapter;
 import com.zego.liveroomplayground.demo.entity.ModuleInfo;
+import com.zego.mediarecorder.ZGMediaRecorderRecordUI;
 import com.zego.play.ui.InitSDKPlayActivityUI;
 import com.zego.common.ui.BaseActivity;
 import com.zego.common.ui.WebActivity;
 import com.zego.layeredcoding.ui.ZGRoomListUI;
 import com.zego.mediaplayer.ui.ZGPlayerTypeUI;
-import com.zego.mediarecorder.ZGMediaRecorderSettingUI;
 import com.zego.mixing.ui.ZGMixingDemoUI;
 import com.zego.mixstream.ui.ZGMixStreamRoomListUI;
 import com.zego.sound.processing.ui.SoundProcessMainActivityUI;
@@ -58,11 +58,11 @@ public class MainActivity extends BaseActivity {
         setTitle("ZegoDemo");
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        binding.version.setOnClickListener(new View.OnClickListener(){
+        binding.setting.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
-                VersionActivity.actionStart(MainActivity.this);
+                SettingActivity.actionStart(MainActivity.this);
             }
         });
 
@@ -82,14 +82,14 @@ public class MainActivity extends BaseActivity {
                     case "变声/混响/立体声":
                         SoundProcessMainActivityUI.actionStart(MainActivity.this);
                         break;
-                    case "音频频谱":
+                    case "声浪/音频频谱":
                         FrequencySpectrumAndSoundLevelMainActivity.actionStart(MainActivity.this);
                         break;
                     case "媒体播放器":
                         intent = new Intent(MainActivity.this, ZGPlayerTypeUI.class);
                         MainActivity.this.startActivity(intent);
                         break;
-                    case "媒体边信息/媒体次要信息":
+                    case "媒体次要信息":
                         intent = new Intent(MainActivity.this, MediaSideInfoDemoUI.class);
                         MainActivity.this.startActivity(intent);
                         break;
@@ -98,14 +98,14 @@ public class MainActivity extends BaseActivity {
                         MainActivity.this.startActivity(intent);
                         break;
                     case "本地媒体录制":
-                        intent = new Intent(MainActivity.this, ZGMediaRecorderSettingUI.class);
+                        intent = new Intent(MainActivity.this, ZGMediaRecorderRecordUI.class);
                         MainActivity.this.startActivity(intent);
                         break;
                     case "混音":
                         intent = new Intent(MainActivity.this, ZGMixingDemoUI.class);
                         MainActivity.this.startActivity(intent);
                         break;
-                    case "混流":
+                    case "多路混流":
                         intent = new Intent(MainActivity.this, ZGMixStreamRoomListUI.class);
                         MainActivity.this.startActivity(intent);
                         break;
@@ -113,18 +113,18 @@ public class MainActivity extends BaseActivity {
                         intent = new Intent(MainActivity.this, ZGVideoRenderTypeUI.class);
                         MainActivity.this.startActivity(intent);
                         break;
-                    case "视频外部采集":
+                    case "自定义采集":
                         intent = new Intent(MainActivity.this, ZGVideoCaptureOriginUI.class);
                         MainActivity.this.startActivity(intent);
                         break;
-                    case "视频通话":
+                    case "多人视频通话":
                         intent = new Intent(MainActivity.this, VideoCommunicationMainUI.class);
                         MainActivity.this.startActivity(intent);
                         break;
                     case "直播连麦":
                         JoinLiveMainActivityUI.actionStart(MainActivity.this);
                         break;
-                    case "视频外部滤镜(FaceUnity)":
+                    case "自定义前处理-Face Unity":
                         VideoFilterMainUI.actionStart(MainActivity.this);
                         break;
 
@@ -140,35 +140,35 @@ public class MainActivity extends BaseActivity {
 
         // 添加模块
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("拉流").titleName("基础功能"));
+                .moduleName("推流").titleName("快速开始"));
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("推流"));
+                .moduleName("拉流"));
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("视频通话").titleName("常用功能"));
+                .moduleName("多人视频通话").titleName("常用功能"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("直播连麦"));
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("变声/混响/立体声").titleName("进阶功能"));
+                .moduleName("多路混流"));
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("音频频谱"));
-        mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("视频外部滤镜(FaceUnity)"));
+                .moduleName("媒体次要信息").titleName("进阶功能"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("媒体播放器"));
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("媒体边信息/媒体次要信息"));
+                .moduleName("本地媒体录制"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("分层编码"));
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("本地媒体录制"));
+                .moduleName("自定义前处理-Face Unity"));
+        mainAdapter.addModuleInfo(new ModuleInfo()
+                .moduleName("自定义采集"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("混音"));
         mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("混流"));
+                .moduleName("变声/混响/立体声"));
+        mainAdapter.addModuleInfo(new ModuleInfo()
+                .moduleName("声浪/音频频谱"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("视频外部渲染"));
-        mainAdapter.addModuleInfo(new ModuleInfo()
-                .moduleName("视频外部采集"));
 
     }
 

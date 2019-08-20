@@ -6,4 +6,8 @@
     <color name="gray">#DCDCDC</color>
     <color name="blue">#2da1dc</color>
     <color name="red">#DC143C</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="text_disable">#bdbdbd</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="bg_gray">#b8b8b8</color>
 </resources>

@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.zego.common.ZGManager;
 import com.zego.common.util.AppLogger;
+import com.zego.common.util.ZegoUtil;
 import com.zego.zegoliveroom.ZegoLiveRoom;
 import com.zego.zegoliveroom.callback.IZegoInitSDKCompletionCallback;
 import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
@@ -66,7 +67,7 @@ public class ZGVideoCommunicationHelper {
 
     public void initZGVideoCommunicationHelper(){
         // 在进入当前Activity之后马上初始化SDK
-        ZGVideoCommunicationHelper.sharedInstance().initZegoSDK(ZGManager.appId, ZGManager.appSign, true);
+        ZGVideoCommunicationHelper.sharedInstance().initZegoSDK(ZegoUtil.getAppID(), ZegoUtil.getAppSign(), ZegoUtil.getIsTestEnv());
 
     }
 

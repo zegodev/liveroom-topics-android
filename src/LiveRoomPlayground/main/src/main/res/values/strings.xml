@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">互动视频示例</string>
-    <string name="tx_version">版本</string>
+    <string name="tx_setting">设置</string>
     <string name="tx_copyed">已复制</string>
+    <string name="tx_save">保存</string>
+    <string name="tx_appid">AppID：</string>
+    <string name="tx_appsign">AppSign：</string>
+    <string name="tx_env">环境（请选择与AppID对应的环境）</string>
 </resources>
