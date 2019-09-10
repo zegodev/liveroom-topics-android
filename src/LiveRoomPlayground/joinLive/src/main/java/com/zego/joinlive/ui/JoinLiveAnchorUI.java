@@ -508,11 +508,6 @@ public class JoinLiveAnchorUI extends BaseActivity {
             }
 
             @Override
-            public void onRecvConversationMessage(String s, String s1, ZegoConversationMessage zegoConversationMessage) {
-
-            }
-
-            @Override
             public void onUpdateOnlineCount(String s, int i) {
 
             }

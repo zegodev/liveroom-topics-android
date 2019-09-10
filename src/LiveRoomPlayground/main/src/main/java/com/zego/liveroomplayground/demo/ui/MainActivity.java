@@ -127,6 +127,9 @@ public class MainActivity extends BaseActivity {
                     case "自定义前处理-Face Unity":
                         VideoFilterMainUI.actionStart(MainActivity.this);
                         break;
+                    case "webRTC":
+                        jumpWebRtc();
+                        break;
 
                 }
             }
@@ -169,6 +172,8 @@ public class MainActivity extends BaseActivity {
                 .moduleName("声浪/音频频谱"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("视频外部渲染"));
+        mainAdapter.addModuleInfo(new ModuleInfo()
+                .moduleName("webRTC"));
 
     }
 
@@ -183,5 +188,9 @@ public class MainActivity extends BaseActivity {
 
     public void jumpDoc(View view) {
         WebActivity.actionStart(this, " https://doc.zego.im/CN/303.html", ((TextView) view).getText().toString());
+    }
+
+    public void jumpWebRtc() {
+        WebActivity.actionStart(this, "https://bansheehannibal.github.io/webrtcDemo/", "WebRtc");
     }
 }
