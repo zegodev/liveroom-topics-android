@@ -4,7 +4,7 @@
 ### [推流](https://github.com/zegodev/liveroom-topics-android/tree/master/src/LiveRoomPlayground/publish)  
 ### [拉流](https://github.com/zegodev/liveroom-topics-android/tree/master/src/LiveRoomPlayground/play)  
 ## 常用功能  
-### [多人视频通话](https://github.com/zegodev/liveroom-topics-android/tree/master/src/LiveRoomPlayground/videoCommunicaton=)  
+### [多人视频通话](https://github.com/zegodev/liveroom-topics-android/tree/master/src/LiveRoomPlayground/videoCommunicaton)  
 ## 进阶功能  
 ### [变声/混响/立体声](https://github.com/zegodev/liveroom-topics-android/tree/master/src/LiveRoomPlayground/soundProcessing)
 ### [音频频谱与声浪](https://github.com/zegodev/liveroom-topics-android/tree/master/src/LiveRoomPlayground/frequencySpectrum)
