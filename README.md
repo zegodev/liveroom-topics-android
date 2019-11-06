@@ -1,5 +1,7 @@
 # liveroom-topics-android
 
+> 国内用户推荐去码云下载，速度更快 [https://gitee.com/zegodev/liveroom-topics-android.git](https://gitee.com/zegodev/liveroom-topics-android.git)
+
 ## 快速开始  
 ### [推流](https://github.com/zegodev/liveroom-topics-android/tree/master/src/LiveRoomPlayground/publish)  
 ### [拉流](https://github.com/zegodev/liveroom-topics-android/tree/master/src/LiveRoomPlayground/play)  
