@@ -276,7 +276,7 @@ public class JoinLiveAnchorUI extends BaseActivity {
         // 设置房间回调监听
         ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().setZegoRoomCallback(new IZegoRoomCallback() {
             @Override
-            public void onKickOut(int reason, String roomID) {
+            public void onKickOut(int reason, String roomID, String customReason) {
 
             }
 

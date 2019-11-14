@@ -82,7 +82,7 @@ public class ZGBaseHelper {
      *                    注意!!!  1. SDK 会优先使用 APK 自带的 libzegoliveroom.so；
      *                    2. 目前只支持本地文件路径，不支持网络路径；
      *                    3. 请确保文件有可读权限。
-     * @param logFileSize 日志文件大小，必须在 [5M, 100M] 之间。当返回 0 时，取默认大小 5M
+     * @param logFileSize 日志文件大小，必须在 [5M, 100M] 之间。设置 0 则不存储日志。
      * @param application android上下文.
      */
     public void setSDKContextEx(String userID, String userName, final String logPath, final String soFullPath, final long logFileSize, final Application application) {
@@ -258,13 +258,13 @@ public class ZGBaseHelper {
          */
         zegoLiveRoom.setZegoRoomCallback(new IZegoRoomCallback() {
             @Override
-            public void onKickOut(int reason, String roomID) {
+            public void onKickOut(int reason, String roomID, String customReason) {
                 AppLogger.getInstance().i(ZGBaseHelper.class, "您已被踢出房间 reason : %d, roomID : %s", reason, roomID);
                 // 原因，16777219 表示该账户多点登录被踢出，16777220 表示该账户是被手动踢出，16777221 表示房间会话错误被踢出
                 // 注意!!! 业务侧确保分配的userID保持唯一，不然会造成互相抢占。
 
                 if (roomCallback != null) {
-                    roomCallback.onKickOut(reason, roomID);
+                    roomCallback.onKickOut(reason, roomID, customReason);
                 }
             }
 

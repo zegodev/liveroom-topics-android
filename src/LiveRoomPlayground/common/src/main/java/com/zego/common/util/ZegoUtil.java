@@ -24,6 +24,9 @@ public class ZegoUtil {
      * @throws NumberFormatException
      */
     public static byte[] parseSignKeyFromString(String strSignKey) throws NumberFormatException {
+        // 解决客户有可能直接拷贝邮件上的appSign导致错误的问题。
+        strSignKey = strSignKey.replaceAll("\\(byte\\)", "");
+
         String[] keys = strSignKey.split(",");
         if (keys.length != 32) {
             AppLogger.getInstance().i(ZegoUtil.class, "appSign 格式非法");

@@ -122,7 +122,7 @@ public class PlayActivityUI extends BaseActivity {
         // 设置SDK 房间代理回调。业务侧希望检查当前房间有流更新了，会去自动重新拉流。
         ZGBaseHelper.sharedInstance().setZegoRoomCallback(new IZegoRoomCallback() {
             @Override
-            public void onKickOut(int i, String s) {
+            public void onKickOut(int reason, String roomID, String customReason) {
 
             }
 

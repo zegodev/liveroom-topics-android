@@ -300,7 +300,7 @@ public class ZGVideoCommunicationHelper {
              * @param roomID 房间id
              */
             @Override
-            public void onKickOut(int reason, String roomID) {
+            public void onKickOut(int reason, String roomID, String customReason) {
                 AppLogger.getInstance().i(ZGVideoCommunicationHelper.class, "您已被踢出房间 reason : %d, roomID : %s", reason, roomID);
                 // 原因，16777219 表示该账户多点登录被踢出，16777220 表示该账户是被手动踢出，16777221 表示房间会话错误被踢出
                 // 注意!!! 业务侧确保分配的userID保持唯一，不然会造成互相抢占。

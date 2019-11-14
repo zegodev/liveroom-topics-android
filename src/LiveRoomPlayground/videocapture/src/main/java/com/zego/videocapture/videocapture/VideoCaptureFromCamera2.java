@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 
+import com.zego.common.util.AppLogger;
 import com.zego.videocapture.ve_gl.EglBase;
 import com.zego.videocapture.ve_gl.EglBase14;
 import com.zego.videocapture.ve_gl.GlRectDrawer;
@@ -456,7 +457,11 @@ public class VideoCaptureFromCamera2 extends ZegoVideoCaptureDevice implements
         for (int i = 0; i < nCnt; i++) {
             Camera.getCameraInfo(i, mCamInfo);
             if (mCamInfo.facing == nFacing) {
-                mCam = Camera.open(i);
+                try {
+                    mCam = Camera.open(i);
+                } catch (RuntimeException e) {
+                    mCam = null;
+                }
                 break;
             }
         }
@@ -468,6 +473,7 @@ public class VideoCaptureFromCamera2 extends ZegoVideoCaptureDevice implements
             mCam = Camera.open();
 
             if (mCam == null) {
+                AppLogger.getInstance().e(VideoCaptureFromCamera2.class, "open camera failed, please check system camera status!");
                 Log.i(TAG, "[ERROR] no camera found\n");
                 return -1;
             }
@@ -480,6 +486,10 @@ public class VideoCaptureFromCamera2 extends ZegoVideoCaptureDevice implements
         Camera.Parameters parms = mCam.getParameters();
         // 获取camera首选的size
         Camera.Size psz = parms.getPreferredPreviewSizeForVideo();
+
+        if (psz == null) {
+            psz = mCam.new Size(640, 480);
+        }
 
         // 设置camera的采集视图size
         parms.setPreviewSize(psz.width, psz.height);

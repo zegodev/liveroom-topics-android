@@ -536,7 +536,11 @@ public class VideoCaptureFromImage2 extends ZegoVideoCaptureDevice
     private void releasePreviewSurface() {
         if (previewEglBase.hasSurface()) {
             // 绑定eglContext、eglDisplay、eglSurface
-            previewEglBase.makeCurrent();
+            try {
+                previewEglBase.makeCurrent();
+            } catch (RuntimeException e) {
+                return;
+            }
 
             if (mBitmapTextureId != 0) {
                 int[] textures = new int[]{mBitmapTextureId};

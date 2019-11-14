@@ -357,7 +357,7 @@ public class ZGAudienceUI extends AppCompatActivity implements IZegoLivePlayerCa
     }
 
     @Override
-    public void onKickOut(int i, String s) {
+    public void onKickOut(int reason, String roomID, String customReason) {
 
     }
 

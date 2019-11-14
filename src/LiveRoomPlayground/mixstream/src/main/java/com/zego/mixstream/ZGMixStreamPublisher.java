@@ -234,7 +234,7 @@ public class ZGMixStreamPublisher implements IZegoLivePublisherCallback, IZegoLi
 
     // 房间回调
     @Override
-    public void onKickOut(int i, String s) {
+    public void onKickOut(int reason, String roomID, String customReason) {
 
     }
 

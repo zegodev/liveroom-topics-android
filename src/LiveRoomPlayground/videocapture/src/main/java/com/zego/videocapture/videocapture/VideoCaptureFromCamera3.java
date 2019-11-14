@@ -16,7 +16,9 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
+import android.widget.Toast;
 
+import com.zego.common.util.AppLogger;
 import com.zego.zegoavkit2.ZegoVideoCaptureDevice;
 
 import java.io.IOException;
@@ -334,7 +336,11 @@ public class VideoCaptureFromCamera3 extends ZegoVideoCaptureDevice implements C
         for (int i = 0; i < nCnt; i++) {
             Camera.getCameraInfo(i, mCamInfo);
             if (mCamInfo.facing == nFacing) {
-                mCam = Camera.open(i);
+                try {
+                    mCam = Camera.open(i);
+                } catch (RuntimeException e) {
+                    mCam = null;
+                }
                 break;
             }
         }
@@ -346,6 +352,7 @@ public class VideoCaptureFromCamera3 extends ZegoVideoCaptureDevice implements C
             mCam = Camera.open();
 
             if (mCam == null) {
+                AppLogger.getInstance().e(VideoCaptureFromCamera3.class, "open camera failed, please check system camera status!");
                 Log.i(TAG, "[ERROR] no camera found\n");
                 return -1;
             }
@@ -353,12 +360,10 @@ public class VideoCaptureFromCamera3 extends ZegoVideoCaptureDevice implements C
 
         boolean bSizeSet = false;
         Camera.Parameters parms = mCam.getParameters();
-        // 获取camera首选的size
-        Camera.Size psz = parms.getPreferredPreviewSizeForVideo();
 
         // hardcode
-        psz.width = 640;
-        psz.height = 480;
+        Camera.Size psz = mCam.new Size(640, 480);
+
         // 设置camera的采集视图size
         parms.setPreviewSize(psz.width, psz.height);
         mWidth = psz.width;

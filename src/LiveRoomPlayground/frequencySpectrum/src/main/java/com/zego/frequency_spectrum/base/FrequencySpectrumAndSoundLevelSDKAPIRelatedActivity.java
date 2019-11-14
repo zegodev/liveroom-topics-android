@@ -127,7 +127,7 @@ public class FrequencySpectrumAndSoundLevelSDKAPIRelatedActivity extends Frequen
         // 设置房间相关回调
         ZGBaseHelper.sharedInstance().setZegoRoomCallback(new IZegoRoomCallback() {
             @Override
-            public void onKickOut(int i, String s) {
+            public void onKickOut(int reason, String roomID, String customReason) {
 
             }
 

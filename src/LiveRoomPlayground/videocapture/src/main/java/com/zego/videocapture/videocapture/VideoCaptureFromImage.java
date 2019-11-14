@@ -598,19 +598,6 @@ public class VideoCaptureFromImage extends ZegoVideoCaptureDevice
 
     // 释放绘制相关类
     private void release() {
-        // 销毁传递给ZEGO SDK的surface
-        releaseCaptureSurface();
-
-        if (captureDrawer != null) {
-            captureDrawer.release();
-            captureDrawer = null;
-        }
-
-        if (captureEglBase != null) {
-            captureEglBase.release();
-            captureEglBase = null;
-        }
-
         // 销毁用于屏幕显示的surface
         releasePreviewSurface();
 
@@ -622,6 +609,19 @@ public class VideoCaptureFromImage extends ZegoVideoCaptureDevice
         if (previewEglBase != null) {
             previewEglBase.release();
             previewEglBase = null;
+        }
+
+        // 销毁传递给ZEGO SDK的surface
+        releaseCaptureSurface();
+
+        if (captureDrawer != null) {
+            captureDrawer.release();
+            captureDrawer = null;
+        }
+
+        if (captureEglBase != null) {
+            captureEglBase.release();
+            captureEglBase = null;
         }
     }
 

@@ -364,7 +364,6 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoVideoRen
     // IZegoVideoRenderCallback (渲染数据)回调监听
     @Override
     public void onVideoRenderCallback(VideoFrame videoFrame, VideoPixelFormat videoPixelFormat, String streamID) {
-        Log.e("test","**** 渲染 Callback, " + videoPixelFormat);
         getFrameMap().put(streamID, videoFrame);
     }
 
