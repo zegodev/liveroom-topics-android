@@ -429,6 +429,7 @@ public class Renderer implements TextureView.SurfaceTextureListener {
         return yuvTextures;
     }
 
+    // 源码请查看 main/cpp/CutPlane.cpp
     // 根据stride裁剪plane
     public native void copyPlane(ByteBuffer src, int srcStride, ByteBuffer dst, int dstStride, int width, int height);
 

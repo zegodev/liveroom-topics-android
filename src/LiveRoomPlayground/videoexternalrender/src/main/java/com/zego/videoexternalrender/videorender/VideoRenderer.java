@@ -372,6 +372,10 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoVideoRen
 
     }
 
+    public void setRotation(String s, int i) {
+
+    }
+
     // IZegoVideoDecodeCallback (码流数据)回调监听
     @Override
     public void onVideoDecodeCallback(EncodedVideoFrame encodedVideoFrame, String streamID) {

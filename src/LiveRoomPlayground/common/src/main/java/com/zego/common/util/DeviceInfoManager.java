@@ -313,11 +313,9 @@ public class DeviceInfoManager {
 
             cpuUsage = Float.valueOf(cpuUsageStr) / (Float.valueOf(cpuNumberStr) / 100);
 
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             // 赋予默认值
             ex.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
 
 

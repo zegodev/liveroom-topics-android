@@ -1,11 +1,8 @@
 package com.zego.videofilter.videoFilter;
 
 import android.graphics.SurfaceTexture;
-import android.opengl.GLES20;
 
 import com.zego.videofilter.faceunity.FURenderer;
-import com.zego.videofilter.videoFilter.ve_gl.GlRectDrawer;
-import com.zego.videofilter.videoFilter.ve_gl.GlUtil;
 import com.zego.zegoavkit2.videofilter.ZegoVideoFilter;
 
 import java.nio.ByteBuffer;
@@ -28,16 +25,7 @@ public class VideoFilterGlTexture2dDemo extends ZegoVideoFilter {
     // faceunity 美颜处理类
     private FURenderer mFURenderer;
 
-    private GlRectDrawer mDrawer;
-    private int mTextureId = 0;
-    private int mFrameBufferId = 0;
-    private float[] transformationMatrix = new float[]{1.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f};
-
-    private int mWidth = 0;
-    private int mHeight = 0;
+    private boolean needDropFrame = true;
 
     public VideoFilterGlTexture2dDemo(FURenderer fuRenderer){
         this.mFURenderer = fuRenderer;
@@ -52,13 +40,9 @@ public class VideoFilterGlTexture2dDemo extends ZegoVideoFilter {
      */
     @Override
     protected void allocateAndStart(Client client) {
-        mClient = client;
+        needDropFrame = true;
 
-        mWidth = mHeight = 0;
-        // 创建绘制图像的 drawer
-        if (mDrawer == null) {
-            mDrawer = new GlRectDrawer();
-        }
+        mClient = client;
 
         // 创建及初始化 faceunity 相应的资源
         mFURenderer.onSurfaceCreated();
@@ -70,23 +54,6 @@ public class VideoFilterGlTexture2dDemo extends ZegoVideoFilter {
      */
     @Override
     protected void stopAndDeAllocate() {
-        if (mTextureId != 0) {
-            int[] textures = new int[]{mTextureId};
-            GLES20.glDeleteTextures(1, textures, 0);
-            mTextureId = 0;
-        }
-
-        if (mFrameBufferId != 0) {
-            int[] frameBuffers = new int[]{mFrameBufferId};
-            GLES20.glDeleteFramebuffers(1, frameBuffers, 0);
-            mFrameBufferId = 0;
-        }
-
-        if (mDrawer != null) {
-            mDrawer.release();
-            mDrawer = null;
-        }
-
         // 销毁 faceunity 相关的资源
         mFURenderer.onSurfaceDestroyed();
 
@@ -135,15 +102,17 @@ public class VideoFilterGlTexture2dDemo extends ZegoVideoFilter {
     @Override
     protected void onProcessCallback(int zegoTextureId, int width, int height, long timestamp_100n) {
 
-        // 传入 SDK 抛出的采集数据的纹理 ID 使用 faceunity 进行美颜，返回美颜后数据的纹理 ID
-        int textureId = mFURenderer.onDrawFrame(zegoTextureId, width, height);
+        // 首帧需要直接使用 ZEGO 显示，但需要将纹理传给FU，保证FU将脏数据处理掉
+        if (needDropFrame) {
+            mClient.onProcessCallback(zegoTextureId, width, height, timestamp_100n);
+            mFURenderer.onDrawFrame(zegoTextureId, width, height);
+            needDropFrame = true;
+        } else {  // 后续的就可以按照正常的方式进行处理
+            // 传入 SDK 抛出的采集数据的纹理 ID 使用 faceunity 进行美颜，返回美颜后数据的纹理 ID
+            int textureId = mFURenderer.onDrawFrame(zegoTextureId, width, height);
 
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-        // 此处使用美颜后的 textureId 进行绘制，SDK 会调用此滤镜的 onProcessCallback 方法（拉该条流时是美颜后的视频）
-        mDrawer.drawRgb(textureId, transformationMatrix,
-                        width, height, 0, 0, width, height);
-
-        // 使用此 textureId 用做本地预览的视图渲染
-        mClient.onProcessCallback(textureId, width, height, timestamp_100n);
+            // 使用此 textureId 用做本地预览的视图渲染
+            mClient.onProcessCallback(textureId, width, height, timestamp_100n);
+        }
     }
 }

@@ -1,12 +1,8 @@
 package com.zego.videofilter.videoFilter;
 
-import android.util.Log;
-
 import com.zego.videofilter.faceunity.FURenderer;
 import com.zego.zegoavkit2.videofilter.ZegoVideoFilter;
 import com.zego.zegoavkit2.videofilter.ZegoVideoFilterFactory;
-
-import java.util.logging.Level;
 
 /**
  * Created by robotding on 16/12/3.
@@ -20,7 +16,7 @@ public class VideoFilterFactoryDemo extends ZegoVideoFilterFactory {
     private FURenderer mFunRender;
 
     // 前处理传递数据的类型枚举
-    public enum FilterType{
+    public enum FilterType {
         FilterType_Mem,
         FilterType_SurfaceTexture,
         FilterType_HybridMem,
@@ -28,7 +24,7 @@ public class VideoFilterFactoryDemo extends ZegoVideoFilterFactory {
         FilterType_ASYNCI420Mem
     }
 
-    public VideoFilterFactoryDemo(FilterType type, FURenderer fuRenderer){
+    public VideoFilterFactoryDemo(FilterType type, FURenderer fuRenderer) {
         this.type = type;
         this.mFunRender = fuRenderer;
     }
