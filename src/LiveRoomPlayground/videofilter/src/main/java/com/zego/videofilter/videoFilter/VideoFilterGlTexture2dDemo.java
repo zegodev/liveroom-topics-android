@@ -106,7 +106,7 @@ public class VideoFilterGlTexture2dDemo extends ZegoVideoFilter {
         if (needDropFrame) {
             mClient.onProcessCallback(zegoTextureId, width, height, timestamp_100n);
             mFURenderer.onDrawFrame(zegoTextureId, width, height);
-            needDropFrame = true;
+            needDropFrame = false;
         } else {  // 后续的就可以按照正常的方式进行处理
             // 传入 SDK 抛出的采集数据的纹理 ID 使用 faceunity 进行美颜，返回美颜后数据的纹理 ID
             int textureId = mFURenderer.onDrawFrame(zegoTextureId, width, height);
