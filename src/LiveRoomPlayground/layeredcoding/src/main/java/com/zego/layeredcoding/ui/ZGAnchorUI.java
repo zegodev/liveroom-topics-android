@@ -21,15 +21,15 @@ import com.zego.zegoliveroom.callback.IZegoLoginCompletionCallback;
 import com.zego.zegoliveroom.callback.IZegoRoomCallback;
 import com.zego.zegoliveroom.constants.ZegoConstants;
 import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
-import com.zego.zegoliveroom.entity.AuxData;
 import com.zego.zegoliveroom.entity.ZegoPlayStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
-//import com.zego.zegoliveroom.entity.ZegoStreamQuality;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+//import com.zego.zegoliveroom.entity.ZegoStreamQuality;
 
 
 public class ZGAnchorUI extends AppCompatActivity implements IZegoLivePublisherCallback, IZegoLivePlayerCallback, IZegoRoomCallback {
@@ -252,17 +252,7 @@ public class ZGAnchorUI extends AppCompatActivity implements IZegoLivePublisherC
     }
 
     @Override
-    public AuxData onAuxCallback(int i) {
-        return null;
-    }
-
-    @Override
     public void onCaptureVideoSizeChangedTo(int i, int i1) {
-
-    }
-
-    @Override
-    public void onMixStreamConfigUpdate(int i, String s, HashMap<String, Object> hashMap) {
 
     }
 

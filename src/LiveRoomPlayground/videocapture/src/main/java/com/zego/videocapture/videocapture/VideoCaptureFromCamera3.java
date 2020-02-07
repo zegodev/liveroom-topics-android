@@ -1,22 +1,15 @@
 package com.zego.videocapture.videocapture;
 
 import android.annotation.TargetApi;
-import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.media.MediaCodec;
-import android.media.MediaCodecInfo;
-import android.media.MediaCodecList;
-import android.media.MediaFormat;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
-import android.widget.Toast;
 
 import com.zego.common.util.AppLogger;
 import com.zego.zegoavkit2.ZegoVideoCaptureDevice;
@@ -610,7 +603,6 @@ public class VideoCaptureFromCamera3 extends ZegoVideoCaptureDevice implements C
             // 编码完成
             if (transferInfo != null) {
                 if (mEncodedBuffer != null && transferInfo.inOutData.length > mEncodedBuffer.capacity()) {
-
                     mEncodedBuffer = ByteBuffer.allocateDirect(transferInfo.inOutData.length);
                 }
 

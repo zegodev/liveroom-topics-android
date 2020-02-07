@@ -1,7 +1,9 @@
 package com.zego.mixing;
 
 import android.util.Log;
-import com.zego.zegoliveroom.entity.AuxData;
+
+import com.zego.zegoavkit2.audioaux.ZegoAudioAux;
+import com.zego.zegoavkit2.entities.AuxDataEx;
 
 import org.jaudiotagger.audio.mp3.MP3AudioHeader;
 import org.jaudiotagger.audio.mp3.MP3File;
@@ -13,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.BitstreamException;
@@ -29,10 +32,7 @@ public class ZGMixingDemo {
     private int mBitRate;
 
     private static ZGMixingDemo zgMixingDemo = null;
-
-    private ZGMixingDemo() {
-
-    }
+    private ZegoAudioAux mZegoAudioAux = null;
 
     public static ZGMixingDemo sharedInstance(){
         if (zgMixingDemo == null){
@@ -45,38 +45,60 @@ public class ZGMixingDemo {
         return zgMixingDemo;
     }
 
+    public ZegoAudioAux getZegoAudioAux() {
+        if (mZegoAudioAux == null) {
+            mZegoAudioAux = new ZegoAudioAux();
+        }
+        return mZegoAudioAux;
+    }
+
     // 处理混音传递pcm数据给SDK
     protected InputStream mBackgroundMusic = null;
 
-    public AuxData handleAuxCallback(String pcmFilePath, int exceptDataLength) {
+    private byte[] dataBuf = new byte[1];
+    private ByteBuffer mPcmBuffer = ByteBuffer.allocateDirect(1);
 
-        AuxData auxData = new AuxData();
-        auxData.dataBuf = new byte[exceptDataLength];
+    public AuxDataEx handleAuxCallback(String pcmFilePath, int exceptDataLength) {
+
+        if (dataBuf.length < exceptDataLength) {
+            dataBuf = new byte[exceptDataLength];
+        }
+        if (mPcmBuffer.capacity() < exceptDataLength) {
+            mPcmBuffer = ByteBuffer.allocateDirect(exceptDataLength);
+        }
+        mPcmBuffer.clear();
+
+        AuxDataEx auxDataEx = new AuxDataEx();
 
         try {
 
             if (mBackgroundMusic == null) {
                 if (!pcmFilePath.equals("")) {
-
                     mBackgroundMusic = new FileInputStream(pcmFilePath);
                 }
             }
 
-            int len = mBackgroundMusic.read(auxData.dataBuf);
+            int len = mBackgroundMusic.read(dataBuf);
 
-            if (len <= 0) {
+            if (len > 0) {
+                mPcmBuffer.put(dataBuf,0,exceptDataLength);
+                auxDataEx.auxDataBuf = mPcmBuffer;
+                auxDataEx.auxDataBufLen = len;
+            } else {
                 // 歌曲播放完毕
                 mBackgroundMusic.close();
                 mBackgroundMusic = null;
+                auxDataEx.auxDataBuf = mPcmBuffer;
+                auxDataEx.auxDataBufLen = 0;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        auxData.channelCount = mChannels;
-        auxData.sampleRate = mSampleRate;
+        auxDataEx.channelCount = mChannels;
+        auxDataEx.sampleRate = mSampleRate;
 
-        return auxData;
+        return auxDataEx;
     }
 
     // mp3格式转pcm

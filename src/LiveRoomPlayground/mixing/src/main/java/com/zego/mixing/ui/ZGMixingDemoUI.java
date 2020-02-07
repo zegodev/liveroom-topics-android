@@ -13,12 +13,13 @@ import com.zego.common.ui.BaseActivity;
 import com.zego.mediaplayer.ZGMediaPlayerDemoHelper;
 import com.zego.mixing.R;
 import com.zego.mixing.ZGMixingDemo;
+import com.zego.zegoavkit2.audioaux.IZegoAudioAuxCallbackEx;
+import com.zego.zegoavkit2.entities.AuxDataEx;
 import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
 import com.zego.zegoliveroom.callback.IZegoLoginCompletionCallback;
 import com.zego.zegoliveroom.constants.ZegoAvConfig;
 import com.zego.zegoliveroom.constants.ZegoConstants;
 import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
-import com.zego.zegoliveroom.entity.AuxData;
 import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
 
@@ -87,9 +88,9 @@ public class ZGMixingDemoUI extends BaseActivity implements IZegoLivePublisherCa
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                 // 是否启用混音
                 if (checked) {
-                    ZGManager.sharedInstance().api().enableAux(true);
+                    ZGMixingDemo.sharedInstance().getZegoAudioAux().enableAux(true);
                 } else {
-                    ZGManager.sharedInstance().api().enableAux(false);
+                    ZGMixingDemo.sharedInstance().getZegoAudioAux().enableAux(false);
                 }
             }
         });
@@ -111,6 +112,9 @@ public class ZGMixingDemoUI extends BaseActivity implements IZegoLivePublisherCa
                     ZGManager.sharedInstance().api().setPreviewViewMode(ZegoVideoViewMode.ScaleAspectFill);
                     ZGManager.sharedInstance().api().startPreview();
 
+                    // 设置混音回调监听
+                    ZGMixingDemo.sharedInstance().getZegoAudioAux().setZegoAuxCallbackEx(auxCallbackEx);
+
                 } else {
                     mErrorTxt.setText("login room fail, err: " + errorcode);
                 }
@@ -127,6 +131,7 @@ public class ZGMixingDemoUI extends BaseActivity implements IZegoLivePublisherCa
         convertThread = null;
 
         if (isLoginRoomSuccess) {
+            ZGMixingDemo.sharedInstance().getZegoAudioAux().setZegoAuxCallbackEx(null);
             ZGManager.sharedInstance().api().setZegoLivePublisherCallback(null);
             ZGManager.sharedInstance().api().logoutRoom();
         }
@@ -185,19 +190,8 @@ public class ZGMixingDemoUI extends BaseActivity implements IZegoLivePublisherCa
 
     }
 
-    // 混音回调
-    @Override
-    public AuxData onAuxCallback(int dataLen) {
-        return ZGMixingDemo.sharedInstance().handleAuxCallback(mPCMFilePath,dataLen);
-    }
-
     @Override
     public void onCaptureVideoSizeChangedTo(int i, int i1) {
-
-    }
-
-    @Override
-    public void onMixStreamConfigUpdate(int i, String s, HashMap<String, Object> hashMap) {
 
     }
 
@@ -210,4 +204,11 @@ public class ZGMixingDemoUI extends BaseActivity implements IZegoLivePublisherCa
     public void onCaptureAudioFirstFrame() {
         // 当SDK音频采集设备捕获到第一帧时会回调该方法
     }
+
+    private IZegoAudioAuxCallbackEx auxCallbackEx = new IZegoAudioAuxCallbackEx() {
+        @Override
+        public AuxDataEx onAuxCallback(int dataLen) {
+            return ZGMixingDemo.sharedInstance().handleAuxCallback(mPCMFilePath,dataLen);
+        }
+    };
 }

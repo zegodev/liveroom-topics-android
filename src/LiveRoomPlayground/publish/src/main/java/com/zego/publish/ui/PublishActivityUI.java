@@ -105,23 +105,9 @@ public class PublishActivityUI extends BaseActivity {
             }
 
             @Override
-            public AuxData onAuxCallback(int i) {
-                // aux混音，可以将外部音乐混进推流中。类似于直播中添加伴奏，掌声等音效
-                // 另外还能用于ktv场景中的伴奏播放
-                // 想深入了解可以进入进阶功能中的-mixing。
-                // <a>https://doc.zego.im/CN/253.html</a> 文档中有说明
-                return null;
-            }
-
-            @Override
             public void onCaptureVideoSizeChangedTo(int width, int height) {
                 // 当采集时分辨率有变化时，sdk会回调该方法
                 streamQuality.setResolution(String.format("分辨率: %dX%d", width, height));
-            }
-
-            @Override
-            public void onMixStreamConfigUpdate(int i, String s, HashMap<String, Object> hashMap) {
-                // 混流配置更新时会回调该方法。
             }
 
             @Override

@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewStub;
 import android.widget.Toast;
 
-import com.zego.common.ZGManager;
 import com.zego.common.util.AppLogger;
 import com.zego.common.util.ZegoUtil;
 import com.zego.common.widgets.CustomDialog;
@@ -28,7 +27,6 @@ import com.zego.zegoliveroom.callback.IZegoLoginCompletionCallback;
 import com.zego.zegoliveroom.constants.ZegoAvConfig;
 import com.zego.zegoliveroom.constants.ZegoConstants;
 import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
-import com.zego.zegoliveroom.entity.AuxData;
 import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
 
@@ -246,17 +244,7 @@ public class FUBeautyActivity extends AppCompatActivity implements FURenderer.On
             }
 
             @Override
-            public AuxData onAuxCallback(int i) {
-                return null;
-            }
-
-            @Override
             public void onCaptureVideoSizeChangedTo(int i, int i1) {
-
-            }
-
-            @Override
-            public void onMixStreamConfigUpdate(int i, String s, HashMap<String, Object> hashMap) {
 
             }
 

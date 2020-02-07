@@ -3,18 +3,18 @@ package com.zego.mediaplayer;
 import android.annotation.SuppressLint;
 import android.content.Context;
 
-import com.zego.common.util.DeviceInfoManager;
 import com.zego.common.ZGManager;
+import com.zego.common.util.DeviceInfoManager;
 import com.zego.zegoliveroom.ZegoLiveRoom;
 import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
 import com.zego.zegoliveroom.callback.IZegoRoomCallback;
 import com.zego.zegoliveroom.constants.ZegoConstants;
-import com.zego.zegoliveroom.entity.AuxData;
 import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
-//import com.zego.zegoliveroom.entity.ZegoStreamQuality;
 
 import java.util.HashMap;
+
+//import com.zego.zegoliveroom.entity.ZegoStreamQuality;
 
 /**
  * Created by zego on 2018/10/17.
@@ -103,17 +103,7 @@ public class ZGMediaPlayerPublishingHelper implements IZegoLivePublisherCallback
 //    }
 
     @Override
-    public AuxData onAuxCallback(int i) {
-        return null;
-    }
-
-    @Override
     public void onCaptureVideoSizeChangedTo(int i, int i1) {
-
-    }
-
-    @Override
-    public void onMixStreamConfigUpdate(int i, String s, HashMap<String, Object> hashMap) {
 
     }
 

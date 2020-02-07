@@ -19,7 +19,6 @@ import com.zego.zegoliveroom.callback.IZegoLoginCompletionCallback;
 import com.zego.zegoliveroom.callback.IZegoResponseCallback;
 import com.zego.zegoliveroom.callback.IZegoRoomCallback;
 import com.zego.zegoliveroom.constants.ZegoConstants;
-import com.zego.zegoliveroom.entity.AuxData;
 import com.zego.zegoliveroom.entity.ZegoPlayStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
@@ -249,23 +248,8 @@ public class FrequencySpectrumAndSoundLevelSDKAPIRelatedActivity extends Frequen
             }
 
             @Override
-            public AuxData onAuxCallback(int i) {
-                // aux混音，可以将外部音乐混进推流中。类似于直播中添加伴奏，掌声等音效
-                // 另外还能用于ktv场景中的伴奏播放
-                // 想深入了解可以进入进阶功能中的-mixing。
-                // <a>https://doc.zego.im/CN/253.html</a> 文档中有说明
-                return null;
-            }
-
-            @Override
             public void onCaptureVideoSizeChangedTo(int width, int height) {
 
-            }
-
-            @Override
-            public void onMixStreamConfigUpdate(int i, String
-                    s, HashMap<String, Object> hashMap) {
-                // 混流配置更新时会回调该方法。
             }
 
             @Override

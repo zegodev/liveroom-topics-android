@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.view.TextureView;
 import android.view.View;
 
-import com.zego.common.ZGManager;
 import com.zego.common.util.AppLogger;
 import com.zego.common.util.ZegoUtil;
 import com.zego.zegoliveroom.ZegoLiveRoom;
@@ -16,7 +15,6 @@ import com.zego.zegoliveroom.callback.IZegoRoomCallback;
 import com.zego.zegoliveroom.constants.ZegoAvConfig;
 import com.zego.zegoliveroom.constants.ZegoConstants;
 import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
-import com.zego.zegoliveroom.entity.AuxData;
 import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
 
@@ -439,17 +437,7 @@ public class ZGVideoCommunicationHelper {
             }
 
             @Override
-            public AuxData onAuxCallback(int i) {
-                return null;
-            }
-
-            @Override
             public void onCaptureVideoSizeChangedTo(int i, int i1) {
-
-            }
-
-            @Override
-            public void onMixStreamConfigUpdate(int i, String s, HashMap<String, Object> hashMap) {
 
             }
 

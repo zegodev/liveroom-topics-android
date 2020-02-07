@@ -1,18 +1,17 @@
 package com.zego.videoexternalrender.ui;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.zego.common.util.DeviceInfoManager;
 import com.zego.common.ZGManager;
+import com.zego.common.util.DeviceInfoManager;
 import com.zego.videoexternalrender.R;
 import com.zego.videoexternalrender.videorender.VideoRenderer;
-import com.zego.zegoavkit2.videorender.VideoRenderType;
 import com.zego.zegoavkit2.videorender.ZegoExternalVideoRender;
 import com.zego.zegoliveroom.callback.IZegoLivePlayerCallback;
 import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
@@ -20,7 +19,6 @@ import com.zego.zegoliveroom.callback.IZegoLoginCompletionCallback;
 import com.zego.zegoliveroom.constants.ZegoAvConfig;
 import com.zego.zegoliveroom.constants.ZegoConstants;
 import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
-import com.zego.zegoliveroom.entity.AuxData;
 import com.zego.zegoliveroom.entity.ZegoPlayStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
@@ -210,17 +208,7 @@ public class ZGVideoRenderUI extends AppCompatActivity implements IZegoLivePubli
     }
 
     @Override
-    public AuxData onAuxCallback(int i) {
-        return null;
-    }
-
-    @Override
     public void onCaptureVideoSizeChangedTo(int i, int i1) {
-
-    }
-
-    @Override
-    public void onMixStreamConfigUpdate(int i, String s, HashMap<String, Object> hashMap) {
 
     }
 

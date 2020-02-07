@@ -13,8 +13,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.zego.common.util.DeviceInfoManager;
 import com.zego.common.ZGManager;
+import com.zego.common.util.DeviceInfoManager;
 import com.zego.layeredcoding.R;
 import com.zego.layeredcoding.ZGLayeredCodingDemoHelper;
 import com.zego.zegoliveroom.callback.IZegoLivePlayerCallback;
@@ -24,15 +24,15 @@ import com.zego.zegoliveroom.callback.IZegoResponseCallback;
 import com.zego.zegoliveroom.callback.IZegoRoomCallback;
 import com.zego.zegoliveroom.constants.ZegoConstants;
 import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
-import com.zego.zegoliveroom.entity.AuxData;
 import com.zego.zegoliveroom.entity.ZegoPlayStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
-//import com.zego.zegoliveroom.entity.ZegoStreamQuality;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+//import com.zego.zegoliveroom.entity.ZegoStreamQuality;
 
 public class ZGAudienceUI extends AppCompatActivity implements IZegoLivePlayerCallback, IZegoLivePublisherCallback, IZegoRoomCallback {
 
@@ -332,17 +332,7 @@ public class ZGAudienceUI extends AppCompatActivity implements IZegoLivePlayerCa
 //    }
 
     @Override
-    public AuxData onAuxCallback(int i) {
-        return null;
-    }
-
-    @Override
     public void onCaptureVideoSizeChangedTo(int i, int i1) {
-
-    }
-
-    @Override
-    public void onMixStreamConfigUpdate(int i, String s, HashMap<String, Object> hashMap) {
 
     }
 
