@@ -99,6 +99,9 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
                 mEglContext = EglBase.create(mDummyContext.getEglBaseContext(), EglBase.CONFIG_RECORDABLE);
                 mIsEgl14 = EglBase14.isEGL14Supported();
 
+                // 创建及初始化 faceunity 相应的资源
+                mFuRender.onSurfaceCreated();
+
                 barrier.countDown();
             }
         });
@@ -107,9 +110,6 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        // 创建及初始化 faceunity 相应的资源
-        mFuRender.onSurfaceCreated();
     }
 
     /**
@@ -118,13 +118,14 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
      */
     @Override
     protected void stopAndDeAllocate() {
-        // 销毁 faceunity 相关的资源
-        mFuRender.onSurfaceDestroyed();
 
         final CountDownLatch barrier = new CountDownLatch(1);
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                // 销毁 faceunity 相关的资源
+                mFuRender.onSurfaceDestroyed();
+
                 release();
                 barrier.countDown();
             }
@@ -234,6 +235,8 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
 
         // 调用 faceunity 进行美颜，美颜后返回纹理 ID
         int textureID = mFuRender.onDrawOesFrame(mCopyTextureId, mOutputWidth, mInputHeight);
+
+        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
         // 绘制美颜数据

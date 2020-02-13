@@ -54,12 +54,12 @@ public class GlRectDrawer {
                     + "\n"
                     + "void main() {\n"
                     // CSC according to http://www.fourcc.org/fccyvrgb.php
-                    + "  float y = texture2D(y_tex, interp_tc).r;\n"
-                    + "  float u = texture2D(u_tex, interp_tc).r - 0.5;\n"
-                    + "  float v = texture2D(v_tex, interp_tc).r - 0.5;\n"
-                    + "  gl_FragColor = vec4(y + 1.403 * v, "
-                    + "                      y - 0.344 * u - 0.714 * v, "
-                    + "                      y + 1.77 * u, 1);\n"
+                    + "  float y = texture2D(y_tex, interp_tc).r * 1.16438;\n"
+                    + "  float u = texture2D(u_tex, interp_tc).r;\n"
+                    + "  float v = texture2D(v_tex, interp_tc).r;\n"
+                    + "  gl_FragColor = vec4(y + 1.59603 * v - 0.874202, "
+                    + "                      y - 0.391762 * u - 0.812968 * v + 0.531668, "
+                    + "                      y + 2.01723 * u - 1.08563, 1);\n"
                     + "}\n";
 
     private static final String RGB_FRAGMENT_SHADER_STRING =
