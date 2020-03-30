@@ -172,7 +172,7 @@ public class ZGMediaRecorderRecordUI extends BaseActivity {
         super.finish();
 
         // 置空录制回调监听
-        mMediaRecorder.setZegoMediaRecordCallback(null);
+        mMediaRecorder.setZegoMediaRecordCallback((IZegoMediaRecordCallback) null);
         // 销毁媒体录制类
         mMediaRecorder = null;
 

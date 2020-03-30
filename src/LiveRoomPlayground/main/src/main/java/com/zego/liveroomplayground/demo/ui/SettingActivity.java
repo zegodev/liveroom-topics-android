@@ -48,9 +48,7 @@ public class SettingActivity extends AppCompatActivity {
         binding.goBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 保存页面设置
-                saveSetting();
-                finish();
+                onBackPressed();
             }
         });
 
@@ -84,6 +82,13 @@ public class SettingActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        // 保存页面设置
+        saveSetting();
+        finish();
     }
 
     // 还原原设置参数
