@@ -1,0 +1,24 @@
+<resources>
+
+    <!--自定义seekbarstyle-->
+    <style name="CustomSeekbarStyle" >
+        <item name="android:maxHeight">2dp</item>
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:indeterminateDrawable">@color/colorPrimary</item>
+        <item name="android:progressDrawable">@drawable/seekbar_progress</item>
+        <item name="android:minHeight">2dp</item>
+        <item name="android:thumb">@drawable/seekbar_btn</item>
+    </style>
+
+    <declare-styleable name="customSeekBar">
+        <attr name="max" format="integer"/>
+        <attr name="min" format="integer"/>
+        <attr name="maxStr" format="string"/>
+        <attr name="minStr" format="string"/>
+        <attr name="currentStr" format="string"/>
+        <attr name="current" format="integer"> </attr>
+        <attr name="title" format="string"/>
+        <attr name="describe" format="string" />
+    </declare-styleable>
+
+</resources>

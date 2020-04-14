@@ -8,3 +8,5 @@
 /captures
 /main/libs
 .externalNativeBuild
+/**/*/build
+.idea/

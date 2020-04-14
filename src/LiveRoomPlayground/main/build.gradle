@@ -99,6 +99,7 @@ dependencies {
     implementation project(path: ':play')
     implementation project(path: ':publish')
     implementation project(path: ':mediaPlayer')
+    implementation project(path: ':audioPlayer')
     implementation project(path: ':mediaSideInfo')
     implementation project(path: ':layeredCoding')
     implementation project(path: ':frequencySpectrum')

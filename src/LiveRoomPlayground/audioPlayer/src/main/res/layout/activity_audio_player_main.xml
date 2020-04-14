@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".ui.AudioPlayerMainUI">
+
+        <com.zego.common.widgets.TitleLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            app:name="@string/tx_audio_player_moudle">
+
+            <TextView
+                android:id="@+id/go_back"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:drawableLeft="@mipmap/ic_arrow_right"
+                android:layout_marginLeft="10dp"
+                android:paddingTop="13dp"
+                android:paddingBottom="5dp"
+                android:text="@string/app_name"
+                android:textColor="@color/blue" />
+
+        </com.zego.common.widgets.TitleLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:text="@string/tx_room_id" />
+
+            <EditText
+                android:id="@+id/roomIDed"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="25dp"
+                android:hint="@string/tx_room_id_hint"
+                android:textSize="14sp"
+                android:background="@drawable/edit_bg" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:text="@string/tx_stream_id" />
+
+            <EditText
+                android:id="@+id/streamIDed"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="15dp"
+                android:hint="@string/tx_stream_id_hint"
+                android:textSize="14sp"
+                android:background="@drawable/edit_bg" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/publishBtn"
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="40dp"
+            android:text="@string/tx_publish"
+            android:textColor="@color/white_color"
+            android:textStyle="bold"
+            android:background="@drawable/btn_bg"
+            android:onClick="onStartPublish" />
+
+        <Button
+            android:id="@+id/playBtn"
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:text="@string/tx_play"
+            android:textColor="@color/white_color"
+            android:textStyle="bold"
+            android:background="@drawable/btn_bg"
+            android:onClick="onStartPlay" />
+
+        <TextView
+            android:id="@+id/link_code_demo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:onClick="browseDoc"
+            android:text="@string/tx_audio_player_doc_link"
+            android:textColor="@color/blue"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="40dp"
+            android:text="@string/tx_instructions_for_use"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+</layout>

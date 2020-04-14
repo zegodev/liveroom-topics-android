@@ -1,4 +1,4 @@
-include ':main',
+include ':main', ':audioPlayer',
         ':joinLive',
         ':videoFilter',
         ':videoCommunicaton',

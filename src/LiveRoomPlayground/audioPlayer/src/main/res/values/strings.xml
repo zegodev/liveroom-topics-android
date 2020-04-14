@@ -1,0 +1,40 @@
+<resources>
+    <string name="tx_audio_player_moudle">音效播放器</string>
+    <string name="tx_audio_player_publish">音效播放器&amp;推流</string>
+
+    <string name="tx_room_id">RoomID:</string>
+    <string name="tx_stream_id">StreamID:</string>
+
+    <string name="tx_room_id_hint">请输入 roomID</string>
+    <string name="tx_stream_id_hint">请输入 streamID</string>
+    <string name="tx_id_not_null">roomID 与 streamID 不能为空</string>
+    <string name="tx_publish">发起推流</string>
+    <string name="tx_play">拉流</string>
+    <string name="tx_playing">拉流中</string>
+    <string name="tx_audio_player_doc_link">《进阶功能-音效播放器》</string>
+    <string name="tx_instructions_for_use">功能说明：\n音效播放器组件提供播放多个音效文件的能力，并且支持将播放的音效声音数据混入推流中。\n\n体验方式：\n该功能需要两台设备才能展示效果，一台作为推流端播放并混音音效，一台作为拉流端观看直播。</string>
+    <string name="tx_audioplayer_guide">AudioPlayer 指引</string>
+
+    <string name="tx_show_roomID">RoomID:%1s</string>
+    <string name="tx_show_streamID">StreamID:%1s</string>
+
+    <string name="tx_login_fail_hint">登录房间：%1s 失败，err：%2d</string>
+    <string name="tx_play_fail_hint">拉流：%1s 失败，err：%2d</string>
+    <string name="tx_publish_fail_hint">推流：%1s 失败，err：%2d</string>
+
+    <string name="tx_effect_boiling">boiling</string>
+    <string name="tx_effect_busy">busy</string>
+    <string name="tx_effect_christmas">christmas</string>
+    <string name="tx_effect_drum">drum</string>
+    <string name="tx_effect_fireworks">fireworks</string>
+    <string name="tx_effect_justDrums">justDrums</string>
+    <string name="tx_effect_piano">piano</string>
+    <string name="tx_effect_stick">stick</string>
+
+    <string name="tx_resume_all">resumeAll</string>
+    <string name="tx_pause_all">pauseAll</string>
+    <string name="tx_stop_all">stopAll</string>
+    <string name="tx_soundlevel">音量</string>
+    <string name="tx_mixing">混音</string>
+
+</resources>

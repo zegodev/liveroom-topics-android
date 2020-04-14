@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="effect_describe">
+        <item>christmas</item>
+        <item>boiling</item>
+        <item>busy</item>
+        <item>drum</item>
+        <item>fireworks</item>
+        <item>justdrums</item>
+        <item>piano</item>
+        <item>stick</item>
+    </string-array>
+
+</resources>

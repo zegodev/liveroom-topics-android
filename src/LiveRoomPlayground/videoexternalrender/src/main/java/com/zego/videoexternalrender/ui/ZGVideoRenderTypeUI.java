@@ -51,16 +51,11 @@ public class ZGVideoRenderTypeUI extends AppCompatActivity {
                     // 外部渲染时抛出rgb格式的视频数据，例如PIXEL_FORMAT_RGBA32,SDK内部不渲染
                     renderType = VideoRenderType.VIDEO_RENDER_TYPE_RGB;
                 } else if (radioRenderTypeBtns[1] == radioGroup.getCheckedRadioButtonId()){
-                    /**
-                     * 外部渲染时抛出解码后的视频数据，例如PIXEL_FORMAT_I420、PIXEL_FORMAT_NV12、PIXEL_FORMAT_BGRA
-                     * Android推流时返回PIXEL_FORMAT_RGBA32，拉流时返回PIXEL_FORMAT_I420，SDK 内部不渲染
-                     */
+                    // 外部渲染时抛出rgb格式的视频数据，例如PIXEL_FORMAT_I420,SDK内部不渲染
                     renderType = VideoRenderType.VIDEO_RENDER_TYPE_YUV;
                 } else {
-                    // 外部渲染时抛出未解码的视频数据--CODEC_TYPE_AVC_ANNEXB，SDK 内部不渲染，推流时 SDK返回 PIXEL_FORMAT_RGBA32格式数据
                     renderType = VideoRenderType.VIDEO_RENDER_TYPE_ANY;
                 }
-                // 推流处开启外部采集功能
             }
         });
 

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".ui.ZGAudioPlayerPlayUI">
+
+        <com.zego.common.widgets.TitleLayout
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            app:name="@string/tx_start_play">
+
+            <ImageView
+                android:id="@+id/go_back"
+                android:layout_width="45dp"
+                android:layout_height="50dp"
+                android:src="@mipmap/ic_arrow_right"
+                android:padding="10dp" />
+
+        </com.zego.common.widgets.TitleLayout>
+
+        <TextView
+            android:id="@+id/showRoomID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/tx_show_roomID"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/showStreamID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/tx_show_streamID"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/showTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:textSize="14sp"/>
+
+    </LinearLayout>
+</layout>

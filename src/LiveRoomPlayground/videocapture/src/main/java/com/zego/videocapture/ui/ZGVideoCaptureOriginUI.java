@@ -107,7 +107,7 @@ public class ZGVideoCaptureOriginUI extends BaseActivity {
             //3.获取MediaProjection
             mMediaProjection = mMediaProjectionManager.getMediaProjection(resultCode, data);
             //4.创建录屏工厂
-            screenCaptureFactory = new ZegoScreenCaptureFactory();
+            screenCaptureFactory = new ZegoScreenCaptureFactory(ZGVideoCaptureOriginUI.this);
             //5.设置MediaProjection
             screenCaptureFactory.setMediaProjection(mMediaProjection);
 

@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.TextView;
 
+import com.zego.audioplayer.ui.AudioPlayerMainUI;
 import com.zego.frequency_spectrum.ui.FrequencySpectrumAndSoundLevelMainActivity;
 import com.zego.joinlive.ui.JoinLiveMainActivityUI;
 import com.zego.liveroomplayground.R;
@@ -89,6 +90,9 @@ public class MainActivity extends BaseActivity {
                         intent = new Intent(MainActivity.this, ZGPlayerTypeUI.class);
                         MainActivity.this.startActivity(intent);
                         break;
+                    case "音效播放器":
+                        AudioPlayerMainUI.actionStart(MainActivity.this);
+                        break;
                     case "媒体次要信息":
                         intent = new Intent(MainActivity.this, MediaSideInfoDemoUI.class);
                         MainActivity.this.startActivity(intent);
@@ -156,6 +160,8 @@ public class MainActivity extends BaseActivity {
                 .moduleName("媒体次要信息").titleName("进阶功能"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("媒体播放器"));
+        mainAdapter.addModuleInfo(new ModuleInfo()
+                .moduleName("音效播放器"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("本地媒体录制"));
         mainAdapter.addModuleInfo(new ModuleInfo()
