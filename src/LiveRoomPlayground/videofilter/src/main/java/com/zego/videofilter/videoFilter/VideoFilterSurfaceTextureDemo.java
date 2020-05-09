@@ -1,13 +1,13 @@
 package com.zego.videofilter.videoFilter;
 
 import android.graphics.SurfaceTexture;
+import android.opengl.EGL14;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.view.Surface;
-
 
 import com.zego.videofilter.faceunity.FURenderer;
 import com.zego.videofilter.videoFilter.ve_gl.EglBase;
@@ -19,9 +19,11 @@ import com.zego.zegoavkit2.videofilter.ZegoVideoFilter;
 import java.nio.ByteBuffer;
 import java.util.concurrent.CountDownLatch;
 
+import javax.microedition.khronos.egl.EGL;
+
 /**
  * 外部滤镜采用 BUFFER_TYPE_SURFACE_TEXTURE（传递 SurfaceTexture）方式传递数据给 SDK。
- *
+ * <p>
  * Created by robotding on 17/3/28.
  */
 
@@ -43,12 +45,12 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
     private int mOutputHeight = 0;
     private SurfaceTexture mInputSurfaceTexture = null;
     private int mInputTextureId = 0;
-    private int mCopyTextureId = 0;
     private Surface mOutputSurface = null;
     private boolean mIsEgl14 = false;
 
     private GlRectDrawer mDrawer = null;
-    private float[] transformationMatrix = new float[]{1.0f, 0.0f, 0.0f, 0.0f,
+    private float[] transformationMatrix = new float[]{
+            1.0f, 0.0f, 0.0f, 0.0f,
             0.0f, 1.0f, 0.0f, 0.0f,
             0.0f, 0.0f, 1.0f, 0.0f,
             0.0f, 0.0f, 0.0f, 1.0f
@@ -60,10 +62,11 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
 
     /**
      * 初始化资源，比如图像绘制（openGL）、美颜组件等
-     * @param client SDK 内部实现 ZegoVideoFilter.Client 协议的对象
      *
-     * 注意：client 必须保存为强引用对象，在 stopAndDeAllocate 被调用前必须一直被保存。
-     *      SDK 不负责管理 client 的生命周期。
+     * @param client SDK 内部实现 ZegoVideoFilter.Client 协议的对象
+     *               <p>
+     *               注意：client 必须保存为强引用对象，在 stopAndDeAllocate 被调用前必须一直被保存。
+     *               SDK 不负责管理 client 的生命周期。
      */
     @Override
     protected void allocateAndStart(ZegoVideoFilter.Client client) {
@@ -94,13 +97,9 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
                 // 滤镜 SurfaceTexture
                 mInputSurfaceTexture = new SurfaceTexture(mInputTextureId);
                 mInputSurfaceTexture.setOnFrameAvailableListener(VideoFilterSurfaceTextureDemo.this);
-                mInputSurfaceTexture.detachFromGLContext();
 
                 mEglContext = EglBase.create(mDummyContext.getEglBaseContext(), EglBase.CONFIG_RECORDABLE);
                 mIsEgl14 = EglBase14.isEGL14Supported();
-
-                // 创建及初始化 faceunity 相应的资源
-                mFuRender.onSurfaceCreated();
 
                 barrier.countDown();
             }
@@ -123,9 +122,6 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                // 销毁 faceunity 相关的资源
-                mFuRender.onSurfaceDestroyed();
-
                 release();
                 barrier.countDown();
             }
@@ -149,6 +145,7 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
     /**
      * 指定滤镜的传递数据类型，传递 SurfaceTexture。
      * SDK 需要根据 supportBufferType 返回的类型值创建不同的 client 对象。
+     *
      * @return
      */
     @Override
@@ -158,7 +155,8 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
 
     /**
      * SDK 通知外部滤镜当前采集图像的宽高并获取 SurfaceTexture
-     * @param width 采集图像宽
+     *
+     * @param width  采集图像宽
      * @param height 采集图像高
      * @param stride
      * @return
@@ -220,21 +218,19 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
 
     @Override
     public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-        mEglContext.makeCurrent();
+        mDummyContext.makeCurrent();
         if (mDrawer == null) {
             mDrawer = new GlRectDrawer();
         }
 
-        if (mCopyTextureId == 0) {
-            mCopyTextureId = GlUtil.generateTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES);
-            surfaceTexture.attachToGLContext(mCopyTextureId);
-        }
-
         surfaceTexture.updateTexImage();
         long timestampNs = surfaceTexture.getTimestamp();
+        mDummyContext.detachCurrent();
+
+        mEglContext.makeCurrent();
 
         // 调用 faceunity 进行美颜，美颜后返回纹理 ID
-        int textureID = mFuRender.onDrawOesFrame(mCopyTextureId, mOutputWidth, mInputHeight);
+        int textureID = mFuRender.onDrawOesFrame(mInputTextureId, mOutputWidth, mInputHeight);
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
@@ -262,11 +258,8 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
                 mDrawer = null;
             }
 
-            if (mCopyTextureId != 0) {
-                int[] textures = new int[] {mCopyTextureId};
-                GLES20.glDeleteTextures(1, textures, 0);
-                mCopyTextureId = 0;
-            }
+            // 销毁 faceunity 相关的资源
+            mFuRender.onSurfaceDestroyed();
 
             mEglContext.releaseSurface();
         }
@@ -284,6 +277,11 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
         mOutputHeight = height;
 
         mEglContext.createSurface(mOutputSurface);
+
+        mEglContext.makeCurrent();
+
+        // 创建及初始化 faceunity 相应的资源
+        mFuRender.onSurfaceCreated();
     }
 
     // 释放 openGL 相关资源
@@ -293,7 +291,7 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
 
         mDummyContext.makeCurrent();
         if (mInputTextureId != 0) {
-            int[] textures = new int[] {mInputTextureId};
+            int[] textures = new int[]{mInputTextureId};
             GLES20.glDeleteTextures(1, textures, 0);
             mInputTextureId = 0;
         }
@@ -307,11 +305,8 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
                 mDrawer = null;
             }
 
-            if (mCopyTextureId != 0) {
-                int[] textures = new int[] {mCopyTextureId};
-                GLES20.glDeleteTextures(1, textures, 0);
-                mCopyTextureId = 0;
-            }
+            // 销毁 faceunity 相关的资源
+            mFuRender.onSurfaceDestroyed();
         }
         mEglContext.release();
         mEglContext = null;
