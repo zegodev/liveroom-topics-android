@@ -123,9 +123,13 @@ public class VideoRenderer implements Choreographer.FrameCallback, IZegoVideoRen
             public void run() {
                 if (mAVCDecoder == null){
                     // 创建解码器
-                    mAVCDecoder = new AVCDecoder(new Surface(textureView.getSurfaceTexture()), mViewWidth, mViewHeight);
+                    try {
+                        mAVCDecoder = new AVCDecoder(new Surface(textureView.getSurfaceTexture()), mViewWidth, mViewHeight);
+                        mAVCDecoder.startDecoder();
+                    }catch (Throwable throwable){
+                        throwable.printStackTrace();
+                    }
                     // 启动解码器
-                    mAVCDecoder.startDecoder();
                 }
             }
         });

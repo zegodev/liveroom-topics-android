@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import com.zego.common.ZGBaseHelper;
 import com.zego.common.entity.SDKConfigInfo;
 import com.zego.common.ui.BaseActivity;
 import com.zego.common.util.AppLogger;
@@ -17,6 +18,7 @@ import com.zego.joinlive.R;
 import com.zego.joinlive.ZGJoinLiveHelper;
 import com.zego.joinlive.constants.JoinLiveView;
 import com.zego.joinlive.databinding.ActivityJoinLiveAudienceBinding;
+import com.zego.zegoliveroom.callback.IZegoAudioRouteCallback;
 import com.zego.zegoliveroom.callback.IZegoLivePlayerCallback;
 import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
 import com.zego.zegoliveroom.callback.IZegoLoginCompletionCallback;
@@ -255,6 +257,30 @@ public class JoinLiveAudienceUI extends BaseActivity {
         AppLogger.getInstance().i(JoinLiveAudienceUI.class, "登录房间 %s", mRoomID);
         // 防止用户点击，弹出加载对话框
         CustomDialog.createDialog("登录房间中...", this).show();
+        ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().setZegoAudioRouteCallback(new IZegoAudioRouteCallback() {
+            @Override
+            public void onAudioRouteChange(int i) {
+                String devices = "";
+                switch (i) {
+                    case com.zego.zegoavkit2.ZegoConstants.AudioRouteType.Bluetooth:
+                        devices = String.format("onAudioRouteChange回调：%s", "蓝牙");
+                        break;
+                    case com.zego.zegoavkit2.ZegoConstants.AudioRouteType.EarPhone:
+                        devices = String.format("onAudioRouteChange回调：%s", "耳机");
+                        break;
+                    case com.zego.zegoavkit2.ZegoConstants.AudioRouteType.LoudSpeaker:
+                        devices = String.format("onAudioRouteChange回调：%s", "扬声器");
+                        break;
+                    case com.zego.zegoavkit2.ZegoConstants.AudioRouteType.Receiver:
+                        devices = String.format("onAudioRouteChange回调：%s", "听筒");
+                        break;
+                    case com.zego.zegoavkit2.ZegoConstants.AudioRouteType.UsbAudio:
+                        devices = String.format("onAudioRouteChange回调：%s", "USB设备");
+                        break;
+                }
+                AppLogger.getInstance().e(JoinLiveAudienceUI.class, devices);
+            }
+        });
 
         // 开始拉流前需要先登录房间，此处是观众登录主播所在的房间
         ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().loginRoom(mRoomID, ZegoConstants.RoomRole.Audience, new IZegoLoginCompletionCallback() {

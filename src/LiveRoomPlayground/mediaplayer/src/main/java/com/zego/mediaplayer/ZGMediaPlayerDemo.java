@@ -7,8 +7,9 @@ import android.view.View;
 
 import com.zego.common.ZGManager;
 import com.zego.common.timer.ZGTimer;
-import com.zego.zegoavkit2.IZegoMediaPlayerCallback;
-import com.zego.zegoavkit2.IZegoMediaPlayerVideoPlayCallback;
+import com.zego.zegoavkit2.IZegoMediaPlayerVideoPlayWithIndexCallback;
+import com.zego.zegoavkit2.IZegoMediaPlayerVideoPlayWithIndexCallback2;
+import com.zego.zegoavkit2.IZegoMediaPlayerWithIndexCallback;
 import com.zego.zegoavkit2.ZegoMediaPlayer;
 import com.zego.zegoavkit2.ZegoVideoCaptureFactory;
 import com.zego.zegoavkit2.ZegoVideoDataFormat;
@@ -71,7 +72,7 @@ import java.util.Locale;
  *     请使用 {@link ZGMediaPlayerDemo#unInit()} 释放掉播放器，避免浪费内存
  *
  */
-public class ZGMediaPlayerDemo implements IZegoMediaPlayerVideoPlayCallback {
+public class ZGMediaPlayerDemo implements IZegoMediaPlayerVideoPlayWithIndexCallback {
 
     static private ZGMediaPlayerDemo zgMediaPlayerDemo;
 
@@ -118,8 +119,8 @@ public class ZGMediaPlayerDemo implements IZegoMediaPlayerVideoPlayCallback {
     private ZGMediaPlayerDemoDelegate zgMediaPlayerDemoDelegate;
     private ZGPlayerState zgPlayerState = ZGPlayerState.ZGPlayerState_Stopped;
     private ZGPlayingSubState zgPlayingSubState = ZGPlayingSubState.ZGPlayingSubState_Requesting;
-    private int currentProgress;
     private int duration;
+    private int currentProgress;
 
 
     public ZGMediaPlayerDemoHelper getZgMediaPlayerDemoHelper() {
@@ -144,16 +145,14 @@ public class ZGMediaPlayerDemo implements IZegoMediaPlayerVideoPlayCallback {
         // 初始化播放器
         zegoMediaPlayer.init(ZegoMediaPlayer.PlayerTypePlayer);
         // 设置播放器回调
-        zegoMediaPlayer.setCallback(zgMediaPlayerCallback);
+        zegoMediaPlayer.setEventWithIndexCallback(zgMediaPlayerCallback);
+        zegoMediaPlayer.setProcessInterval(1000);
         zgMediaPlayerPublishingHelper.startPublishing(context, msg -> {
             zgMediaPlayerDemoDelegate.onPublishState(msg);
             Log.v(TAG, msg);
         });
-        zegoMediaPlayer.setVideoPlayCallback(this, ZegoVideoDataFormat.PIXEL_FORMAT_RGBA32);
-
+        zegoMediaPlayer.setVideoPlayWithIndexCallback(this, ZegoVideoDataFormat.PIXEL_FORMAT_RGBA32);
     }
-
-    ZGTimer zgTimer;
 
     private void setPlayingSubState(ZGPlayingSubState zgPlayingSubState) {
         this.zgPlayingSubState = zgPlayingSubState;
@@ -165,31 +164,6 @@ public class ZGMediaPlayerDemo implements IZegoMediaPlayerVideoPlayCallback {
         Log.v(TAG, String.format("setPlayerState zgPlayerState: %s", zgPlayerState.name()));
         this.zgPlayerState = zgPlayerState;
         updateCurrentState();
-        //
-        if (zgPlayerState == ZGPlayerState.ZGPlayerState_Playing) {
-            // 定时器存在则销毁定时器
-            if (zgTimer != null) {
-                zgTimer.cancel();
-                zgTimer = null;
-            }
-            // 创建定时器 单位 秒
-            zgTimer = new ZGTimer(1000) {
-                @Override
-                public void onFinish() {
-                    currentProgress = (int) zegoMediaPlayer.getCurrentDuration();
-                    updateProgressDesc();
-                }
-            };
-            zgTimer.start();
-
-        } else if (zgTimer != null) {
-            // 定时器有效情况下销毁
-            zgTimer.cancel();
-            zgTimer = null;
-            if (zgPlayerState == ZGPlayerState.ZGPlayerState_Stopped) {
-                zgMediaPlayerDemoDelegate.onPlayerStop();
-            }
-        }
     }
 
     /* 媒体播放器 */
@@ -207,14 +181,10 @@ public class ZGMediaPlayerDemo implements IZegoMediaPlayerVideoPlayCallback {
     /* 释放MediaPlayer 和一些相关操作 */
     public void unInit() {
         if (zegoMediaPlayer != null) {
-            if (zgTimer != null) {
-                zgTimer.cancel();
-                zgTimer = null;
-            }
             ZGManager.sharedInstance().api().logoutRoom();
             stopPlay();
-            zegoMediaPlayer.setCallback(null);
-            zegoMediaPlayer.setVideoPlayCallback(null, 0);
+            zegoMediaPlayer.setEventWithIndexCallback(zgMediaPlayerCallback);
+            zegoMediaPlayer.setVideoPlayWithIndexCallback(null,0);
             zegoMediaPlayer.uninit();
             zegoMediaPlayer = null;
             zgMediaPlayerDemo = null;
@@ -348,16 +318,16 @@ public class ZGMediaPlayerDemo implements IZegoMediaPlayerVideoPlayCallback {
     }
 
     @Override
-    public void onPlayVideoData(byte[] bytes, int i, ZegoVideoDataFormat f) {
+    public void onPlayVideoData(byte[] bytes, int i, ZegoVideoDataFormat f,int index) {
         if (zgMediaPlayerVideoCapture != null) {
             zgMediaPlayerVideoCapture.onPlayVideoData(bytes, i, f);
         }
     }
 
-    IZegoMediaPlayerCallback zgMediaPlayerCallback = new IZegoMediaPlayerCallback() {
+    IZegoMediaPlayerWithIndexCallback zgMediaPlayerCallback = new IZegoMediaPlayerWithIndexCallback() {
 
         @Override
-        public void onPlayStart() {
+        public void onPlayStart(int i) {
             Log.v(TAG, "onPlayStart");
 
             assert (zgPlayerState == ZGPlayerState.ZGPlayerState_Playing);
@@ -377,14 +347,14 @@ public class ZGMediaPlayerDemo implements IZegoMediaPlayerVideoPlayCallback {
         }
 
         @Override
-        public void onPlayPause() {
+        public void onPlayPause(int i) {
             Log.v(TAG, "onPlayPause");
             assert (zgPlayerState == ZGPlayerState.ZGPlayerState_Playing);
             setPlayingSubState(ZGPlayingSubState.ZGPlayingSubState_Paused);
         }
 
         @Override
-        public void onPlayStop() {
+        public void onPlayStop(int i) {
             Log.v(TAG, "onPlayStop");
             if (zgPlayerState == ZGPlayerState.ZGPlayerState_Stopping) {
                 setPlayerState(ZGPlayerState.ZGPlayerState_Stopped);
@@ -392,36 +362,36 @@ public class ZGMediaPlayerDemo implements IZegoMediaPlayerVideoPlayCallback {
         }
 
         @Override
-        public void onPlayResume() {
+        public void onPlayResume(int i) {
             Log.v(TAG, "onPlayResume");
             assert (zgPlayerState == ZGPlayerState.ZGPlayerState_Playing);
             setPlayingSubState(ZGPlayingSubState.ZGPlayingSubState_PlayBegin);
         }
 
         @Override
-        public void onPlayError(int errorCode) {
+        public void onPlayError(int errorCode,int i) {
             Log.e(TAG, String.format("onPlayError error: %d", errorCode));
             assert (zgPlayerState == ZGPlayerState.ZGPlayerState_Playing);
             setPlayingSubState(ZGPlayingSubState.ZGPlayingSubState_PlayBegin);
         }
 
         @Override
-        public void onVideoBegin() {
+        public void onVideoBegin(int i) {
             Log.v(TAG, "onVideoBegin");
         }
 
         @Override
-        public void onAudioBegin() {
+        public void onAudioBegin(int i) {
             Log.v(TAG, "onAudioBegin");
         }
 
         @Override
-        public void onPlayEnd() {
+        public void onPlayEnd(int i) {
             setPlayerState(ZGPlayerState.ZGPlayerState_Stopped);
         }
 
         @Override
-        public void onBufferBegin() {
+        public void onBufferBegin(int i) {
             Log.v(TAG, "onBufferBegin");
             if (zgPlayerState == ZGPlayerState.ZGPlayerState_Playing) {
                 setPlayingSubState(ZGPlayingSubState.ZGPlayingSubState_Buffering);
@@ -431,7 +401,7 @@ public class ZGMediaPlayerDemo implements IZegoMediaPlayerVideoPlayCallback {
         }
 
         @Override
-        public void onBufferEnd() {
+        public void onBufferEnd(int i) {
             Log.v(TAG, "onBufferEnd");
             if (zgPlayerState == ZGPlayerState.ZGPlayerState_Playing) {
                 if (zgPlayingSubState == ZGPlayingSubState.ZGPlayingSubState_Buffering) {
@@ -451,22 +421,28 @@ public class ZGMediaPlayerDemo implements IZegoMediaPlayerVideoPlayCallback {
          */
 
         @Override
-        public void onSeekComplete(int code, long millisecond) {
+        public void onSeekComplete(int code, long millisecond,int i) {
             Log.v(TAG, "onSeekComplete");
         }
 
         @Override
-        public void onSnapshot(Bitmap bitmap) {
+        public void onSnapshot(Bitmap bitmap,int i) {
             
         }
 
         @Override
-        public void onLoadComplete() {
+        public void onLoadComplete(int i) {
 
         }
 
         @Override
-        public void onProcessInterval(long l) {
+        public void onProcessInterval(long l,int i) {
+            currentProgress = (int) l;
+            updateProgressDesc();
+        }
+
+        @Override
+        public void onReadEOF(int i) {
 
         }
     };

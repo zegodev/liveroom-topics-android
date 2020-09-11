@@ -9,6 +9,7 @@ import com.zego.common.util.AppLogger;
 import com.zego.zegoliveroom.ZegoLiveRoom;
 import com.zego.zegoliveroom.callback.IZegoInitSDKCompletionCallback;
 import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
+import com.zego.zegoliveroom.callback.IZegoLogHookCallback;
 import com.zego.zegoliveroom.callback.IZegoLoginCompletionCallback;
 import com.zego.zegoliveroom.callback.IZegoRoomCallback;
 import com.zego.zegoliveroom.constants.ZegoConstants;
@@ -119,7 +120,14 @@ public class ZGBaseHelper {
             @Nullable
             public String getSubLogFolder(){
                 return null;
-            };
+            }
+
+            @Override
+            public IZegoLogHookCallback getLogHookCallback() {
+                return null;
+            }
+
+            ;
         });
 
 

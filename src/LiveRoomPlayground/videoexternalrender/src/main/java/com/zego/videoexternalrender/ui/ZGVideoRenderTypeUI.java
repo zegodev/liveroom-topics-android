@@ -9,7 +9,7 @@ import android.widget.CompoundButton;
 import android.widget.RadioGroup;
 
 import com.zego.videoexternalrender.R;
-import com.zego.zegoavkit2.enums.VideoExternalRenderType;
+//import com.zego.zegoavkit2.enums.VideoExternalRenderType;
 import com.zego.zegoavkit2.videorender.VideoRenderType;
 import com.zego.zegoavkit2.videorender.ZegoExternalVideoRender;
 

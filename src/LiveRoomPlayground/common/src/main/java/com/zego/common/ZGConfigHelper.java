@@ -115,6 +115,22 @@ public class ZGConfigHelper {
     }
 
     /**
+     * 开启拉流镜像
+     * <p>
+     * 调用时机: 初始化之后
+     *
+     * @param enable
+     * @param streamId
+     */
+    public void enablePlayMirror(boolean enable, String streamId) {
+        AppLogger.getInstance().i(ZGConfigHelper.class, enable ? "开启拉流镜像" : "关闭拉流镜像");
+        if (isInitSDKSuccess()) {
+            ZegoLiveRoom zegoLiveRoom = ZGBaseHelper.sharedInstance().getZegoLiveRoom();
+            zegoLiveRoom.enableViewMirror(enable, streamId);
+        }
+    }
+
+    /**
      * 设置推流预览视图模式
      * sdk内置3种视图模式
      * 1: 等比缩放填充整View，可能有部分被裁减。 SDK 默认值。{@link com.zego.zegoliveroom.constants.ZegoVideoViewMode#ScaleAspectFill}

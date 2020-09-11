@@ -21,7 +21,7 @@ public class ZGMediaPlayerDemoHelper {
     static ZGMediaPlayerDemoHelper zgMediaPlayerDemoHelper;
 
     public static ZGMediaPlayerDemoHelper sharedInstance() {
-        synchronized (ZGMediaPlayerDemo.class) {
+        synchronized (ZGMediaPlayerDemoHelper.class) {
             if (zgMediaPlayerDemoHelper == null) {
                 zgMediaPlayerDemoHelper = new ZGMediaPlayerDemoHelper();
             }

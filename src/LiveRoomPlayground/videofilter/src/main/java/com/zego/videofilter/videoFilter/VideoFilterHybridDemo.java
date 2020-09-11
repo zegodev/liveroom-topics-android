@@ -84,6 +84,9 @@ public class VideoFilterHybridDemo extends ZegoVideoFilter {
                 GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
                 mTextureId = GlUtil.generateTexture(GLES20.GL_TEXTURE_2D);
 
+                // 创建及初始化 faceunity 相应的资源
+                mFURenderer.onSurfaceCreated();
+
                 barrier.countDown();
             }
         });
@@ -98,9 +101,6 @@ public class VideoFilterHybridDemo extends ZegoVideoFilter {
         mWriteIndex = 0;
         mWriteRemain = 0;
         mMaxBufferSize = 0;
-
-        // 创建及初始化 faceunity 相应的资源
-        mFURenderer.onSurfaceCreated();
     }
 
     /**
@@ -110,9 +110,6 @@ public class VideoFilterHybridDemo extends ZegoVideoFilter {
     @Override
     protected void stopAndDeAllocate() {
 
-        // 销毁 faceunity 相关的资源
-        mFURenderer.onSurfaceDestroyed();
-
         final CountDownLatch barrier = new CountDownLatch(1);
         mHandler.post(new Runnable() {
             @Override
@@ -120,6 +117,9 @@ public class VideoFilterHybridDemo extends ZegoVideoFilter {
                 // 建议在同步停止滤镜任务后再清理 client 对象，保证 SDK 调用 stopAndDeAllocate 后，没有残留的异步任务导致野指针 crash
                 mClient.destroy();
                 mClient = null;
+
+                // 销毁 faceunity 相关的资源
+                mFURenderer.onSurfaceDestroyed();
 
                 release();
                 barrier.countDown();
@@ -243,7 +243,7 @@ public class VideoFilterHybridDemo extends ZegoVideoFilter {
                 }
 
                 pixelBuffer.buffer.position(0);
-                pixelBuffer.buffer.get(mModiBuffer);
+                pixelBuffer.buffer.get(mModiBuffer, 0, pixelBuffer.buffer.limit());
                 // 调用 faceunity 进行美颜
 //                int textureID = mFURenderer.onDrawFrame(mTextureId, pixelBuffer.width, pixelBuffer.height);
                 int textureID = mFURenderer.onDrawFrame(mModiBuffer, mTextureId, pixelBuffer.width, pixelBuffer.height);

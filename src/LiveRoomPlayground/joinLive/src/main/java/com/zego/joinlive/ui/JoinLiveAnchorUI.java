@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import com.zego.common.ZGBaseHelper;
 import com.zego.common.entity.SDKConfigInfo;
 import com.zego.common.ui.BaseActivity;
 import com.zego.common.util.AppLogger;
@@ -18,6 +19,7 @@ import com.zego.joinlive.ZGJoinLiveHelper;
 import com.zego.joinlive.constants.JoinLiveUserInfo;
 import com.zego.joinlive.constants.JoinLiveView;
 import com.zego.joinlive.databinding.ActivityJoinLiveAnchorBinding;
+import com.zego.zegoliveroom.callback.IZegoAudioRouteCallback;
 import com.zego.zegoliveroom.callback.IZegoLivePlayerCallback;
 import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
 import com.zego.zegoliveroom.callback.IZegoLoginCompletionCallback;
@@ -135,7 +137,7 @@ public class JoinLiveAnchorUI extends BaseActivity {
     }
 
     // 设置视图列表
-    protected void initViewList(){
+    protected void initViewList() {
 
         mBigView = new JoinLiveView(binding.preview, false, "");
         mBigView.setZegoLiveRoom(ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom());
@@ -186,10 +188,34 @@ public class JoinLiveAnchorUI extends BaseActivity {
 
 
     // 登录房间并推流
-    public void startPublish(){
+    public void startPublish() {
         // 设置房间配置，监听房间内用户状态的变更通知
         ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().setRoomConfig(true, true);
-        AppLogger.getInstance().i(JoinLiveAnchorUI.class, "设置房间配置 audienceCreateRoom:%d, userStateUpdate:%d",0, 1);
+        AppLogger.getInstance().i(JoinLiveAnchorUI.class, "设置房间配置 audienceCreateRoom:%d, userStateUpdate:%d", 0, 1);
+        ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().setZegoAudioRouteCallback(new IZegoAudioRouteCallback() {
+            @Override
+            public void onAudioRouteChange(int i) {
+                String devices = "";
+                switch (i) {
+                    case com.zego.zegoavkit2.ZegoConstants.AudioRouteType.Bluetooth:
+                        devices = String.format("onAudioRouteChange回调：%s", "蓝牙");
+                        break;
+                    case com.zego.zegoavkit2.ZegoConstants.AudioRouteType.EarPhone:
+                        devices = String.format("onAudioRouteChange回调：%s", "耳机");
+                        break;
+                    case com.zego.zegoavkit2.ZegoConstants.AudioRouteType.LoudSpeaker:
+                        devices = String.format("onAudioRouteChange回调：%s", "扬声器");
+                        break;
+                    case com.zego.zegoavkit2.ZegoConstants.AudioRouteType.Receiver:
+                        devices = String.format("onAudioRouteChange回调：%s", "听筒");
+                        break;
+                    case com.zego.zegoavkit2.ZegoConstants.AudioRouteType.UsbAudio:
+                        devices = String.format("onAudioRouteChange回调：%s", "USB设备");
+                        break;
+                }
+                AppLogger.getInstance().e(JoinLiveAnchorUI.class, devices);
+            }
+        });
 
         // 防止用户点击，弹出加载对话框
         CustomDialog.createDialog("登录房间中...", this).show();
@@ -228,7 +254,7 @@ public class JoinLiveAnchorUI extends BaseActivity {
                                 // 获取可用的视图
                                 JoinLiveView freeView = ZGJoinLiveHelper.sharedInstance().getFreeTextureView();
 
-                                if (freeView != null){
+                                if (freeView != null) {
                                     // 拉流
                                     ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().startPlayingStream(streamInfo.streamID, freeView.textureView);
                                     // 设置拉流视图模式，此处采用 SDK 默认值--等比缩放填充整个View，可能有部分被裁减。
@@ -265,12 +291,12 @@ public class JoinLiveAnchorUI extends BaseActivity {
      */
     public static void actionStart(Activity activity, String roomID) {
         Intent intent = new Intent(activity, JoinLiveAnchorUI.class);
-        intent.putExtra("roomID",roomID);
+        intent.putExtra("roomID", roomID);
         activity.startActivity(intent);
     }
 
     // 设置 SDK 相关的回调监听
-    public void initSDKCallback(){
+    public void initSDKCallback() {
         // 设置房间回调监听
         ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().setZegoRoomCallback(new IZegoRoomCallback() {
             @Override
@@ -298,7 +324,7 @@ public class JoinLiveAnchorUI extends BaseActivity {
                 // 房间流列表更新
                 // 当登录房间成功后，如果房间内中途有人推流或停止推流。房间内其他人就能通过该回调收到流更新通知。
 
-                if (roomID.equals(mRoomID)){
+                if (roomID.equals(mRoomID)) {
 
                     for (ZegoStreamInfo streamInfo : zegoStreamInfos) {
                         // 当有流新增的时候，拉流
@@ -311,7 +337,7 @@ public class JoinLiveAnchorUI extends BaseActivity {
                                 // 获取可用的视图
                                 JoinLiveView freeView = ZGJoinLiveHelper.sharedInstance().getFreeTextureView();
 
-                                if (freeView != null){
+                                if (freeView != null) {
                                     // 拉流
                                     ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().startPlayingStream(streamInfo.streamID, freeView.textureView);
                                     // 设置拉流视图模式，此处采用 SDK 默认值--等比缩放填充整个View，可能有部分被裁减。
@@ -335,8 +361,8 @@ public class JoinLiveAnchorUI extends BaseActivity {
                         else if (type == ZegoConstants.StreamUpdateType.Deleted) {
                             AppLogger.getInstance().i(JoinLiveAnchorUI.class, "房间：%s 内收到流删除通知. streamID : %s, userName : %s, extraInfo : %s", roomID, streamInfo.streamID, streamInfo.userName, streamInfo.extraInfo);
                             // 如果此条流删除信息是连麦者的流，做停止拉流的处理
-                            for (JoinLiveUserInfo userInfo:ZGJoinLiveHelper.sharedInstance().getHasJoinedUsers()){
-                                if (userInfo.userID.equals(streamInfo.userID)){
+                            for (JoinLiveUserInfo userInfo : ZGJoinLiveHelper.sharedInstance().getHasJoinedUsers()) {
+                                if (userInfo.userID.equals(streamInfo.userID)) {
                                     // 停止拉流
                                     ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().stopPlayingStream(streamInfo.streamID);
 
@@ -437,7 +463,7 @@ public class JoinLiveAnchorUI extends BaseActivity {
                     ZGJoinLiveHelper.sharedInstance().setJoinLiveViewFree(streamID);
 
                     // 移除此连麦者
-                    for (JoinLiveUserInfo userInfo: ZGJoinLiveHelper.sharedInstance().getHasJoinedUsers()) {
+                    for (JoinLiveUserInfo userInfo : ZGJoinLiveHelper.sharedInstance().getHasJoinedUsers()) {
                         if (streamID.equals(userInfo.streamID)) {
 
                             ZGJoinLiveHelper.sharedInstance().removeJoinLiveAudience(userInfo);
@@ -474,12 +500,12 @@ public class JoinLiveAnchorUI extends BaseActivity {
             public void onUserUpdate(ZegoUserState[] listUser, int updateType) {
                 AppLogger.getInstance().i(JoinLiveAnchorUI.class, "收到房间成员更新通知");
                 // 房间成员更新回调，可根据此回调来管理观众列表
-                for (ZegoUserState userInfo:listUser){
+                for (ZegoUserState userInfo : listUser) {
 
-                    if (ZegoIM.UserUpdateFlag.Added == userInfo.updateFlag){
+                    if (ZegoIM.UserUpdateFlag.Added == userInfo.updateFlag) {
                         // 房间增加成员，可进行业务相关的处理
 
-                    } else if (ZegoIM.UserUpdateFlag.Deleted == userInfo.updateFlag){
+                    } else if (ZegoIM.UserUpdateFlag.Deleted == userInfo.updateFlag) {
                         // 成员退出房间，可进行业务相关的处理
 
                     }
@@ -504,7 +530,7 @@ public class JoinLiveAnchorUI extends BaseActivity {
     }
 
     // 去除SDK相关的回调监听
-    public void releaseSDKCallback(){
+    public void releaseSDKCallback() {
         ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().setZegoLivePublisherCallback(null);
         ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().setZegoLivePlayerCallback(null);
         ZGJoinLiveHelper.sharedInstance().getZegoLiveRoom().setZegoRoomCallback(null);

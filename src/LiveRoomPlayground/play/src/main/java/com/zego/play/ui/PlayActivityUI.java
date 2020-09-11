@@ -118,7 +118,15 @@ public class PlayActivityUI extends BaseActivity {
                 }
             }
         });
-
+        binding.swMirror.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (buttonView.isPressed()) {
+                    sdkConfigInfo.setEnableMirror(isChecked);
+                    ZGConfigHelper.sharedInstance().enablePlayMirror(isChecked, mStreamID);
+                }
+            }
+        });
         // 设置SDK 房间代理回调。业务侧希望检查当前房间有流更新了，会去自动重新拉流。
         ZGBaseHelper.sharedInstance().setZegoRoomCallback(new IZegoRoomCallback() {
             @Override

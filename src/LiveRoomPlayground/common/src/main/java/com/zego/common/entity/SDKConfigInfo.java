@@ -15,6 +15,7 @@ public class SDKConfigInfo extends BaseObservable {
     private boolean enableCamera = true;
     private boolean enableMic = true;
     private boolean speaker = true;
+    private boolean enableMirror = false;
 
     @Bindable
     public boolean isSpeaker() {
@@ -44,5 +45,15 @@ public class SDKConfigInfo extends BaseObservable {
     public void setEnableMic(boolean enableMic) {
         this.enableMic = enableMic;
         notifyPropertyChanged(BR.enableMic);
+    }
+
+    public void setEnableMirror(boolean enableMirror) {
+        this.enableMirror = enableMirror;
+        notifyPropertyChanged(BR.enableMirror);
+    }
+
+    @Bindable
+    public boolean isEnableMirror() {
+        return enableMirror;
     }
 }

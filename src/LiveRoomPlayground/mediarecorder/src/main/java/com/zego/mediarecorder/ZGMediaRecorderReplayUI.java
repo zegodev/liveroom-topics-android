@@ -11,8 +11,10 @@ import android.view.View;
 import com.zego.common.ui.BaseActivity;
 import com.zego.common.util.AppLogger;
 import com.zego.mediarecorder.databinding.ActivityReplayBinding;
-import com.zego.zegoavkit2.IZegoMediaPlayerCallback;
+import com.zego.zegoavkit2.IZegoMediaPlayerAudioPlayCallback;
+import com.zego.zegoavkit2.IZegoMediaPlayerWithIndexCallback;
 import com.zego.zegoavkit2.ZegoMediaPlayer;
+import com.zego.zegoavkit2.ZegoVideoDataFormat;
 
 public class ZGMediaRecorderReplayUI extends BaseActivity {
 
@@ -53,7 +55,7 @@ public class ZGMediaRecorderReplayUI extends BaseActivity {
         super.finish();
 
         // 去除播放器回调监听
-        zegoMediaPlayer.setCallback(null);
+        zegoMediaPlayer.setVideoPlayWithIndexCallback(null, ZegoVideoDataFormat.PIXEL_FORMAT_NV21);
         // 释放播放器
         zegoMediaPlayer.uninit();
         zegoMediaPlayer = null;
@@ -91,75 +93,80 @@ public class ZGMediaRecorderReplayUI extends BaseActivity {
 
     // 设置播放器回调监听
     public void setPlayerCallback() {
-        zegoMediaPlayer.setCallback(new IZegoMediaPlayerCallback() {
+        zegoMediaPlayer.setEventWithIndexCallback(new IZegoMediaPlayerWithIndexCallback() {
             @Override
-            public void onPlayStart() {
+            public void onPlayStart(int i) {
                 binding.replayBtn.setText(getString(R.string.tx_end_play));
             }
 
             @Override
-            public void onPlayPause() {
+            public void onPlayPause(int i) {
                 binding.replayBtn.setText(getString(R.string.tx_begin_play));
             }
 
             @Override
-            public void onPlayStop() {
+            public void onPlayStop(int i) {
                 binding.replayBtn.setText(getString(R.string.tx_begin_play));
             }
 
             @Override
-            public void onPlayResume() {
+            public void onPlayResume(int i) {
                 binding.replayBtn.setText(getString(R.string.tx_end_play));
             }
 
             @Override
-            public void onPlayError(int i) {
-                AppLogger.getInstance().e(ZGMediaRecorderReplayUI.class, "回放出错，err: %d", i);
+            public void onPlayError(int error,int i) {
+                AppLogger.getInstance().e(ZGMediaRecorderReplayUI.class, "回放出错，err: %d", error);
 
             }
 
             @Override
-            public void onVideoBegin() {
+            public void onVideoBegin(int i) {
 
             }
 
             @Override
-            public void onAudioBegin() {
+            public void onAudioBegin(int i) {
 
             }
 
             @Override
-            public void onPlayEnd() {
+            public void onPlayEnd(int i) {
                 binding.replayBtn.setText(getString(R.string.tx_begin_play));
             }
 
             @Override
-            public void onBufferBegin() {
+            public void onBufferBegin(int i) {
 
             }
 
             @Override
-            public void onBufferEnd() {
+            public void onBufferEnd(int i) {
 
             }
 
             @Override
-            public void onSeekComplete(int i, long l) {
+            public void onSeekComplete(int i, long l,int index) {
 
             }
 
             @Override
-            public void onSnapshot(Bitmap bitmap) {
+            public void onSnapshot(Bitmap bitmap,int index) {
 
             }
 
             @Override
-            public void onLoadComplete() {
+            public void onLoadComplete(int index) {
 
             }
 
             @Override
-            public void onProcessInterval(long l) {
+            public void onProcessInterval(long l,int index) {
+
+            }
+
+            @Override
+            public void onReadEOF(int i) {
 
             }
         });
