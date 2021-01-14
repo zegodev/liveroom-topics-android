@@ -10,6 +10,7 @@ import com.zego.zegoliveroom.constants.ZegoAvConfig;
 import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
 import com.zego.zegoliveroom.entity.ZegoPlayStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
+import com.zego.zegoliveroom.entity.ZegoRoomInfo;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
 
 import java.util.HashMap;
@@ -261,6 +262,11 @@ public class ZGMixStreamPublisher implements IZegoLivePublisherCallback, IZegoLi
 
     @Override
     public void onRecvCustomCommand(String s, String s1, String s2, String s3) {
+
+    }
+
+    @Override
+    public void onRoomInfoUpdated(ZegoRoomInfo roomInfo, String roomID) {
 
     }
 }

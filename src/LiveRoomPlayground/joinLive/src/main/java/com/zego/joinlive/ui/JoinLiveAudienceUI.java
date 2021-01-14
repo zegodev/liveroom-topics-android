@@ -27,6 +27,7 @@ import com.zego.zegoliveroom.constants.ZegoConstants;
 import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
 import com.zego.zegoliveroom.entity.ZegoPlayStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
+import com.zego.zegoliveroom.entity.ZegoRoomInfo;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
 
 import java.util.ArrayList;
@@ -472,6 +473,11 @@ public class JoinLiveAudienceUI extends BaseActivity {
             @Override
             public void onRecvCustomCommand(String userID, String userName, String content, String roomID) {
                 // 收到自定义信息
+
+            }
+
+            @Override
+            public void onRoomInfoUpdated(ZegoRoomInfo roomInfo, String roomID) {
 
             }
         });

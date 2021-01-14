@@ -1,10 +1,8 @@
 package com.zego.videofilter.videoFilter;
 
 import android.graphics.SurfaceTexture;
-import android.opengl.EGL14;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
-import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.view.Surface;
@@ -19,8 +17,6 @@ import com.zego.zegoavkit2.videofilter.ZegoVideoFilter;
 import java.nio.ByteBuffer;
 import java.util.concurrent.CountDownLatch;
 
-import javax.microedition.khronos.egl.EGL;
-
 /**
  * 外部滤镜采用 BUFFER_TYPE_SURFACE_TEXTURE（传递 SurfaceTexture）方式传递数据给 SDK。
  * <p>
@@ -32,24 +28,23 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
     private ZegoVideoFilter.Client mClient = null;
 
     // faceunity 美颜处理类
-    private FURenderer mFuRender;
+    private final FURenderer mFuRender;
 
     private HandlerThread mThread = null;
     private volatile Handler mHandler = null;
 
-    private EglBase mDummyContext = null;
     private EglBase mEglContext = null;
-    private int mInputWidth = 0;
-    private int mInputHeight = 0;
+    private boolean mIsEgl14 = false;
+
     private int mOutputWidth = 0;
     private int mOutputHeight = 0;
     private SurfaceTexture mInputSurfaceTexture = null;
     private int mInputTextureId = 0;
-    private Surface mOutputSurface = null;
-    private boolean mIsEgl14 = false;
 
     private GlRectDrawer mDrawer = null;
-    private float[] transformationMatrix = new float[]{
+    private Surface mOutputSurface = null;
+
+    private final float[] transformationMatrix = new float[]{
             1.0f, 0.0f, 0.0f, 0.0f,
             0.0f, 1.0f, 0.0f, 0.0f,
             0.0f, 0.0f, 1.0f, 0.0f,
@@ -75,30 +70,17 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
         mThread.start();
         mHandler = new Handler(mThread.getLooper());
 
-        mInputWidth = 0;
-        mInputHeight = 0;
-
         final CountDownLatch barrier = new CountDownLatch(1);
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mDummyContext = EglBase.create(null, EglBase.CONFIG_PIXEL_BUFFER);
+                mEglContext = EglBase.create(null, EglBase.CONFIG_RECORDABLE);
 
-                try {
-                    mDummyContext.createDummyPbufferSurface();
-                    mDummyContext.makeCurrent();
-                } catch (RuntimeException e) {
-                    // Clean up before rethrowing the exception.
-                    mDummyContext.releaseSurface();
-                    throw e;
-                }
-
-                mInputTextureId = GlUtil.generateTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES);
                 // 滤镜 SurfaceTexture
-                mInputSurfaceTexture = new SurfaceTexture(mInputTextureId);
+                mInputSurfaceTexture = new SurfaceTexture(0);
                 mInputSurfaceTexture.setOnFrameAvailableListener(VideoFilterSurfaceTextureDemo.this);
+                mInputSurfaceTexture.detachFromGLContext();
 
-                mEglContext = EglBase.create(mDummyContext.getEglBaseContext(), EglBase.CONFIG_RECORDABLE);
                 mIsEgl14 = EglBase14.isEGL14Supported();
 
                 barrier.countDown();
@@ -167,13 +149,10 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
             return -1;
         }
 
-        if (mInputWidth != width || mInputHeight != height) {
+        if (mOutputWidth != width || mOutputHeight != height) {
             if (mClient.dequeueInputBuffer(width, height, stride) < 0) {
                 return -1;
             }
-
-            mInputWidth = width;
-            mInputHeight = height;
 
             // 获取 SDK 给出的 SurfaceTexture
             final SurfaceTexture surfaceTexture = mClient.getSurfaceTexture();
@@ -218,19 +197,20 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
 
     @Override
     public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-        mDummyContext.makeCurrent();
-        if (mDrawer == null) {
-            mDrawer = new GlRectDrawer();
+        if (mInputTextureId == 0) {
+            mInputTextureId = GlUtil.generateTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES);
+            surfaceTexture.attachToGLContext(mInputTextureId);
         }
 
         surfaceTexture.updateTexImage();
         long timestampNs = surfaceTexture.getTimestamp();
-        mDummyContext.detachCurrent();
 
-        mEglContext.makeCurrent();
+        if (mDrawer == null) {
+            mDrawer = new GlRectDrawer();
+        }
 
         // 调用 faceunity 进行美颜，美颜后返回纹理 ID
-        int textureID = mFuRender.onDrawOesFrame(mInputTextureId, mOutputWidth, mInputHeight);
+        int textureID = mFuRender.onDrawOesFrame(mInputTextureId, mOutputWidth, mOutputHeight);
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
 
@@ -239,29 +219,36 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
         mDrawer.drawRgb(textureID, transformationMatrix,
                 mOutputWidth, mOutputHeight, 0, 0, mOutputWidth, mOutputHeight);
 
-
         if (mIsEgl14) {
             ((EglBase14) mEglContext).swapBuffers(timestampNs);
         } else {
             mEglContext.swapBuffers();
         }
-
-        mEglContext.detachCurrent();
     }
 
     // 设置 Surface
     private void setOutputSurface(SurfaceTexture surfaceTexture, int width, int height) {
         if (mEglContext.hasSurface()) {
             mEglContext.makeCurrent();
+
             if (mDrawer != null) {
                 mDrawer.release();
                 mDrawer = null;
+            }
+
+            if (mInputTextureId != 0) {
+                mInputSurfaceTexture.detachFromGLContext();
+
+                int[] textures = new int[]{mInputTextureId};
+                GLES20.glDeleteTextures(1, textures, 0);
+                mInputTextureId = 0;
             }
 
             // 销毁 faceunity 相关的资源
             mFuRender.onSurfaceDestroyed();
 
             mEglContext.releaseSurface();
+            mEglContext.detachCurrent();
         }
 
         if (mOutputSurface != null) {
@@ -269,15 +256,13 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
             mOutputSurface = null;
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-            surfaceTexture.setDefaultBufferSize(width, height);
-        }
+        surfaceTexture.setDefaultBufferSize(width, height);
+
         mOutputSurface = new Surface(surfaceTexture);
         mOutputWidth = width;
         mOutputHeight = height;
 
         mEglContext.createSurface(mOutputSurface);
-
         mEglContext.makeCurrent();
 
         // 创建及初始化 faceunity 相应的资源
@@ -286,23 +271,20 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
 
     // 释放 openGL 相关资源
     private void release() {
-        mInputSurfaceTexture.release();
-        mInputSurfaceTexture = null;
-
-        mDummyContext.makeCurrent();
-        if (mInputTextureId != 0) {
-            int[] textures = new int[]{mInputTextureId};
-            GLES20.glDeleteTextures(1, textures, 0);
-            mInputTextureId = 0;
-        }
-        mDummyContext.release();
-        mDummyContext = null;
-
         if (mEglContext.hasSurface()) {
             mEglContext.makeCurrent();
+
             if (mDrawer != null) {
                 mDrawer.release();
                 mDrawer = null;
+            }
+
+            if (mInputTextureId != 0) {
+                mInputSurfaceTexture.detachFromGLContext();
+
+                int[] textures = new int[]{mInputTextureId};
+                GLES20.glDeleteTextures(1, textures, 0);
+                mInputTextureId = 0;
             }
 
             // 销毁 faceunity 相关的资源
@@ -311,9 +293,18 @@ public class VideoFilterSurfaceTextureDemo extends ZegoVideoFilter implements Su
         mEglContext.release();
         mEglContext = null;
 
+        mOutputWidth = 0;
+        mOutputHeight = 0;
+
         if (mOutputSurface != null) {
             mOutputSurface.release();
             mOutputSurface = null;
+        }
+
+        if (mInputSurfaceTexture != null) {
+            mInputSurfaceTexture.setOnFrameAvailableListener(null);
+            mInputSurfaceTexture.release();
+            mInputSurfaceTexture = null;
         }
     }
 }

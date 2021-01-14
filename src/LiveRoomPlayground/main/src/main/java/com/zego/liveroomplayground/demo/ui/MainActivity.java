@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.zego.audioplayer.ui.AudioPlayerMainUI;
 import com.zego.frequency_spectrum.ui.FrequencySpectrumAndSoundLevelMainActivity;
 import com.zego.joinlive.ui.JoinLiveMainActivityUI;
+import com.zego.l3play.L3PlayActivityUI;
 import com.zego.liveroomplayground.R;
 import com.zego.liveroomplayground.databinding.ActivityMainBinding;
 import com.zego.liveroomplayground.demo.adapter.MainAdapter;
@@ -79,6 +80,9 @@ public class MainActivity extends BaseActivity {
                         break;
                     case "拉流":
                         InitSDKPlayActivityUI.actionStart(MainActivity.this);
+                        break;
+                    case "L3 拉流":
+                        L3PlayActivityUI.actionStart(MainActivity.this);
                         break;
                     case "变声/混响/立体声":
                         SoundProcessMainActivityUI.actionStart(MainActivity.this);
@@ -150,6 +154,8 @@ public class MainActivity extends BaseActivity {
                 .moduleName("推流").titleName("快速开始"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("拉流"));
+        mainAdapter.addModuleInfo(new ModuleInfo()
+                .moduleName("L3 拉流"));
         mainAdapter.addModuleInfo(new ModuleInfo()
                 .moduleName("多人视频通话").titleName("常用功能"));
         mainAdapter.addModuleInfo(new ModuleInfo()

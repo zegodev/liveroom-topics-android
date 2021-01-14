@@ -11,6 +11,7 @@ import com.zego.zegoliveroom.callback.IZegoLoginCompletionCallback;
 import com.zego.zegoliveroom.callback.IZegoRoomCallback;
 import com.zego.zegoliveroom.entity.ZegoPlayStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
+import com.zego.zegoliveroom.entity.ZegoRoomInfo;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
 
 import java.util.HashMap;
@@ -291,6 +292,11 @@ public class ZGMediaSideInfoDemoHelper implements IZegoLivePublisherCallback, IZ
 
     @Override
     public void onRecvCustomCommand(String s, String s1, String s2, String s3) {
+
+    }
+
+    @Override
+    public void onRoomInfoUpdated(ZegoRoomInfo roomInfo, String roomID) {
 
     }
 }

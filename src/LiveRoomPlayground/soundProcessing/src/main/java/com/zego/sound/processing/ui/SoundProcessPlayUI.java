@@ -4,44 +4,28 @@ import android.app.Activity;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.zego.common.ZGBaseHelper;
-import com.zego.common.ZGConfigHelper;
 import com.zego.common.ZGPlayHelper;
 import com.zego.common.ZGPublishHelper;
-import com.zego.common.entity.SDKConfigInfo;
 import com.zego.common.entity.StreamQuality;
 import com.zego.common.ui.BaseActivity;
-import com.zego.common.ui.WebActivity;
 import com.zego.common.util.AppLogger;
 import com.zego.common.widgets.CustomDialog;
 import com.zego.sound.processing.R;
-import com.zego.sound.processing.adapter.SoundEffectViewAdapter;
 import com.zego.sound.processing.databinding.ActivitySoundProcessPlayBinding;
-import com.zego.sound.processing.databinding.ActivitySoundProcessPublishBinding;
-import com.zego.sound.processing.databinding.InputRoomIdLayoutBinding;
-import com.zego.sound.processing.view.SoundEffectDialog;
-import com.zego.zegoavkit2.audioprocessing.ZegoAudioReverbMode;
 import com.zego.zegoliveroom.callback.IZegoLivePlayerCallback;
-import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
 import com.zego.zegoliveroom.callback.IZegoLoginCompletionCallback;
-import com.zego.zegoliveroom.callback.IZegoResponseCallback;
 import com.zego.zegoliveroom.callback.IZegoRoomCallback;
 import com.zego.zegoliveroom.constants.ZegoConstants;
-import com.zego.zegoliveroom.entity.AuxData;
 import com.zego.zegoliveroom.entity.ZegoPlayStreamQuality;
-import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
+import com.zego.zegoliveroom.entity.ZegoRoomInfo;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
-
-import java.util.HashMap;
 
 /**
  * Created by zego on 2019/4/22.
- *
+ * <p>
  * 变声/混响/立体声 拉流页面，方便开发者听到的变声效果
  */
 
@@ -61,7 +45,7 @@ public class SoundProcessPlayUI extends BaseActivity {
         // 方便快捷避免需要写一大堆 setText 等一大堆臃肿的代码。
         binding.setQuality(streamQuality);
         mStreamID = getIntent().getStringExtra("streamID");
-        mRoomID =  getIntent().getStringExtra("roomID");
+        mRoomID = getIntent().getStringExtra("roomID");
 
         streamQuality.setRoomID(String.format("RoomID : %s", mRoomID));
 
@@ -171,6 +155,11 @@ public class SoundProcessPlayUI extends BaseActivity {
             public void onRecvCustomCommand(String s, String s1, String s2, String s3) {
 
             }
+
+            @Override
+            public void onRoomInfoUpdated(ZegoRoomInfo roomInfo, String roomID) {
+
+            }
         });
 
         startPlay();
@@ -218,7 +207,6 @@ public class SoundProcessPlayUI extends BaseActivity {
         });
 
     }
-
 
 
     public static void actionStart(Activity activity, String roomID, String streamID) {

@@ -10,26 +10,24 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
-import com.zego.common.ZGPlayHelper;
-import com.zego.common.application.ZegoApplication;
-import com.zego.common.entity.SDKConfigInfo;
-import com.zego.common.entity.StreamQuality;
-import com.zego.publish.R;
-import com.zego.publish.databinding.ActivityPublishBinding;
-import com.zego.publish.databinding.PublishInputStreamIdLayoutBinding;
 import com.zego.common.ZGBaseHelper;
 import com.zego.common.ZGConfigHelper;
 import com.zego.common.ZGPublishHelper;
-import com.zego.common.constants.ZGLiveRoomConstants;
+import com.zego.common.application.ZegoApplication;
+import com.zego.common.entity.SDKConfigInfo;
+import com.zego.common.entity.StreamQuality;
 import com.zego.common.ui.BaseActivity;
 import com.zego.common.ui.WebActivity;
 import com.zego.common.util.AppLogger;
+import com.zego.publish.R;
+import com.zego.publish.databinding.ActivityPublishBinding;
+import com.zego.publish.databinding.PublishInputStreamIdLayoutBinding;
 import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
 import com.zego.zegoliveroom.callback.IZegoResponseCallback;
 import com.zego.zegoliveroom.callback.IZegoRoomCallback;
 import com.zego.zegoliveroom.constants.ZegoConstants;
-import com.zego.zegoliveroom.entity.AuxData;
 import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
+import com.zego.zegoliveroom.entity.ZegoRoomInfo;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
 
 import java.util.HashMap;
@@ -180,6 +178,11 @@ public class PublishActivityUI extends BaseActivity {
             @Override
             public void onRecvCustomCommand(String s, String s1, String s2, String s3) {
 
+
+            }
+
+            @Override
+            public void onRoomInfoUpdated(ZegoRoomInfo roomInfo, String roomID) {
 
             }
         });

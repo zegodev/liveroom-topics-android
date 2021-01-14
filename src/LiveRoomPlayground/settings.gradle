@@ -1,3 +1,4 @@
+include ':l3play'
 include ':main', ':audioPlayer',
         ':joinLive',
         ':videoFilter',

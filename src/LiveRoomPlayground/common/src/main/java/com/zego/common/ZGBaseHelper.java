@@ -3,16 +3,15 @@ package com.zego.common;
 
 import android.app.Application;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
 
 import com.zego.common.util.AppLogger;
 import com.zego.zegoliveroom.ZegoLiveRoom;
 import com.zego.zegoliveroom.callback.IZegoInitSDKCompletionCallback;
-import com.zego.zegoliveroom.callback.IZegoLivePublisherCallback;
 import com.zego.zegoliveroom.callback.IZegoLogHookCallback;
 import com.zego.zegoliveroom.callback.IZegoLoginCompletionCallback;
 import com.zego.zegoliveroom.callback.IZegoRoomCallback;
 import com.zego.zegoliveroom.constants.ZegoConstants;
+import com.zego.zegoliveroom.entity.ZegoRoomInfo;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
 
 /**
@@ -118,7 +117,7 @@ public class ZGBaseHelper {
 
             @Override
             @Nullable
-            public String getSubLogFolder(){
+            public String getSubLogFolder() {
                 return null;
             }
 
@@ -347,6 +346,11 @@ public class ZGBaseHelper {
                     roomCallback.onRecvCustomCommand(userID, userName, content, roomID);
                 }
             }
+
+            @Override
+            public void onRoomInfoUpdated(ZegoRoomInfo roomInfo, String roomID) {
+
+            }
         });
 
     }
@@ -356,7 +360,6 @@ public class ZGBaseHelper {
      * 当不再使用ZegoSDK时，可以释放房间的代理
      * <p>
      * 调用时机：建议在unInitSDK之前设置。
-     *
      */
     public void releaseZegoRoomCallback() {
         zegoLiveRoom.setZegoRoomCallback(null);
@@ -374,7 +377,7 @@ public class ZGBaseHelper {
         if (zegoLiveRoom != null) {
             AppLogger.getInstance().i(ZGBaseHelper.class, "退出房间");
             zegoLiveRoom.setZegoRoomCallback(null);
-           return zegoLiveRoom.logoutRoom();
+            return zegoLiveRoom.logoutRoom();
         }
         return false;
     }

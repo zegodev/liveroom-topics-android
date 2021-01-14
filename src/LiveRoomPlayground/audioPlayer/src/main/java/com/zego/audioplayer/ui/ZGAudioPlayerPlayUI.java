@@ -62,7 +62,7 @@ public class ZGAudioPlayerPlayUI extends BaseActivity {
                     showText += getString(R.string.tx_login_room_success) + "\n";
                     binding.showTx.setText(showText);
                     // 开始拉流
-                    ZGBaseHelper.sharedInstance().getZegoLiveRoom().startPlayingStream(zegoStreamInfos[0].streamID, null);
+                    ZGBaseHelper.sharedInstance().getZegoLiveRoom().startPlayingStream(mStreamID, null);
 
                 } else {
                     showText += getString(R.string.tx_login_fail_hint, mRoomID, err) + "\n";

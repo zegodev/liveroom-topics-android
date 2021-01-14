@@ -31,6 +31,7 @@ import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
 import com.zego.zegoliveroom.entity.ZegoBigRoomMessage;
 import com.zego.zegoliveroom.entity.ZegoPlayStreamQuality;
 import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
+import com.zego.zegoliveroom.entity.ZegoRoomInfo;
 import com.zego.zegoliveroom.entity.ZegoRoomMessage;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
 import com.zego.zegoliveroom.entity.ZegoUserState;
@@ -388,6 +389,11 @@ public class JoinLiveAnchorUI extends BaseActivity {
             @Override
             public void onRecvCustomCommand(String userID, String userName, String content, String roomID) {
                 // 收到自定义信息
+
+            }
+
+            @Override
+            public void onRoomInfoUpdated(ZegoRoomInfo roomInfo, String roomID) {
 
             }
         });

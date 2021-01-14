@@ -16,6 +16,7 @@ import com.zego.zegoliveroom.constants.ZegoAvConfig;
 import com.zego.zegoliveroom.constants.ZegoConstants;
 import com.zego.zegoliveroom.constants.ZegoVideoViewMode;
 import com.zego.zegoliveroom.entity.ZegoPublishStreamQuality;
+import com.zego.zegoliveroom.entity.ZegoRoomInfo;
 import com.zego.zegoliveroom.entity.ZegoStreamInfo;
 
 import java.util.ArrayList;
@@ -400,6 +401,11 @@ public class ZGVideoCommunicationHelper {
             @Override
             public void onRecvCustomCommand(String userID, String userName, String content, String roomID) {
                 AppLogger.getInstance().i(ZGVideoCommunicationHelper.class, "收到自定义消息. userID : %s, userID : %s, content : %s, roomID : %s", userID, userName, content, roomID);
+            }
+
+            @Override
+            public void onRoomInfoUpdated(ZegoRoomInfo roomInfo, String roomID) {
+
             }
         });
 

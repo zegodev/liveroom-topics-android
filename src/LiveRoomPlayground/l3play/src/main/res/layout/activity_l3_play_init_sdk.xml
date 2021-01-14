@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ebeef5"
+        android:keepScreenOn="true"
+        android:orientation="vertical">
+
+        <com.zego.common.widgets.TitleLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            app:name="@string/tx_initsdk_title" />
+
+
+        <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="40dp"-->
+        <!--android:layout_marginTop="15dp"-->
+        <!--android:layout_marginRight="40dp"-->
+
+        <!--android:gravity="center_vertical"-->
+        <!--android:orientation="horizontal">-->
+
+        <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="环境 (请选择与appID对应的环境) :"-->
+        <!--android:textSize="14sp" />-->
+
+        <!--</LinearLayout>-->
+
+        <!--<com.zego.common.widgets.CustomSwitch-->
+        <!--android:id="@+id/test_env"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="40dp"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:layout_marginRight="40dp"-->
+        <!--android:gravity="center_vertical|left"-->
+        <!--android:text="@string/tx_test_env"-->
+        <!--android:textColor="#c50f57"-->
+        <!--app:key="test_env" />-->
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/login"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:onClick="onLoginButtonTapped"
+                android:text="@string/tx_init_l3_login_sdk" />
+
+            <Button
+                android:id="@+id/publish"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_weight="1"
+                android:onClick="onPublishButtonTapped"
+                android:text="@string/tx_init_l3_publish_sdk" />
+
+            <Button
+                android:id="@+id/play"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_weight="1"
+                android:onClick="onPlayButtonTapped"
+                android:text="@string/tx_init_l3_normal_play_sdk" />
+
+            <Button
+                android:id="@+id/publishdate"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_weight="1"
+                android:onClick="onPublishDateButtonTapped"
+                android:text="@string/tx_init_l3_publish_date_sdk"
+                android:visibility="gone" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/l3play"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0"
+                android:onClick="onL3PlayButtonTapped"
+                android:text="@string/tx_init_l3_play_sdk" />
+
+            <Button
+                android:id="@+id/reset"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0"
+                android:onClick="onResetButtonTapped"
+                android:text="@string/tx_init_l3_reset_sdk" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="40dp"
+            android:gravity="center|start"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/time_local"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+                <TextureView
+                    android:id="@+id/preview_view"
+                    android:layout_width="120dp"
+                    android:layout_height="200dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/time_remote"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+                <TextureView
+                    android:id="@+id/play_view"
+                    android:layout_width="120dp"
+                    android:layout_height="200dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</layout>

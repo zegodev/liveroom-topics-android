@@ -28,6 +28,13 @@
     <string name="tx_init_failure">初始化SDK失败</string>
     <string name="tx_login_room_title">第二步 登录房间</string>
     <string name="tx_login_room">登录房间</string>
+    <string name="tx_init_l3_sdk">初始化</string>
+    <string name="tx_init_l3_login_sdk">登陆</string>
+    <string name="tx_init_l3_publish_sdk">推流</string>
+    <string name="tx_init_l3_publish_date_sdk">时间</string>
+    <string name="tx_init_l3_normal_play_sdk">拉流</string>
+    <string name="tx_init_l3_play_sdk">L3拉流</string>
+    <string name="tx_init_l3_reset_sdk">重置</string>
     <string name="tx_login_room_guide">登录房间指引</string>
     <string name="tx_login_room_success">登录房间成功</string>
     <string name="tx_login_room_failure">登录房间失败</string>

@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.zego.liveroomplayground"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 28
         versionCode getAppVersionCode()
 
@@ -116,5 +116,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.0'
 
     implementation 'com.android.support:multidex:1.0.1'
-    
+    implementation project(path: ':l3play')
+
 }
